@@ -1,7 +1,9 @@
 package pArtapibeta;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -11,28 +13,39 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.octo.android.robospice.persistence.springandroid.json.gson.GsonObjectPersister;
+
+import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.LinkedList;
 
+import test.api.picsart.com.picsart_api_test.PicsArtConst;
 
 
 public class MainActivity extends Activity {
 
-    private static String CLIENT_ID = "WorkingClientPYzCIqGMBt0xx4fV";
-    private static String CLIENT_SECRET = "Efm7ASWYgAZQ81HkbVhl6EdogwTn8d5c";
-    private static String REDIRECT_URI = "localhost";
-    private static String GRANT_TYPE = "authorization_code";
-    private static String TOKEN_URL = "http://stage.i.picsart.com/api/oauth2/token";
-    private static String OAUTH_URL = "http://stage.i.picsart.com/api/oauth2/authorize";
+
 
     WebView web;
     Button auth;
@@ -56,7 +69,7 @@ public class MainActivity extends Activity {
              token = pref.getString("access_Token","");
             //Toast.makeText(getApplicationContext(), "Access Token " + token, Toast.LENGTH_LONG).show();
         } catch (Exception c){
-          Log.i("ERROR Loading Token " ,": no token is persist ");
+          Log.i("ERROR Loading Token ", ": no token is persist ");
         }
 
         auth.setOnClickListener(new View.OnClickListener() {
@@ -140,8 +153,8 @@ public class MainActivity extends Activity {
 
                 });
 
-                String authURL = OAUTH_URL + "?redirect_uri=" + REDIRECT_URI + "&response_type=code&client_id=" + CLIENT_ID;
-                String tokenURL = TOKEN_URL + "?client_id=" + CLIENT_ID + "&client_secret=" + CLIENT_SECRET + "&redirect_uri=" + REDIRECT_URI + "&grant_type=authorization_code";
+                String authURL = PicsArtConst.OAUTH_URL + "?redirect_uri=" + PicsArtConst.REDIRECT_URI + "&response_type=code&client_id=" + PicsArtConst.CLIENT_ID;
+                String tokenURL = PicsArtConst.TOKEN_URL + "?client_id=" + PicsArtConst.CLIENT_ID + "&client_secret=" + PicsArtConst.CLIENT_SECRET + "&redirect_uri=" + PicsArtConst.REDIRECT_URI + "&grant_type=authorization_code";
 
                 web.loadUrl(authURL);
                // web.loadUrl("http://stage.i.picsart.com/api/oauth2/authorize?redirect_uri=localhost&response_type=code&client_id=armantestclient1nHhXPI9ZqwQA03XI");
@@ -201,8 +214,8 @@ public class MainActivity extends Activity {
         @Override
         protected JSONObject doInBackground(String... args) {
             GetAccessToken jParser = new GetAccessToken();
-            JSONObject json = jParser.gettoken(TOKEN_URL, Code, CLIENT_ID,
-                    CLIENT_SECRET, REDIRECT_URI, GRANT_TYPE);
+            JSONObject json = jParser.gettoken(PicsArtConst.TOKEN_URL, Code, PicsArtConst.CLIENT_ID,
+                    PicsArtConst.CLIENT_SECRET, PicsArtConst.REDIRECT_URI, PicsArtConst.GRANT_TYPE);
             return json;
         }
 
@@ -216,8 +229,6 @@ public class MainActivity extends Activity {
                     String tok = json.getString("access_token");
                     // String expire = json.getString("expires_in");
                     // String refresh = json.getString("refresh_token");
-
-
                     Log.d("Token Access", tok);
                     SharedPreferences prrefs = PreferenceManager.getDefaultSharedPreferences(
                             MainActivity.this);
@@ -243,8 +254,67 @@ public class MainActivity extends Activity {
         }
 
     }
+
+
+
+
+
     public void onTestCallClick(View v){
-        new GetUser().execute("http://stage.i.picsart.com/api/users/show/161436357000102.json?token=", token, CLIENT_ID);
+
+        //// Volley Get request ///
+
+        final JSONObject[] jobj = new JSONObject[1];
+        final String url = PicsArtConst.USER_PROFILE_URL+PicsArtConst.TOKEN_URL_PREFIX+token;
+        RequestQueue qeue = Volley.newRequestQueue(this);
+        // prepare the Request
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // display response
+                        Log.d("Response", response.toString());
+                        jobj[0] =response;
+                        HashMap<String, Object> resssult = null;
+                        try {
+                             resssult = new ObjectMapper().readValue(jobj[0].toString(), HashMap.class);
+                        }
+                        catch (Exception e){
+                            e.printStackTrace();
+                        }
+                        StringBuilder str = new StringBuilder();
+                        TextView jj = (TextView)findViewById(R.id.Access);
+                        for(int i =0; i< resssult.size() && i< 13;i++){
+                             str.append("\n"+PicsArtConst.params[i]+"   "+resssult.get(PicsArtConst.params[i]));
+                        }
+
+                        jj.setText(
+
+                           str
+
+
+                        );
+                    }
+                },
+
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("Error.Response", error.toString());
+                    }
+                }
+
+
+
+        );
+        qeue.add(getRequest);
+
+        ////// END of Volley Test Request ///
+
+
+
+        new GetUser().execute(PicsArtConst.USER_PROFILE_URL,PicsArtConst.TOKEN_URL_PREFIX+token, PicsArtConst.CLIENT_ID);
     }
 
    /* private class GetUser extends AsyncTask<String,String, JSONObject> {
@@ -282,6 +352,12 @@ public class MainActivity extends Activity {
         }
     }*/
 
+
+    private class JsonPErsister extends JSONObject{
+        JSONObject myobj;
+
+        public JsonPErsister(JSONObject obj){myobj=obj;}
+    }
 }
 
 

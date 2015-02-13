@@ -17,14 +17,7 @@
         android:layout_gravity="center"
         android:id="@+id/auth"
         android:text="Sign in with PicsArt" />
-     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/Access"
-        android:autoLink="all"
-        android:textIsSelectable="true"
-        android:layout_gravity="center"
-        android:textSize="10sp"/>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -33,6 +26,13 @@
         android:layout_gravity="center_horizontal"
         android:onClick="onTestCallClick"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/Access"
+        android:autoLink="all"
+        android:textIsSelectable="true"
+        android:layout_gravity="center"
+        android:textSize="12sp"/>
 
-     
 </LinearLayout>
