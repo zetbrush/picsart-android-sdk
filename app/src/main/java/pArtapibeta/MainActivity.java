@@ -46,15 +46,23 @@ import test.api.picsart.com.picsart_api_test.PicsArtConst;
 public class MainActivity extends Activity {
 
 
-
+    private static Context context;
     WebView web;
     Button auth;
     SharedPreferences pref;
     TextView Access;
     ProgressDialog pDialog;
     Button testcallBtt;
-    String token;
+    static String token;
 
+
+    public static Context getAppContext() {
+        return MainActivity.context;
+    }
+
+    public static String getAccessToken(){
+        return token;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +71,7 @@ public class MainActivity extends Activity {
 
         Access = (TextView) findViewById(R.id.Access);
         auth = (Button) findViewById(R.id.auth);
-
+        MainActivity.context = getApplicationContext();
         try{
             pref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
              token = pref.getString("access_Token","");
@@ -262,59 +270,26 @@ public class MainActivity extends Activity {
     public void onTestCallClick(View v){
 
         //// Volley Get request ///
-
-        final JSONObject[] jobj = new JSONObject[1];
-        final String url = PicsArtConst.USER_PROFILE_URL+PicsArtConst.TOKEN_URL_PREFIX+token;
-        RequestQueue qeue = Volley.newRequestQueue(this);
-        // prepare the Request
-        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>()
-                {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        // display response
-                        Log.d("Response", response.toString());
-                        jobj[0] =response;
-                        HashMap<String, Object> resssult = null;
-                        try {
-                             resssult = new ObjectMapper().readValue(jobj[0].toString(), HashMap.class);
-                        }
-                        catch (Exception e){
-                            e.printStackTrace();
-                        }
-                        StringBuilder str = new StringBuilder();
-                        TextView jj = (TextView)findViewById(R.id.Access);
-                        for(int i =0; i< resssult.size() && i< 13;i++){
-                             str.append("\n"+PicsArtConst.params[i]+"   "+resssult.get(PicsArtConst.params[i]));
-                        }
-
-                        jj.setText(
-
-                           str
+       /* JsonObjectRequest  req= new UserProfile().makeRequest();
+        RequestQueue que = Volley.newRequestQueue(this);
+        que.add(req);*/
 
 
-                        );
-                    }
-                },
-
-                new Response.ErrorListener()
-                {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("Error.Response", error.toString());
-                    }
-                }
+         TextView jj = (TextView)findViewById(R.id.Access);
+        User aaa = new User();
+      if (aaa.available)
+        aaa.testPrint();
 
 
+       // jj.setText();
 
-        );
-        qeue.add(getRequest);
+
 
         ////// END of Volley Test Request ///
 
 
 
-        new GetUser().execute(PicsArtConst.USER_PROFILE_URL,PicsArtConst.TOKEN_URL_PREFIX+token, PicsArtConst.CLIENT_ID);
+       // new GetUser().execute(PicsArtConst.USER_PROFILE_URL,PicsArtConst.TOKEN_URL_PREFIX+token, PicsArtConst.CLIENT_ID);
     }
 
    /* private class GetUser extends AsyncTask<String,String, JSONObject> {
