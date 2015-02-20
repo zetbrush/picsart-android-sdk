@@ -43,7 +43,7 @@ import java.util.LinkedList;
 import test.api.picsart.com.picsart_api_test.PicsArtConst;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements OnRequestReady {
 
 
     private static Context context;
@@ -177,6 +177,8 @@ public class MainActivity extends Activity {
     final Context myApp = this;
 
 
+
+
     private class SomWebViewDefClient extends WebViewClient {
 
         @Override
@@ -264,7 +266,15 @@ public class MainActivity extends Activity {
     }
 
 
+    @Override
+    public void onRequestReady(int reqnumber) {
 
+        if(reqnumber ==1)
+        {
+            Log.d("MainListener","reqnumber= "+reqnumber);
+        }
+
+    }
 
 
     public void onTestCallClick(View v){
@@ -275,10 +285,12 @@ public class MainActivity extends Activity {
         que.add(req);*/
 
 
-         TextView jj = (TextView)findViewById(R.id.Access);
-        User aaa = new User();
+      TextView jj = (TextView)findViewById(R.id.Access);
+       // User aaa = new User();
+
+/*
       if (aaa.available)
-        aaa.testPrint();
+        aaa.testPrint();*/
 
 
        // jj.setText();
@@ -289,7 +301,13 @@ public class MainActivity extends Activity {
 
 
 
-       // new GetUser().execute(PicsArtConst.USER_PROFILE_URL,PicsArtConst.TOKEN_URL_PREFIX+token, PicsArtConst.CLIENT_ID);
+       new GetUser(new OnRequestReady() {
+           @Override
+           public void onRequestReady(int requmber) {
+
+               Log.d("NAMEEEE on inner", " listener " + GetUser.namee);
+           }
+       }).execute(PicsArtConst.USER_PROFILE_URL,PicsArtConst.TOKEN_URL_PREFIX+token, PicsArtConst.CLIENT_ID);
     }
 
    /* private class GetUser extends AsyncTask<String,String, JSONObject> {

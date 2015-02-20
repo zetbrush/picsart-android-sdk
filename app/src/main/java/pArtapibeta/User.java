@@ -22,11 +22,11 @@ import test.api.picsart.com.picsart_api_test.PicsArtConst;
 /**
  * Created by Arman on 2/19/15.
  */
-public class User implements Observer {
+public class User implements Observer, OnRequestReady {
 JsonObjectRequest request = null;
 private UserProfile profile;
 boolean available = false;
-
+private OnRequestReady reqReady = null;
 
     public User(){
 
@@ -43,6 +43,7 @@ boolean available = false;
 
             profile = (UserProfile)observable;
             available = true;
+            reqReady.onRequestReady(5);
            Log.d("Updating", "Observer id Value: "+ String.valueOf(profile.id));
            Log.d("HasChanged", "Observer:   "+ profile.hasChanged());
 
@@ -63,13 +64,10 @@ boolean available = false;
 
     }
 
+    @Override
+    public void onRequestReady(int requmber) {
 
-
-
-
-
-
-
+    }
 
 
     private class UserProfile extends Observable {

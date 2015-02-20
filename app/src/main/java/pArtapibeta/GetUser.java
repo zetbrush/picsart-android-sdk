@@ -24,11 +24,16 @@ import java.util.Observer;
  * Created by Arman on 2/13/15.
  */
 public class GetUser extends AsyncTask<String,String, JSONObject> {
+    public static String namee;
+    private OnRequestReady listener;
     static InputStream is = null;
     static JSONObject jObj = null;
     static String json = "";
     DefaultHttpClient httpClient;
 
+    public GetUser(OnRequestReady listener){
+        this.listener = listener;
+    }
 
     @Override
     protected void onPreExecute() {
@@ -38,7 +43,7 @@ public class GetUser extends AsyncTask<String,String, JSONObject> {
 
     @Override
     protected JSONObject doInBackground(String... args) {
-        GetUser jParser = new GetUser();
+        GetUser jParser = new GetUser(listener);
        // JSONObject json = jParser.getUserObject("http://stage.i.picsart.com/api/users/show/me.json?token=", token, CLIENT_ID);
         JSONObject json = jParser.getUserObject(args[0], args[1], args[2]);
         return json;
@@ -51,20 +56,22 @@ public class GetUser extends AsyncTask<String,String, JSONObject> {
             try {
 
                 String name = json.getString("name");
+                namee=name;
                 String username = json.getString("username");
                 String photo = json.getString("photo");
+
                 contentPOJO userInfo =  new contentPOJO(name,username,photo);
                 //Toast.makeText(getApplicationContext(), " " + name + "\n" + username + "\n" + photo, Toast.LENGTH_LONG).show();
                 Log.i( "pArtApi: ",  "\nname "+ userInfo.name + "\nusername " + userInfo.username + "\nphoto " + userInfo.photoLink);
             } catch (JSONException e) {
 
             }
+            listener.onRequestReady(1);
 
 
         }
     }
-    public GetUser( ) {
-    }
+
 
 
     public JSONObject getUserObject(String address,String token,String client_id) {
