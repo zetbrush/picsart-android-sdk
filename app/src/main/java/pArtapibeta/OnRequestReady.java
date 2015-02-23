@@ -6,4 +6,5 @@ package pArtapibeta;
 public interface OnRequestReady {
 
     void onRequestReady(int requmber);
+
 }

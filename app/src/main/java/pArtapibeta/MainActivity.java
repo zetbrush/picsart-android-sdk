@@ -298,17 +298,39 @@ public class MainActivity extends Activity implements OnRequestReady {
 
 
         ////// END of Volley Test Request ///
+        final Photo[] ph = new Photo[2];
+        new RequestGetPhoto(new OnRequestReady() {
+            @Override
+            public void onRequestReady(int requmber) {
+                ph[0] =RequestGetPhoto.getPhoto();
+                Log.d("Photo Title ",ph[0].getTitle());
+            }
+        }).execute(PicsArtConst.Get_PHOTO_URL,"123123123123",PicsArtConst.TOKEN_PREFIX+getAccessToken());
+
+
+ User ss =new User(new OnRequestReady() {
+      @Override
+      public void onRequestReady(int requmber) {
+        Log.d("ToString ", User.tooString());
+
+
+      }
+  });
 
 
 
-       new GetUser(new OnRequestReady() {
+       /*new GetUser(new OnRequestReady() {
            @Override
            public void onRequestReady(int requmber) {
 
                Log.d("NAMEEEE on inner", " listener " + GetUser.namee);
            }
        }).execute(PicsArtConst.USER_PROFILE_URL,PicsArtConst.TOKEN_URL_PREFIX+token, PicsArtConst.CLIENT_ID);
+        */
+
     }
+
+
 
    /* private class GetUser extends AsyncTask<String,String, JSONObject> {
 
