@@ -16,6 +16,7 @@ public class PicsArtConst {
     public static final String USE_PROFILE_URL = "http://stage.i.picsart.com/api/users/show/";
 
     public static final String Get_PHOTO_URL ="http://stage.i.picsart.com/api/photos/";
+    public static final String Get_PHOTO_URL_PUB ="https://api.picsart.com/photos/";
     public static final String TOKEN_PREFIX = "?token=";
 
     public static final String User_PROFILE_UR = "d97fb4fa-63e5-4a59-a84a-5124376b11ed";

@@ -22,6 +22,7 @@ public class Photo {
     private boolean isLiked;
     private boolean isReposted;
     private User owner;
+    private String ownerID;
     private Location location;
 
 
@@ -32,6 +33,7 @@ public class Photo {
     public int getWidth() {
         return width;
     }
+
     public void updateData(){
         //TODO
     }
@@ -72,7 +74,7 @@ public class Photo {
     }
 
 
-    public Photo(String id, URL url, String title, Tag[] tags, Date crrated, boolean isMature, int width, int height, int likesCount, int viewsCount, int commentsCount, int repostsCount, boolean isLiked, boolean isReposted, User owner, Location location) {
+    public Photo(String id, URL url, String title, Tag[] tags, Date crrated, boolean isMature, int width, int height, int likesCount, int viewsCount, int commentsCount, int repostsCount, boolean isLiked, boolean isReposted, String ownerid, Location location) {
         this.id = id;
         this.url = url;
         this.title = title;
@@ -87,15 +89,15 @@ public class Photo {
         this.repostsCount = repostsCount;
         this.isLiked = isLiked;
         this.isReposted = isReposted;
-        this.owner = owner;
+        this.ownerID = ownerid;
         this.location = location;
     }
 
-    public Photo(String id, URL url, String title, Date crrated, User owner) {
+    public Photo(String id, URL url, String title, Date crrated, String ownerid) {
         this.id = id;
         this.title = title;
         this.created = crrated;
-        this.owner = owner;
+        this.ownerID = ownerid;
         this.url = url;
         this.tags = null;
         //this.isMature = false;
@@ -107,7 +109,6 @@ public class Photo {
         //this.repostsCount = repostsCount;
         //this.isLiked = isLiked;
         //this.isReposted = isReposted;
-
         //this.location = location;
     }
 

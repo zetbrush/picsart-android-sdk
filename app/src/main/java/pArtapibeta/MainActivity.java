@@ -37,6 +37,8 @@ import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.lang.reflect.Method;
+import java.net.URL;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -298,6 +300,7 @@ public class MainActivity extends Activity implements OnRequestReady {
 
 
         ////// END of Volley Test Request ///
+/*
         final Photo[] ph = new Photo[2];
         new RequestGetPhoto(new OnRequestReady() {
             @Override
@@ -306,16 +309,68 @@ public class MainActivity extends Activity implements OnRequestReady {
                 Log.d("Photo Title ",ph[0].getTitle());
             }
         }).execute(PicsArtConst.Get_PHOTO_URL,"123123123123",PicsArtConst.TOKEN_PREFIX+getAccessToken());
+*/
 
 
- User ss =new User(new OnRequestReady() {
-      @Override
-      public void onRequestReady(int requmber) {
-        Log.d("ToString ", User.tooString());
+     Photo photo = null;
+      String   url = PicsArtConst.Get_PHOTO_URL_PUB + "123123123123"+ PicsArtConst.TOKEN_PREFIX+getAccessToken();
+        PARequest req = new PARequest(Request.Method.GET, url, null, new PARequest.PARequestListener<JSONObject>() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+
+            @Override
+            public void onResponse(Object response) {
+
+            }
+        });
 
 
-      }
-  });
+        SingletoneRequestQue.getInstance(getAppContext()).addToRequestQueue(req);
+        req.setRequestListener(new PARequest.PARequestListener<JSONObject>() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("Photo Info ", error.toString());
+            }
+
+            @Override
+            public void onResponse(Object response) {
+
+                try {
+                    Log.d("Photo Info ", "   1 HEREEEEE");
+                    JSONObject obj = (JSONObject) response;
+                    Log.d("Photo Info ", "    2 HEREEEEE");
+                    String id = obj.getString(PicsArtConst.paramsPhotoInfo[0]);
+                    URL url = (URL) obj.get(PicsArtConst.paramsPhotoInfo[1]);
+                    String title = (String) obj.get(PicsArtConst.paramsPhotoInfo[2]);
+                    //  Tag tags = (Tag)response.get(PicsArtConst.paramsPhotoInfo[22]);
+                    Date created = (Date) obj.get(PicsArtConst.paramsPhotoInfo[3]);
+                    boolean isMature = (boolean) obj.get(PicsArtConst.paramsPhotoInfo[4]);
+                    int width = (int) obj.get(PicsArtConst.paramsPhotoInfo[5]);
+                    int height = (int) obj.get(PicsArtConst.paramsPhotoInfo[6]);
+                    int likesCount = (int) obj.get(PicsArtConst.paramsPhotoInfo[7]);
+                    int viewsCount = (int) obj.get(PicsArtConst.paramsPhotoInfo[8]);
+                    int commentsCount = (int) obj.get(PicsArtConst.paramsPhotoInfo[9]);
+                    int repostsCount = (int) obj.get(PicsArtConst.paramsPhotoInfo[10]);
+                    boolean isLiked = (boolean) obj.get(PicsArtConst.paramsPhotoInfo[11]);
+                    boolean isReposted = (boolean) obj.get(PicsArtConst.paramsPhotoInfo[12]);
+                    String ownerid = (String) obj.get(PicsArtConst.paramsPhotoInfo[13]);
+                    Log.d("Photo Info ",id + ", "+ title+ ", " + created.toString()+", "+ width);
+
+                   // photo = new Photo(id,)
+                }
+                catch (Exception e){e.printStackTrace();}
+
+            }
+        });
+
+
+
+
+
+
 
 
 

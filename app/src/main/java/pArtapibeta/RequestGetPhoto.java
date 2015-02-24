@@ -104,16 +104,9 @@ public class RequestGetPhoto extends AsyncTask<String, String, String> {
                             final boolean isLiked = (boolean) response.get(PicsArtConst.paramsPhotoInfo[11]);
                             final boolean isReposted = (boolean) response.get(PicsArtConst.paramsPhotoInfo[12]);
                             final  String ownerid = (String) response.get(PicsArtConst.paramsPhotoInfo[13]);
-                            User oner = new User(new OnRequestReady() {
-                                @Override
-                                public void onRequestReady(int requmber) {
 
-                                    Log.d("Loaded User","is done");
-
-                                }
-                            }, ownerid);
                             Log.d("initing photo "," ");
-                            Photo tmp = new Photo(id, url, title, null, created, isMature, width, height, likesCount, viewsCount, commentsCount, repostsCount, isLiked, isReposted, oner, null);
+                            Photo tmp = new Photo(id, url, title, null, created, isMature, width, height, likesCount, viewsCount, commentsCount, repostsCount, isLiked, isReposted, ownerid, null);
                             photo = tmp;
                             listener.onRequestReady(9);
                             //   Location location = (Location)response.get(PicsArtConst.paramsPhotoInfo[21]);

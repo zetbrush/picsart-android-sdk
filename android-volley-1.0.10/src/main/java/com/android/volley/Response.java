@@ -27,6 +27,7 @@ public class Response<T> {
     public interface Listener<T> {
         /** Called when a response is received. */
         public void onResponse(T response);
+       // public void onResponse(Object response);
     }
 
     /** Callback interface for delivering error responses. */
