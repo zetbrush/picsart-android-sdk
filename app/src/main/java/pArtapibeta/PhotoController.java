@@ -19,4 +19,44 @@ public  class PhotoController {
 
     }
 
+    public Comment[] getComments(){
+        //TODO
+        return new Comment[1];
+    }
+
+    public Comment getCommentByid(String id){
+        //TODO
+        return new Comment(null,null,null);
+    }
+
+    public void removeComment(String id){
+
+        //TODO
+    }
+    /*public User[] getLikes(){
+        //TODO
+
+    }*/
+
+    public void updateData(){
+        //TODO
+    }
+
+    public void comment(String comment){
+        //TODO
+    }
+
+    public boolean like(){
+        //TODO
+        return false;
+    }
+
+    public boolean unLike(){
+        //TODO
+        return false;
+    }
+
+
+
+
 }

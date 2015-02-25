@@ -22,126 +22,57 @@ import test.api.picsart.com.picsart_api_test.PicsArtConst;
 /**
  * Created by Arman on 2/19/15.
  */
-public class User implements Observer, OnRequestReady {
-JsonObjectRequest request = null;
-private static UserProfile profile;
-boolean available = false;
-private OnRequestReady reqReady = null;
+public class User {
+    private String id;
+    private String name;
+    private String username;
+    private String photo;
+    private String cover;
+    private Tag[] tags;
+    private int followingCount;
+    private int followersCownt;
+    private int likesCount;
+    private int photosCount;
+    private Location location;
+    private String[] followers;
 
-    public User(OnRequestReady listener){
-        this.reqReady = listener;
-        profile = new UserProfile();
-        profile.addObserver(this);
-        available= false;
+   //String url = PicsArtConst.MY_PROFILE_URL+PicsArtConst.TOKEN_URL_PREFIX+MainActivity.getAccessToken();
 
-
-    }
-    public User(OnRequestReady listener, String id){
-        this.reqReady = listener;
-        profile = new UserProfile(id);
-        profile.addObserver(this);
-        available= false;
+    public User( ){
 
 
     }
 
-
-
-
-    @Override
-    public void update(Observable observable, Object data) {
-
-            profile = (UserProfile)observable;
-            available = true;
-            reqReady.onRequestReady(5);
-           Log.d("Updating", "Observer id Value: "+ String.valueOf(profile.id));
-           Log.d("HasChanged", "Observer:   "+ profile.hasChanged());
+    public User(String id){
+        this.id = id;
 
     }
 
 
-    public static  UserProfile getProfile(){
-
-        return profile;
+    public void parseFrom(String id, String name, String username, String photo, String cover, Tag[] tags, int followingCount, int followersCownt, int likesCount, int photosCount, Location location, String[] followers) {
+        this.id = id;
+        this.name = name;
+        this.username = username;
+        this.photo = photo;
+        this.cover = cover;
+        this.tags = tags;
+        this.followingCount = followingCount;
+        this.followersCownt = followersCownt;
+        this.likesCount = likesCount;
+        this.photosCount = photosCount;
+        this.location = location;
+        this.followers = followers;
     }
-
-    public static String tooString(){
-        return   profile.id+", " +
-                ""+profile.name+", " +
-                ""+ profile.username +
-                ", "+ profile.photo.toString() +
-               // ", "+ profile.cover.toString()+
-                ", "+profile.followingCount+
-                ", "+ profile.followersCownt+
-                ", "+ profile.likesCount+
-                ", "+ profile.photosCount+
-                ", ";
-    }
-
-
-    @Override
-    public void onRequestReady(int requmber) {
-
+    public void parseFrom(String id, String name, String username, String photo, String cover,  int followingCount, int followersCownt, int likesCount, int photosCount ) {
+       parseFrom( id,  name,  username,  photo,  cover, null,  followingCount,  followersCownt,  likesCount,  photosCount, null, null);
     }
 
 
-    private class UserProfile extends Observable {
-        private  HashMap<String, Object>[] userProfileRessult = new HashMap[1];
-        private String id;
-        private String name;
-        private String username;
-        private String photo;
-        private String cover;
-        private Tag[] tags;
-        private int followingCount;
-        private int followersCownt;
-        private int likesCount;
-        private int photosCount;
-        private Location location;
-         String url = PicsArtConst.MY_PROFILE_URL+PicsArtConst.TOKEN_URL_PREFIX+MainActivity.getAccessToken();
 
-        /**
-         * @param id id of User
-         *
-         **/
-        public UserProfile (String id ){
-
-        url = PicsArtConst.USE_PROFILE_URL+id+PicsArtConst.TOKEN_URL_PREFIX+MainActivity.getAccessToken();;
-
-        doRequest();
-
-        }
+// url = PicsArtConst.USE_PROFILE_URL+id+PicsArtConst.TOKEN_URL_PREFIX+MainActivity.getAccessToken();;
 
 
-
-       /* @Override
-        public  String toString(){
-            return id+", "+name+", "+ username + ", "+ photo.toString() + ", "+ cover.toString()+", "+followingCount+", "+ followersCownt+ ", "+ likesCount+ ", "+ photosCount+", ";
-        }*/
-
-        /**
-         * @ my profile
-         *
-         **/
-        public UserProfile ( ){
-
-           doRequest();
-
-
-        }
-
-
-
-        public void doRequest(){
-            JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            // display response
-                            Log.d("Response", response.toString());
-
-                            try {
+                           /* try {
                                 userProfileRessult[0] = new ObjectMapper().readValue(response.toString(), HashMap.class);
 
                                 id= String.valueOf(userProfileRessult[0].get(PicsArtConst.paramsUserProfile[2]));
@@ -159,28 +90,107 @@ private OnRequestReady reqReady = null;
 
                             } catch (Exception e) {
                                 e.printStackTrace();
-                            }
+                            }*/
 
 
-                        }
-                    },
-
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.d("Error.Response", error.toString());
-                        }
-                    }
-
-
-            );
-            SingletoneRequestQue que = SingletoneRequestQue.getInstance(MainActivity.getAppContext());
-            que.addToRequestQueue(getRequest);
-
-        }
-
-
+    public String[] getFollowers() {
+        return followers;
     }
+
+    public void setFollowers(String[] followers) {
+        this.followers = followers;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
+
+    public Tag[] getTags() {
+        return tags;
+    }
+
+    public void setTags(Tag[] tags) {
+        this.tags = tags;
+    }
+
+    public int getFollowingCount() {
+        return followingCount;
+    }
+
+    public void setFollowingCount(int followingCount) {
+        this.followingCount = followingCount;
+    }
+
+    public int getFollowersCownt() {
+        return followersCownt;
+    }
+
+    public void setFollowersCownt(int followersCownt) {
+        this.followersCownt = followersCownt;
+    }
+
+    public int getLikesCount() {
+        return likesCount;
+    }
+
+    public void setLikesCount(int likesCount) {
+        this.likesCount = likesCount;
+    }
+
+    public int getPhotosCount() {
+        return photosCount;
+    }
+
+    public void setPhotosCount(int photosCount) {
+        this.photosCount = photosCount;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+
+
 
 }
 

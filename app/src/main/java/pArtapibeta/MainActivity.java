@@ -1,9 +1,7 @@
 package pArtapibeta;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -13,10 +11,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -24,30 +20,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import com.octo.android.robospice.persistence.springandroid.json.gson.GsonObjectPersister;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 
 import test.api.picsart.com.picsart_api_test.PicsArtConst;
 
 
-public class MainActivity extends Activity implements OnRequestReady {
+public class MainActivity extends Activity implements RequestListener {
 
-
+static LinkedList<Photo> photoList = null;
     private static Context context;
     WebView web;
     Button auth;
@@ -280,6 +267,7 @@ public class MainActivity extends Activity implements OnRequestReady {
 
 
     public void onTestCallClick(View v){
+        PARequest.PARequestListener<JSONObject> listn = null;
 
         //// Volley Get request ///
        /* JsonObjectRequest  req= new UserProfile().makeRequest();
@@ -313,22 +301,11 @@ public class MainActivity extends Activity implements OnRequestReady {
 
 
      Photo photo = null;
-      String   url = PicsArtConst.Get_PHOTO_URL_PUB + "123123123123"+ PicsArtConst.TOKEN_PREFIX+getAccessToken();
-        PARequest req = new PARequest(Request.Method.GET, url, null, new PARequest.PARequestListener<JSONObject>() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-
-            @Override
-            public void onResponse(Object response) {
-
-            }
-        });
-
-
+      String   url = PicsArtConst.Get_PHOTO_URL + "123123123123"+ PicsArtConst.TOKEN_PREFIX+getAccessToken();
+        PARequest req = new PARequest(Request.Method.GET, url, null, listn);
         SingletoneRequestQue.getInstance(getAppContext()).addToRequestQueue(req);
+
+
         req.setRequestListener(new PARequest.PARequestListener<JSONObject>() {
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -358,13 +335,32 @@ public class MainActivity extends Activity implements OnRequestReady {
                     boolean isReposted = (boolean) obj.get(PicsArtConst.paramsPhotoInfo[12]);
                     String ownerid = (String) obj.get(PicsArtConst.paramsPhotoInfo[13]);
                     Log.d("Photo Info ",id + ", "+ title+ ", " + created.toString()+", "+ width);
-
+                    Photo tmp = new Photo(id, url, title, null, created, isMature, width, height, likesCount, viewsCount, commentsCount, repostsCount, isLiked, isReposted, ownerid, null);
                    // photo = new Photo(id,)
                 }
                 catch (Exception e){e.printStackTrace();}
 
             }
         });
+
+
+        url = PicsArtConst.MY_PROFILE_URL+PicsArtConst.TOKEN_URL_PREFIX+getAccessToken();
+
+       PARequest req2 = new PARequest(Request.Method.POST, url, null, listn);
+       SingletoneRequestQue.getInstance(getAppContext()).addToRequestQueue(req2);
+        req2.setRequestListener(new PARequest.PARequestListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+
+            @Override
+            public void onResponse(Object response) {
+
+
+            }
+        });
+
 
 
 
@@ -423,11 +419,7 @@ public class MainActivity extends Activity implements OnRequestReady {
     }*/
 
 
-    private class JsonPErsister extends JSONObject{
-        JSONObject myobj;
 
-        public JsonPErsister(JSONObject obj){myobj=obj;}
-    }
 }
 
 

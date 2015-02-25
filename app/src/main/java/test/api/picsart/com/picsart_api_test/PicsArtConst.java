@@ -14,15 +14,12 @@ public class PicsArtConst {
     public static final String TOKEN_URL_PREFIX = ".json?token=";
     public static final String MY_PROFILE_URL = "http://stage.i.picsart.com/api/users/show/me";
     public static final String USE_PROFILE_URL = "http://stage.i.picsart.com/api/users/show/";
-
     public static final String Get_PHOTO_URL ="http://stage.i.picsart.com/api/photos/";
     public static final String Get_PHOTO_URL_PUB ="https://api.picsart.com/photos/";
     public static final String TOKEN_PREFIX = "?token=";
 
-    public static final String User_PROFILE_UR = "d97fb4fa-63e5-4a59-a84a-5124376b11ed";
-    public static final String User_PROFILE_U = "d97fb4fa-63e5-4a59-a84a-5124376b11ed";
-    public static final String API_KEY_URL = "d97fb4fa-63e5-4a59-a84a-5124376b11ed";
-
+    public static final String GET_USER_PHOTOS_LIST = "http://stage.i.picsart.com/api/users/";
+    public static final String GET_PHOTO_FILTER = "?filter=";
 
     public static final String[] paramsUserProfile =
             new String[]{

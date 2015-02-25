@@ -16,6 +16,8 @@
 
 package com.android.volley;
 
+import org.json.JSONException;
+
 /**
  * Encapsulates a parsed response for delivery.
  *
@@ -26,7 +28,7 @@ public class Response<T> {
     /** Callback interface for delivering parsed responses. */
     public interface Listener<T> {
         /** Called when a response is received. */
-        public void onResponse(T response);
+        public void onResponse(T response) throws JSONException;
        // public void onResponse(Object response);
     }
 

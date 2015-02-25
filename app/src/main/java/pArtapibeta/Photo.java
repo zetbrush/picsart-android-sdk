@@ -34,44 +34,68 @@ public class Photo {
         return width;
     }
 
-    public void updateData(){
-        //TODO
+
+    public String getId() {
+        return id;
     }
 
-    public void comment(String comment){
-        //TODO
+    public URL getUrl() {
+        return url;
     }
 
-    public Comment[] getComments(){
-
-    //TODO
-        return new Comment[1];
+    public Tag[] getTags() {
+        return tags;
     }
 
-    public Comment getCommentByid(String id){
-        //TODO
-        return new Comment(null,null,null);
+    public Date getCreated() {
+        return created;
     }
 
-    public void removeComment(String id){
-
-       //TODO
+    public boolean isMature() {
+        return isMature;
     }
 
-    /*public User[] getLikes(){
-        //TODO
-
-    }*/
-
-    public boolean like(){
-        //TODO
-        return false;
+    public int getHeight() {
+        return height;
     }
 
-    public boolean unLike(){
-        //TODO
-        return false;
+    public int getLikesCount() {
+        return likesCount;
     }
+
+    public int getViewsCount() {
+        return viewsCount;
+    }
+
+    public int getCommentsCount() {
+        return commentsCount;
+    }
+
+    public int getRepostsCount() {
+        return repostsCount;
+    }
+
+    public boolean isLiked() {
+        return isLiked;
+    }
+
+    public boolean isReposted() {
+        return isReposted;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public String getOwnerID() {
+        return ownerID;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+
 
 
     public Photo(String id, URL url, String title, Tag[] tags, Date crrated, boolean isMature, int width, int height, int likesCount, int viewsCount, int commentsCount, int repostsCount, boolean isLiked, boolean isReposted, String ownerid, Location location) {
