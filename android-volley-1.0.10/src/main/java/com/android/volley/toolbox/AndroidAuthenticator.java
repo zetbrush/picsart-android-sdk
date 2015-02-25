@@ -26,7 +26,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 /**
- * An Authenticator that uses {@link AccountManager} to get auth
+ * An Authenticator that uses {@link android.accounts.AccountManager} to get auth
  * tokens of a specified type for a specified account.
  */
 public class AndroidAuthenticator implements Authenticator {

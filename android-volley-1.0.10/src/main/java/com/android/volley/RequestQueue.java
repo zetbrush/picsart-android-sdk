@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * A request dispatch queue with a thread pool of dispatchers.
  *
- * Calling {@link #add(Request)} will enqueue the given Request for dispatch,
+ * Calling {@link #add(com.android.volley.Request)} will enqueue the given Request for dispatch,
  * resolving from either cache or network on a worker thread, and then delivering
  * a parsed response on the main thread.
  */
@@ -164,7 +164,7 @@ public class RequestQueue {
     }
 
     /**
-     * Gets the {@link Cache} instance being used.
+     * Gets the {@link com.android.volley.Cache} instance being used.
      */
     public Cache getCache() {
         return mCache;
@@ -172,7 +172,7 @@ public class RequestQueue {
 
     /**
      * A simple predicate or filter interface for Requests, for use by
-     * {@link RequestQueue#cancelAll(RequestFilter)}.
+     * {@link com.android.volley.RequestQueue#cancelAll(com.android.volley.RequestQueue.RequestFilter)}.
      */
     public interface RequestFilter {
         public boolean apply(Request<?> request);
@@ -255,7 +255,7 @@ public class RequestQueue {
     }
 
     /**
-     * Called from {@link Request#finish(String)}, indicating that processing of the given request
+     * Called from {@link com.android.volley.Request#finish(String)}, indicating that processing of the given request
      * has finished.
      *
      * <p>Releases waiting requests for <code>request.getCacheKey()</code> if

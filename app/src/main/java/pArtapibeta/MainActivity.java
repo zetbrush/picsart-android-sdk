@@ -22,11 +22,13 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import test.api.picsart.com.picsart_api_test.PicsArtConst;
@@ -300,8 +302,8 @@ static LinkedList<Photo> photoList = null;
 */
 
 
-     Photo photo = null;
-      String   url = PicsArtConst.Get_PHOTO_URL + "123123123123"+ PicsArtConst.TOKEN_PREFIX+getAccessToken();
+        Photo photo = null;
+        String   url = PicsArtConst.Get_PHOTO_URL + "123123123123"+ PicsArtConst.TOKEN_PREFIX+getAccessToken();
         PARequest req = new PARequest(Request.Method.GET, url, null, listn);
         SingletoneRequestQue.getInstance(getAppContext()).addToRequestQueue(req);
 
@@ -343,11 +345,11 @@ static LinkedList<Photo> photoList = null;
             }
         });
 
-
+        final User[] user = new User[1];
         url = PicsArtConst.MY_PROFILE_URL+PicsArtConst.TOKEN_URL_PREFIX+getAccessToken();
 
-       PARequest req2 = new PARequest(Request.Method.POST, url, null, listn);
-       SingletoneRequestQue.getInstance(getAppContext()).addToRequestQueue(req2);
+        PARequest req2 = new PARequest(Request.Method.GET, url, null, listn);
+        SingletoneRequestQue.getInstance(getAppContext()).addToRequestQueue(req2);
         req2.setRequestListener(new PARequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -355,11 +357,47 @@ static LinkedList<Photo> photoList = null;
             }
 
             @Override
-            public void onResponse(Object response) {
+            public void onResponse(Object respon) {
+                 try {
+                            JSONObject response = (JSONObject)respon;
+                               // userProfileRessult[0] = new ObjectMapper().readValue(response.toString(), HashMap.class);
+
+                                String id= String.valueOf(response.getString(PicsArtConst.paramsUserProfile[2]));
+                                String name= (String)response.get(PicsArtConst.paramsUserProfile[1]);
+                                String    username= (String)response.get(PicsArtConst.paramsUserProfile[0]);
+                             /* //String     photo = (String)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[7]);
+                                //cover = (String)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[19]);
+                                followingCount = (int)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[12]);
+                                followersCownt = (int)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[20]);
+                                likesCount = (int)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[8]);
+                                photosCount = (int)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[6]);
+                                //location = (Location)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[9]);*/
+
+                           user[0]= new User(id);
+                     final UserController[] usc = new UserController[2];
+                     usc[0]= new UserController(getAppContext());
+                     usc[0].getUserPhotos(user[0],5,0);
+                     usc[0].setListener(new RequestListener() {
+                         @Override
+                         public void onRequestReady(int requmber) {
+                             Log.d("URLSSSS", usc[0].getPhotoUrl().toString() );
+                         }
+                     });
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
 
 
             }
         });
+
+
+
+
+
+
+
 
 
 

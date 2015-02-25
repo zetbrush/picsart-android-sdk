@@ -51,7 +51,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * A network performing Volley requests over an {@link HttpStack}.
+ * A network performing Volley requests over an {@link com.android.volley.toolbox.HttpStack}.
  */
 public class BasicNetwork implements Network {
     protected static final boolean DEBUG = VolleyLog.DEBUG;
@@ -217,7 +217,7 @@ public class BasicNetwork implements Network {
         request.addMarker(String.format("%s-retry [timeout=%s]", logPrefix, oldTimeout));
     }
 
-    private void addCacheHeaders(Map<String, String> headers, Cache.Entry entry) {
+    private void addCacheHeaders(Map<String, String> headers, Entry entry) {
         // If there's no cache entry, we're done.
         if (entry == null) {
             return;

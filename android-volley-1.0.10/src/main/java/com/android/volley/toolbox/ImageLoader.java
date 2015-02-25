@@ -33,9 +33,9 @@ import java.util.LinkedList;
 /**
  * Helper that handles loading and caching images from remote URLs.
  *
- * The simple way to use this class is to call {@link ImageLoader#get(String, ImageListener)}
+ * The simple way to use this class is to call {@link com.android.volley.toolbox.ImageLoader#get(String, com.android.volley.toolbox.ImageLoader.ImageListener)}
  * and to pass in the default image listener provided by
- * {@link ImageLoader#getImageListener(ImageView, int, int)}. Note that all function calls to
+ * {@link com.android.volley.toolbox.ImageLoader#getImageListener(android.widget.ImageView, int, int)}. Note that all function calls to
  * this class must be made from the main thead, and all responses will be delivered to the main
  * thread as well.
  */
@@ -160,7 +160,7 @@ public class ImageLoader {
      * Returns an ImageContainer for the requested URL.
      *
      * The ImageContainer will contain either the specified default bitmap or the loaded bitmap.
-     * If the default was returned, the {@link ImageLoader} will be invoked when the
+     * If the default was returned, the {@link com.android.volley.toolbox.ImageLoader} will be invoked when the
      * request is fulfilled.
      *
      * @param requestUrl The URL of the image to be loaded.
