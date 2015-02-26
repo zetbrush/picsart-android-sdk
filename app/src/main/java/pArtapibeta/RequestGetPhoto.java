@@ -74,36 +74,13 @@ public class RequestGetPhoto extends AsyncTask<String, String, String> {
                     public void onResponse(JSONObject response) {
 
                         Log.d("Response", response.toString());
-                        jObj = response;
-                        try {
-                            final String id = response.getString(PicsArtConst.paramsPhotoInfo[0]);
-
-                            final URL url = (URL) response.get(PicsArtConst.paramsPhotoInfo[1]);
-                            final String title = (String) response.get(PicsArtConst.paramsPhotoInfo[2]);
-                            //  Tag tags = (Tag)response.get(PicsArtConst.paramsPhotoInfo[22]) ;
-                            final Date created = (Date) response.get(PicsArtConst.paramsPhotoInfo[3]);
-                            final boolean isMature = (boolean) response.get(PicsArtConst.paramsPhotoInfo[4]);
-                            final int width = (int) response.get(PicsArtConst.paramsPhotoInfo[5]);
-                            final int height = (int) response.get(PicsArtConst.paramsPhotoInfo[6]);
-                            final int likesCount = (int) response.get(PicsArtConst.paramsPhotoInfo[7]);
-                            final int viewsCount = (int) response.get(PicsArtConst.paramsPhotoInfo[8]);
-                            final int commentsCount = (int) response.get(PicsArtConst.paramsPhotoInfo[9]);
-                            final int repostsCount = (int) response.get(PicsArtConst.paramsPhotoInfo[10]);
-                            final boolean isLiked = (boolean) response.get(PicsArtConst.paramsPhotoInfo[11]);
-                            final boolean isReposted = (boolean) response.get(PicsArtConst.paramsPhotoInfo[12]);
-                            final  String ownerid = (String) response.get(PicsArtConst.paramsPhotoInfo[13]);
-
+                         jObj = response;
+                         photo = new Photo();
+                         photo.parseFrom(response);
                             Log.d("initing photo "," ");
-                            Photo tmp = new Photo(id, url, title, null, created, isMature, width, height, likesCount, viewsCount, commentsCount, repostsCount, isLiked, isReposted, ownerid, null);
-                            photo = tmp;
                             listener.onRequestReady(9);
                             //   Location location = (Location)response.get(PicsArtConst.paramsPhotoInfo[21]);
 
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
                     }
                 },
 

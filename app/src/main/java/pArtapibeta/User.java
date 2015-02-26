@@ -63,30 +63,36 @@ public class User {
         this.location = location;
         this.followers = followers;
     }
-    public void parseFrom(String id, String name, String username, String photo, String cover,  int followingCount, int followersCownt, int likesCount, int photosCount ) {
-       parseFrom( id,  name,  username,  photo,  cover, null,  followingCount,  followersCownt,  likesCount,  photosCount, null, null);
+
+
+
+
+    public void parseFrom(Object o){
+        try {
+            JSONObject jobj = (JSONObject) o;
+
+            id = String.valueOf(jobj.getString(PicsArtConst.paramsUserProfile[2]));
+            name =  jobj.getString(PicsArtConst.paramsUserProfile[1]);
+            username =  jobj.getString(PicsArtConst.paramsUserProfile[0]);
+            photo =  jobj.getString(PicsArtConst.paramsUserProfile[7]);
+          //  cover = (String)jobj.get(PicsArtConst.paramsUserProfile[19]);
+            followingCount =  jobj.getInt(PicsArtConst.paramsUserProfile[12]);
+            followersCownt =  jobj.getInt(PicsArtConst.paramsUserProfile[20]);
+            likesCount =  jobj.getInt(PicsArtConst.paramsUserProfile[8]);
+            photosCount =  jobj.getInt(PicsArtConst.paramsUserProfile[6]);
+            //location = (Location)jobj.get(PicsArtConst.paramsUserProfile[9]);
+
+        }
+        catch (Exception e){e.printStackTrace();}
     }
 
 
-
-// url = PicsArtConst.USE_PROFILE_URL+id+PicsArtConst.TOKEN_URL_PREFIX+MainActivity.getAccessToken();;
-
+                    // url = PicsArtConst.USE_PROFILE_URL+id+PicsArtConst.TOKEN_URL_PREFIX+MainActivity.getAccessToken();;
 
                            /* try {
                                 userProfileRessult[0] = new ObjectMapper().readValue(response.toString(), HashMap.class);
 
-                                id= String.valueOf(userProfileRessult[0].get(PicsArtConst.paramsUserProfile[2]));
-                                name= (String)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[1]);
-                                username= (String)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[0]);
-                                photo = (String)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[7]);
-                                //cover = (String)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[19]);
-                                followingCount = (int)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[12]);
-                                followersCownt = (int)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[20]);
-                                likesCount = (int)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[8]);
-                                photosCount = (int)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[6]);
-                                //location = (Location)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[9]);
-                                UserProfile.this.setChanged();
-                                UserProfile.this.notifyObservers();
+
 
                             } catch (Exception e) {
                                 e.printStackTrace();
