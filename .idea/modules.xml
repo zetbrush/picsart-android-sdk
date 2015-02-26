@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/PiArAPIBeta.iml" filepath="$PROJECT_DIR$/PiArAPIBeta.iml" />
       <module fileurl="file://$PROJECT_DIR$/android-volley-1.0.10/android-volley-1.0.10.iml" filepath="$PROJECT_DIR$/android-volley-1.0.10/android-volley-1.0.10.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/picsart_api_test.iml" filepath="$PROJECT_DIR$/picsart_api_test.iml" />
     </modules>
   </component>
 </project>
