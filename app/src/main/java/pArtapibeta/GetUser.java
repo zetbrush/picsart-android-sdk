@@ -16,8 +16,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.util.Observable;
-import java.util.Observer;
 
 
 /**
@@ -25,13 +23,13 @@ import java.util.Observer;
  */
 public class GetUser extends AsyncTask<String,String, JSONObject> {
     public static String namee;
-    private OnRequestReady listener;
+    private RequestListener listener;
     static InputStream is = null;
     static JSONObject jObj = null;
     static String json = "";
     DefaultHttpClient httpClient;
 
-    public GetUser(OnRequestReady listener){
+    public GetUser(RequestListener listener){
         this.listener = listener;
     }
 

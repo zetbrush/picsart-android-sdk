@@ -1,32 +1,20 @@
 package pArtapibeta;
 
-import android.animation.ObjectAnimator;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
@@ -38,7 +26,7 @@ import test.api.picsart.com.picsart_api_test.PicsArtConst;
  */
 public class RequestGetPhoto extends AsyncTask<String, String, String> {
 
-    private OnRequestReady listener;
+    private RequestListener listener;
     private static HashMap<String, Object> photoInfo = new HashMap<>();
 
     public static Photo getPhoto() {
@@ -58,7 +46,7 @@ public class RequestGetPhoto extends AsyncTask<String, String, String> {
     }
 
 
-    public RequestGetPhoto(OnRequestReady listener) {
+    public RequestGetPhoto(RequestListener listener) {
         this.listener = listener;
 
     }

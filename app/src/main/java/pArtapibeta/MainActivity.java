@@ -23,31 +23,17 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import com.octo.android.robospice.persistence.springandroid.json.gson.GsonObjectPersister;
-
-import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 
 import test.api.picsart.com.picsart_api_test.PicsArtConst;
 
 
-public class MainActivity extends Activity implements OnRequestReady {
+public class MainActivity extends Activity implements RequestListener {
 
-
+    static LinkedList<Photo> photoList = null;
     private static Context context;
     WebView web;
     Button auth;
@@ -62,35 +48,37 @@ public class MainActivity extends Activity implements OnRequestReady {
         return MainActivity.context;
     }
 
-    public static String getAccessToken(){
+    public static String getAccessToken() {
         return token;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        testcallBtt = (Button)findViewById(R.id.testCall);
+        testcallBtt = (Button) findViewById(R.id.testCall);
 
         Access = (TextView) findViewById(R.id.Access);
         auth = (Button) findViewById(R.id.auth);
         MainActivity.context = getApplicationContext();
-        try{
+        try {
             pref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-             token = pref.getString("access_Token","");
+            token = pref.getString("access_Token", "");
             //Toast.makeText(getApplicationContext(), "Access Token " + token, Toast.LENGTH_LONG).show();
-        } catch (Exception c){
-          Log.i("ERROR Loading Token ", ": no token is persist ");
+        } catch (Exception c) {
+            Log.i("ERROR Loading Token ", ": no token is persist ");
         }
 
         auth.setOnClickListener(new View.OnClickListener() {
             Dialog authDialog;
+
             @Override
             public void onClick(View view) {
                 authDialog = new Dialog(MainActivity.this);
                 authDialog.setContentView(R.layout.auth_dialog);
-               // alert.setContentView(R.layout.auth_dialog);
+                // alert.setContentView(R.layout.auth_dialog);
 
-                web = (WebView)authDialog.findViewById(R.id.webv);
+                web = (WebView) authDialog.findViewById(R.id.webv);
                 web.getSettings().setJavaScriptEnabled(true);
                 web.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
                 web.getSettings().setSupportMultipleWindows(true);
@@ -106,11 +94,12 @@ public class MainActivity extends Activity implements OnRequestReady {
 
                         return false;
                     }
+
                     @Override
                     public void onPageStarted(WebView view, String url,
                                               Bitmap favicon) {
                         super.onPageStarted(view, url, favicon);
-                       // view.setWebChromeClient(new MyWebChromeClient());
+                        // view.setWebChromeClient(new MyWebChromeClient());
                         authComplete = false;
                         pDialog = ProgressDialog.show(view.getContext(), "",
                                 "Connecting to " + " server", false);
@@ -119,6 +108,7 @@ public class MainActivity extends Activity implements OnRequestReady {
                     }
 
                     String authCode;
+
                     @Override
                     public void onPageFinished(WebView view, String url) {
                         super.onPageFinished(view, url);
@@ -156,7 +146,6 @@ public class MainActivity extends Activity implements OnRequestReady {
                                     "Error Occured", Toast.LENGTH_SHORT).show();
 
 
-
                         }
 
                     }
@@ -167,7 +156,7 @@ public class MainActivity extends Activity implements OnRequestReady {
                 String tokenURL = PicsArtConst.TOKEN_URL + "?client_id=" + PicsArtConst.CLIENT_ID + "&client_secret=" + PicsArtConst.CLIENT_SECRET + "&redirect_uri=" + PicsArtConst.REDIRECT_URI + "&grant_type=authorization_code";
 
                 web.loadUrl(authURL);
-               // web.loadUrl("http://stage.i.picsart.com/api/oauth2/authorize?redirect_uri=localhost&response_type=code&client_id=armantestclient1nHhXPI9ZqwQA03XI");
+                // web.loadUrl("http://stage.i.picsart.com/api/oauth2/authorize?redirect_uri=localhost&response_type=code&client_id=armantestclient1nHhXPI9ZqwQA03XI");
                 authDialog.show();
                 authDialog.setTitle("Authorize PicsArt");
                 authDialog.setCancelable(true);
@@ -176,9 +165,8 @@ public class MainActivity extends Activity implements OnRequestReady {
         });
 
     }
+
     final Context myApp = this;
-
-
 
 
     private class SomWebViewDefClient extends WebViewClient {
@@ -192,14 +180,16 @@ public class MainActivity extends Activity implements OnRequestReady {
             view.canGoBackOrForward(1);
 
         }
+
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
 
             return true;
         }
+
         @Override
-        public void onLoadResource (WebView view, String url){
-            if(url.contains("http://stage.i.picsart.com/api/oauth2/localhost?code=")){
+        public void onLoadResource(WebView view, String url) {
+            if (url.contains("http://stage.i.picsart.com/api/oauth2/localhost?code=")) {
                 view.stopLoading();
                 //Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 //startActivity(intent);
@@ -244,11 +234,11 @@ public class MainActivity extends Activity implements OnRequestReady {
                     Log.d("Token Access", tok);
                     SharedPreferences prrefs = PreferenceManager.getDefaultSharedPreferences(
                             MainActivity.this);
-                    prrefs.edit().putString("access_Token",tok).commit();
+                    prrefs.edit().putString("access_Token", tok).commit();
 
                     pDialog.dismiss();
                     Toast.makeText(getApplicationContext(), "Access Token: " + tok, Toast.LENGTH_LONG).show();
-                    token=tok;
+                    token = tok;
                     auth.setText("Authenticated");
 
                 } catch (JSONException e) {
@@ -271,64 +261,46 @@ public class MainActivity extends Activity implements OnRequestReady {
     @Override
     public void onRequestReady(int reqnumber) {
 
-        if(reqnumber ==1)
-        {
-            Log.d("MainListener","reqnumber= "+reqnumber);
+        if (reqnumber == 1) {
+            Log.d("MainListener", "reqnumber= " + reqnumber);
         }
 
     }
 
 
-    public void onTestCallClick(View v){
+    public void onTestCallClick(View v) {
 
-        //// Volley Get request ///
-       /* JsonObjectRequest  req= new UserProfile().makeRequest();
-        RequestQueue que = Volley.newRequestQueue(this);
-        que.add(req);*/
+        UserController userController=new UserController(getApplicationContext());
+        //userController.requestUserFollowers("161436357000102",0,0);
+        //userController.requestUserFollowing("161436357000102",0,0);
+        //userController.requestLikedPhotos("161436357000102",0,0);
+        //userController.requestBlockedUsers("161436357000102",0,0);
 
-
-      TextView jj = (TextView)findViewById(R.id.Access);
-       // User aaa = new User();
-
-/*
-      if (aaa.available)
-        aaa.testPrint();*/
-
-
-       // jj.setText();
-
-
-
-        ////// END of Volley Test Request ///
-/*
-        final Photo[] ph = new Photo[2];
-        new RequestGetPhoto(new OnRequestReady() {
+        userController.blockUserWithID("161436357000102","161436357000102");
+        userController.setListener(new RequestListener() {
             @Override
             public void onRequestReady(int requmber) {
-                ph[0] =RequestGetPhoto.getPhoto();
-                Log.d("Photo Title ",ph[0].getTitle());
-            }
-        }).execute(PicsArtConst.Get_PHOTO_URL,"123123123123",PicsArtConst.TOKEN_PREFIX+getAccessToken());
-*/
+                if(requmber==8){
 
+                }
+                if(requmber==9){
 
-     Photo photo = null;
-      String   url = PicsArtConst.Get_PHOTO_URL_PUB + "123123123123"+ PicsArtConst.TOKEN_PREFIX+getAccessToken();
-        PARequest req = new PARequest(Request.Method.GET, url, null, new PARequest.PARequestListener<JSONObject>() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-
-            @Override
-            public void onResponse(Object response) {
-
+                }
             }
         });
 
 
+
+
+        /*PARequest.PARequestListener<JSONObject> listn = null;
+
+
+        Photo photo = null;
+        String url = PicsArtConst.Get_PHOTO_URL + "123123123123" + PicsArtConst.TOKEN_PREFIX + getAccessToken();
+        PARequest req = new PARequest(Request.Method.GET, url, null, listn);
         SingletoneRequestQue.getInstance(getAppContext()).addToRequestQueue(req);
+
+
         req.setRequestListener(new PARequest.PARequestListener<JSONObject>() {
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -357,80 +329,63 @@ public class MainActivity extends Activity implements OnRequestReady {
                     boolean isLiked = (boolean) obj.get(PicsArtConst.paramsPhotoInfo[11]);
                     boolean isReposted = (boolean) obj.get(PicsArtConst.paramsPhotoInfo[12]);
                     String ownerid = (String) obj.get(PicsArtConst.paramsPhotoInfo[13]);
-                    Log.d("Photo Info ",id + ", "+ title+ ", " + created.toString()+", "+ width);
-
-                   // photo = new Photo(id,)
+                    Log.d("Photo Info ", id + ", " + title + ", " + created.toString() + ", " + width);
+                    Photo tmp = new Photo(id, url, title, null, created, isMature, width, height, likesCount, viewsCount, commentsCount, repostsCount, isLiked, isReposted, ownerid, null);
+                    // photo = new Photo(id,)
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                catch (Exception e){e.printStackTrace();}
 
             }
         });
 
+        final User[] user = new User[1];
+        url = PicsArtConst.MY_PROFILE_URL + PicsArtConst.TOKEN_URL_PREFIX + getAccessToken();
 
+        PARequest req2 = new PARequest(Request.Method.GET, url, null, listn);
+        SingletoneRequestQue.getInstance(getAppContext()).addToRequestQueue(req2);
+        req2.setRequestListener(new PARequest.PARequestListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
 
+            }
 
-
-
-
-
-
-       /*new GetUser(new OnRequestReady() {
-           @Override
-           public void onRequestReady(int requmber) {
-
-               Log.d("NAMEEEE on inner", " listener " + GetUser.namee);
-           }
-       }).execute(PicsArtConst.USER_PROFILE_URL,PicsArtConst.TOKEN_URL_PREFIX+token, PicsArtConst.CLIENT_ID);
-        */
-
-    }
-
-
-
-   /* private class GetUser extends AsyncTask<String,String, JSONObject> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-        }
-
-        @Override
-        protected JSONObject doInBackground(String... args) {
-            GetAccessToken jParser = new GetAccessToken();
-            JSONObject json = jParser.getUserObject("http://stage.i.picsart.com/api/users/show/me.json?token=", token, CLIENT_ID);
-            return json;
-
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject json) {
-            if (json != null) {
+            @Override
+            public void onResponse(Object respon) {
                 try {
+                    JSONObject response = (JSONObject) respon;
+                    // userProfileRessult[0] = new ObjectMapper().readValue(response.toString(), HashMap.class);
 
-                    String name = json.getString("name");
-                    String username = json.getString("username");
-                    String photo = json.getString("photo");
-                    Toast.makeText(getApplicationContext(), " " + name + "\n" + username + "\n" + photo, Toast.LENGTH_LONG).show();
+                    String id = String.valueOf(response.getString(PicsArtConst.paramsUserProfile[2]));
+                    String name = (String) response.get(PicsArtConst.paramsUserProfile[1]);
+                    String username = (String) response.get(PicsArtConst.paramsUserProfile[0]);
+                             /* //String     photo = (String)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[7]);
+                                //cover = (String)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[19]);
+                                followingCount = (int)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[12]);
+                                followersCownt = (int)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[20]);
+                                likesCount = (int)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[8]);
+                                photosCount = (int)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[6]);
+                                //location = (Location)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[9]);
 
-                } catch (JSONException e) {
+                    user[0] = new User(id);
+                    final UserController[] usc = new UserController[2];
+                    usc[0] = new UserController(getAppContext());
+                    usc[0].getUserPhotos(user[0], 5, 0);
+                    usc[0].setListener(new RequestListener() {
+                        @Override
+                        public void onRequestReady(int requmber) {
+                            Log.d("URLSSSS", usc[0].getPhotoUrl().toString());
+                        }
+                    });
 
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
 
             }
-        }
-    }*/
+        });*/
 
-
-    private class JsonPErsister extends JSONObject{
-        JSONObject myobj;
-
-        public JsonPErsister(JSONObject obj){myobj=obj;}
     }
+
 }
-
-
-
-
-

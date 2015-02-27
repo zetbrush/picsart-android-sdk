@@ -3,9 +3,7 @@ package pArtapibeta;
 import java.net.URL;
 import java.util.Date;
 
-/**
- * Created by Arman on 2/23/15.
- */
+
 public class Photo {
 
     private String id;
@@ -60,7 +58,7 @@ public class Photo {
         //this.height = height;
         //this.likesCount = likesCount;
         //this.viewsCount = viewsCount;
-       // this.commentsCount = commentsCount;
+        //this.commentsCount = commentsCount;
         //this.repostsCount = repostsCount;
         //this.isLiked = isLiked;
         //this.isReposted = isReposted;

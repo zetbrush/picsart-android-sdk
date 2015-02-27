@@ -16,31 +16,23 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 
-/**
- * Created by Arman on 2/24/15.
- */
 
+public class PARequest extends JsonObjectRequest {
 
-public class PARequest extends JsonObjectRequest{
+    PARequest mLoadingOperation;
+    Looper mLooper;
+    JSONObject mResponse;
+    Object response;
+    PARequestListener requestListener;
 
- PARequest mLoadingOperation;
- Looper mLooper;
- JSONObject mResponse;
- Object response;
- PARequestListener requestListener;
-
-
-    public PARequest(int method, String url, JSONObject jsonRequest, PARequestListener listener ) {
+    public PARequest(int method, String url, JSONObject jsonRequest, PARequestListener listener) {
 
         super(method, url, jsonRequest, listener, listener);
     }
 
-
     public void setRequestListener(PARequestListener listener) {
         this.requestListener = listener;
     }
-
-
 
     public void start() {
         if (mLoadingOperation == null) {
@@ -64,6 +56,7 @@ public class PARequest extends JsonObjectRequest{
             new Handler(mLooper).post(block);
         }
     }
+
     private void runOnMainLooper(Runnable block) {
 
         new Handler(Looper.getMainLooper()).post(block);
@@ -74,7 +67,7 @@ public class PARequest extends JsonObjectRequest{
         try {
             String jsonString =
                     new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-            this.mResponse=new JSONObject(jsonString);
+            this.mResponse = new JSONObject(jsonString);
             this.requestListener.onResponse(mResponse);
             return Response.success(new JSONObject(jsonString), HttpHeaderParser.parseCacheHeaders(response));
         } catch (UnsupportedEncodingException e) {
@@ -85,14 +78,7 @@ public class PARequest extends JsonObjectRequest{
 
     }
 
-
-
-
-
-
-
     public static abstract class PARequestListener<T> implements Response.Listener, Response.ErrorListener {
-
 
     }
 }
