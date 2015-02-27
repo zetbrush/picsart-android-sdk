@@ -1,27 +1,10 @@
 package pArtapibeta;
 
-import android.util.Log;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONObject;
-
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Observable;
-import java.util.Observer;
 
 import test.api.picsart.com.picsart_api_test.PicsArtConst;
 
-/**
- * Created by Arman on 2/19/15.
- */
+
 public class User {
     private String id;
     private String name;
@@ -38,18 +21,19 @@ public class User {
 
     //String url = PicsArtConst.MY_PROFILE_URL+PicsArtConst.TOKEN_URL_PREFIX+MainActivity.getAccessToken();
 
-    public User( ){
-
+    public User() {
 
     }
 
-    public User(String id){
+    public User(String id) {
+
         this.id = id;
 
     }
 
 
     public void parseFrom(String id, String name, String username, String photo, String cover, Tag[] tags, int followingCount, int followersCownt, int likesCount, int photosCount, Location location, String[] followers) {
+
         this.id = id;
         this.name = name;
         this.username = username;
@@ -62,28 +46,29 @@ public class User {
         this.photosCount = photosCount;
         this.location = location;
         this.followers = followers;
+
     }
 
 
+    public void parseFrom(Object o) {
 
-
-    public void parseFrom(Object o){
         try {
             JSONObject jobj = (JSONObject) o;
 
             id = String.valueOf(jobj.getString(PicsArtConst.paramsUserProfile[2]));
-            name =  jobj.getString(PicsArtConst.paramsUserProfile[1]);
-            username =  jobj.getString(PicsArtConst.paramsUserProfile[0]);
-            photo =  jobj.getString(PicsArtConst.paramsUserProfile[7]);
+            name = jobj.getString(PicsArtConst.paramsUserProfile[1]);
+            username = jobj.getString(PicsArtConst.paramsUserProfile[0]);
+            photo = jobj.getString(PicsArtConst.paramsUserProfile[7]);
             //  cover = (String)jobj.get(PicsArtConst.paramsUserProfile[19]);
-            followingCount =  jobj.getInt(PicsArtConst.paramsUserProfile[12]);
-            followersCownt =  jobj.getInt(PicsArtConst.paramsUserProfile[20]);
-            likesCount =  jobj.getInt(PicsArtConst.paramsUserProfile[8]);
-            photosCount =  jobj.getInt(PicsArtConst.paramsUserProfile[6]);
+            followingCount = jobj.getInt(PicsArtConst.paramsUserProfile[12]);
+            followersCownt = jobj.getInt(PicsArtConst.paramsUserProfile[20]);
+            likesCount = jobj.getInt(PicsArtConst.paramsUserProfile[8]);
+            photosCount = jobj.getInt(PicsArtConst.paramsUserProfile[6]);
             //location = (Location)jobj.get(PicsArtConst.paramsUserProfile[9]);
 
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        catch (Exception e){e.printStackTrace();}
     }
 
 
@@ -194,8 +179,5 @@ public class User {
     public void setLocation(Location location) {
         this.location = location;
     }
-
-
-
 
 }

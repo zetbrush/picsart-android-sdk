@@ -1,9 +1,5 @@
 package pArtapibeta;
 
-/**
- * Created by Arman on 2/19/15.
- */
-
 
 public class Location {
     String street;
@@ -11,9 +7,13 @@ public class Location {
     String state;
     String zip;
     String country;
-    String coordinates;
+    String [] coordinates;
 
-    public Location(String str, String cit, String stat, String zip, String country, String coord){
+    public Location(){
+
+    }
+
+    public Location(String str, String cit, String stat, String zip, String country, String [] coord){
         this.street=str;
         this.city = cit;
         this.state = stat;

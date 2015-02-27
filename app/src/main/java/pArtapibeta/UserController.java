@@ -1,26 +1,20 @@
 package pArtapibeta;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -28,13 +22,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
 
 import test.api.picsart.com.picsart_api_test.PicsArtConst;
 
@@ -43,6 +38,7 @@ public class UserController {
     public static final String MY_LOGS = "My_Logs";
     Context ctx;
     pArtapibeta.RequestListener listener;
+
 
     private String[] photoUrl;
     private ArrayList<String> userFollowing;
@@ -62,15 +58,33 @@ public class UserController {
     }
 
 
-
     public String[] getPhotoUrl() {
         return photoUrl;
-
     }
 
+    public ArrayList<String> getUserFollowing() {
+        return userFollowing;
+    }
 
+    public ArrayList<String> getUserFollowers() {
+        return userFollowers;
+    }
 
+    public ArrayList<String> getUserLikedPhotos() {
+        return userLikedPhotos;
+    }
 
+    public ArrayList<Tag> getUserTags() {
+        return userTags;
+    }
+
+    public ArrayList<Place> getUserPlaces() {
+        return userPlaces;
+    }
+
+    public ArrayList<User> getBlockedUsers() {
+        return blockedUsers;
+    }
 
 
     public void requestBlockedUsers(User user, int limit, int offset) {
@@ -301,13 +315,20 @@ public class UserController {
 
     public void blockUserWithID(String userId, String blockingId) {
 
-        assert this.listener != null;
+        /*assert this.listener != null;
         String url = PicsArtConst.BLOCK_USER_WITH_ID + "blocks?token=" + MainActivity.getAccessToken();
-        PARequest req = new PARequest(Request.Method.POST, url, null, null);
-        /*try {
-            req.getHeaders().put("block_id", "161263489000102");
-        } catch (AuthFailureError authFailureError) {
-           */
+        PARequest req = new PARequest(Request.Method.POST, url, null, null) {
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("block_id", "161263489000102");
+                return params;
+            }
+
+
+        };
+
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
@@ -321,16 +342,19 @@ public class UserController {
 
                 UserController.this.listener.onRequestReady(11);
             }
-        });
+        });*/
 
         //160573178000102
         //161263489000102
-        //new BlockUserAsyncTask().execute();
 
-        //gagaoooooo
+        new BlockUserAsyncTask().execute();
     }
 
-    /*class BlockUserAsyncTask extends AsyncTask<Void, Void, Void> {
+    class BlockUserAsyncTask extends AsyncTask<Void, Void, Void> {
+
+        InputStream is;
+        JSONObject jObj;
+        String json;
 
         @Override
         protected void onPreExecute() {
@@ -345,8 +369,8 @@ public class UserController {
 
             try {
 
-                httpClient = new DefaultHttpClient();
-                httpPost = new HttpPost(BLOCK_USER_WITH_ID + ACCESS_TOKEN);
+                HttpClient httpClient = new DefaultHttpClient();
+                HttpPost httpPost = new HttpPost(PicsArtConst.BLOCK_USER_WITH_ID + "blocks?token=" + MainActivity.getAccessToken());
                 httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                 HttpResponse httpResponse = httpClient.execute(httpPost);
                 HttpEntity httpEntity = httpResponse.getEntity();
@@ -389,16 +413,22 @@ public class UserController {
         @Override
         protected void onPostExecute(Void result) {
             Log.d("gagagagagagagagag", "json send:   " + json);
+            UserController.this.listener.onRequestReady(12);
+
         }
-    }*/
+    }
 
 
-    /*public void followUserWithID(int id) {
+    public void followUserWithID(int id) {
 
         new FollowUserAsyncTask().execute();
     }
 
     class FollowUserAsyncTask extends AsyncTask<Void, Void, Void> {
+
+        InputStream is;
+        JSONObject jObj;
+        String json;
 
         @Override
         protected void onPreExecute() {
@@ -413,8 +443,8 @@ public class UserController {
 
             try {
 
-                httpClient = new DefaultHttpClient();
-                httpPost = new HttpPost(FOLLOW_USER_WITH_ID + ACCESS_TOKEN);
+                HttpClient httpClient = new DefaultHttpClient();
+                HttpPost httpPost = new HttpPost(PicsArtConst.FOLLOW_USER_WITH_ID + MainActivity.getAccessToken());
                 httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                 HttpResponse httpResponse = httpClient.execute(httpPost);
                 HttpEntity httpEntity = httpResponse.getEntity();
@@ -458,15 +488,19 @@ public class UserController {
         protected void onPostExecute(Void result) {
             Log.d("gagagagagagagagag", "json send:   " + json);
         }
-    }*/
+    }
 
 
-    /*public void unblockUserWithID() {
+    public void unblockUserWithID() {
 
         new UnblockUserAsyncTask().execute();
     }
 
     class UnblockUserAsyncTask extends AsyncTask<Void, Void, Void> {
+
+        InputStream is;
+        JSONObject jObj;
+        String json;
 
         @Override
         protected void onPreExecute() {
@@ -477,8 +511,8 @@ public class UserController {
 
             try {
 
-                httpClient = new DefaultHttpClient();
-                HttpDelete httpDelete = new HttpDelete(UNBLOCK_USER_WITH_ID + ACCESS_TOKEN);
+                HttpClient httpClient = new DefaultHttpClient();
+                HttpDelete httpDelete = new HttpDelete(PicsArtConst.UNBLOCK_USER_WITH_ID + MainActivity.getAccessToken());
                 HttpResponse httpResponse = httpClient.execute(httpDelete);
                 HttpEntity httpEntity = httpResponse.getEntity();
                 is = httpEntity.getContent();
@@ -521,16 +555,20 @@ public class UserController {
         protected void onPostExecute(Void result) {
             Log.d(MY_LOGS, "json send:   " + json);
         }
-    }*/
+    }
 
 
-    /*public void uploadUserCover() {
+    public void uploadUserCover() {
 
         new UploadCoverAsyncTask().execute();
 
     }
 
     class UploadCoverAsyncTask extends AsyncTask<Void, Void, Void> {
+
+        InputStream is;
+        JSONObject jObj;
+        String json;
 
         @Override
         protected void onPreExecute() {
@@ -539,7 +577,7 @@ public class UserController {
         @Override
         protected Void doInBackground(Void... text) {
 
-           *//**//* Bitmap bitmap = Bitmap.createBitmap(6,6,Bitmap.Config.RGB_565);
+           /*//**//* Bitmap bitmap = Bitmap.createBitmap(6,6,Bitmap.Config.RGB_565);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream); //compress to which format you want.
             byte [] byte_arr = stream.toByteArray();
@@ -606,7 +644,7 @@ public class UserController {
                 jObj = new JSONObject(json);
             } catch (JSONException e) {
                 Log.e("JSON Parser", "Error parsing data " + e.toString());
-            }
+            }*/
             return null;
         }
 
@@ -617,9 +655,4 @@ public class UserController {
     }
 
 
-
-
-    public void uploadUserAvatar() {
-
-    }*/
 }

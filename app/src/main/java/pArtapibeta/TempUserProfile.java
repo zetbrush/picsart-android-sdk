@@ -14,20 +14,18 @@ import java.util.HashMap;
 
 import test.api.picsart.com.picsart_api_test.PicsArtConst;
 
-/**
- * Created by intern on 2/13/15.
- */
+
 public class TempUserProfile {
-    static  HashMap<String, Object> userProfileRessult = null;
-    static  StringBuilder str = new StringBuilder();
+    static HashMap<String, Object> userProfileRessult = null;
+    static StringBuilder str = new StringBuilder();
     final JSONObject[] jobj = new JSONObject[1];
 
-    final String url = PicsArtConst.USE_PROFILE_URL+PicsArtConst.TOKEN_URL_PREFIX+MainActivity.getAccessToken();
+    final String url = PicsArtConst.USE_PROFILE_URL + PicsArtConst.TOKEN_URL_PREFIX + MainActivity.getAccessToken();
 
     // RequestQueue qeue = Volley.newRequestQueue();
     // prepare the Request
 
-    public JsonObjectRequest makeRequest (){
+    public JsonObjectRequest makeRequest() {
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -37,8 +35,8 @@ public class TempUserProfile {
 
                         try {
                             userProfileRessult = new ObjectMapper().readValue(response.toString(), HashMap.class);
-                            for(int i =0; i< TempUserProfile.userProfileRessult.size() && i< 13;i++){
-                                str.append("\n"+PicsArtConst.paramsUserProfile[i]+"   "+ TempUserProfile.userProfileRessult.get(PicsArtConst.paramsUserProfile[i]));
+                            for (int i = 0; i < TempUserProfile.userProfileRessult.size() && i < 13; i++) {
+                                str.append("\n" + PicsArtConst.paramsUserProfile[i] + "   " + TempUserProfile.userProfileRessult.get(PicsArtConst.paramsUserProfile[i]));
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -61,12 +59,12 @@ public class TempUserProfile {
     }
 
 
-    public static HashMap<String,Object> getUserProfileRessult(){
+    public static HashMap<String, Object> getUserProfileRessult() {
 
         return userProfileRessult;
     }
 
-    public static StringBuilder getAsString(){
+    public static StringBuilder getAsString() {
 
         return TempUserProfile.str;
     }

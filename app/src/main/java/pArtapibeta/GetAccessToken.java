@@ -90,7 +90,4 @@ public class GetAccessToken {
         // Return JSON String
         return jObj;
     }
-
-
-    
 }

@@ -251,10 +251,7 @@ public class MainActivity extends Activity implements RequestListener {
                         Toast.LENGTH_SHORT).show();
                 pDialog.dismiss();
             }
-
-
         }
-
     }
 
 
@@ -264,7 +261,6 @@ public class MainActivity extends Activity implements RequestListener {
         if (reqnumber == 1) {
             Log.d("MainListener", "reqnumber= " + reqnumber);
         }
-
     }
 
 
@@ -288,104 +284,5 @@ public class MainActivity extends Activity implements RequestListener {
                 }
             }
         });
-
-
-
-
-        /*PARequest.PARequestListener<JSONObject> listn = null;
-
-
-        Photo photo = null;
-        String url = PicsArtConst.Get_PHOTO_URL + "123123123123" + PicsArtConst.TOKEN_PREFIX + getAccessToken();
-        PARequest req = new PARequest(Request.Method.GET, url, null, listn);
-        SingletoneRequestQue.getInstance(getAppContext()).addToRequestQueue(req);
-
-
-        req.setRequestListener(new PARequest.PARequestListener<JSONObject>() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("Photo Info ", error.toString());
-            }
-
-            @Override
-            public void onResponse(Object response) {
-
-                try {
-                    Log.d("Photo Info ", "   1 HEREEEEE");
-                    JSONObject obj = (JSONObject) response;
-                    Log.d("Photo Info ", "    2 HEREEEEE");
-                    String id = obj.getString(PicsArtConst.paramsPhotoInfo[0]);
-                    URL url = (URL) obj.get(PicsArtConst.paramsPhotoInfo[1]);
-                    String title = (String) obj.get(PicsArtConst.paramsPhotoInfo[2]);
-                    //  Tag tags = (Tag)response.get(PicsArtConst.paramsPhotoInfo[22]);
-                    Date created = (Date) obj.get(PicsArtConst.paramsPhotoInfo[3]);
-                    boolean isMature = (boolean) obj.get(PicsArtConst.paramsPhotoInfo[4]);
-                    int width = (int) obj.get(PicsArtConst.paramsPhotoInfo[5]);
-                    int height = (int) obj.get(PicsArtConst.paramsPhotoInfo[6]);
-                    int likesCount = (int) obj.get(PicsArtConst.paramsPhotoInfo[7]);
-                    int viewsCount = (int) obj.get(PicsArtConst.paramsPhotoInfo[8]);
-                    int commentsCount = (int) obj.get(PicsArtConst.paramsPhotoInfo[9]);
-                    int repostsCount = (int) obj.get(PicsArtConst.paramsPhotoInfo[10]);
-                    boolean isLiked = (boolean) obj.get(PicsArtConst.paramsPhotoInfo[11]);
-                    boolean isReposted = (boolean) obj.get(PicsArtConst.paramsPhotoInfo[12]);
-                    String ownerid = (String) obj.get(PicsArtConst.paramsPhotoInfo[13]);
-                    Log.d("Photo Info ", id + ", " + title + ", " + created.toString() + ", " + width);
-                    Photo tmp = new Photo(id, url, title, null, created, isMature, width, height, likesCount, viewsCount, commentsCount, repostsCount, isLiked, isReposted, ownerid, null);
-                    // photo = new Photo(id,)
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-        });
-
-        final User[] user = new User[1];
-        url = PicsArtConst.MY_PROFILE_URL + PicsArtConst.TOKEN_URL_PREFIX + getAccessToken();
-
-        PARequest req2 = new PARequest(Request.Method.GET, url, null, listn);
-        SingletoneRequestQue.getInstance(getAppContext()).addToRequestQueue(req2);
-        req2.setRequestListener(new PARequest.PARequestListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-
-            @Override
-            public void onResponse(Object respon) {
-                try {
-                    JSONObject response = (JSONObject) respon;
-                    // userProfileRessult[0] = new ObjectMapper().readValue(response.toString(), HashMap.class);
-
-                    String id = String.valueOf(response.getString(PicsArtConst.paramsUserProfile[2]));
-                    String name = (String) response.get(PicsArtConst.paramsUserProfile[1]);
-                    String username = (String) response.get(PicsArtConst.paramsUserProfile[0]);
-                             /* //String     photo = (String)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[7]);
-                                //cover = (String)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[19]);
-                                followingCount = (int)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[12]);
-                                followersCownt = (int)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[20]);
-                                likesCount = (int)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[8]);
-                                photosCount = (int)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[6]);
-                                //location = (Location)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[9]);
-
-                    user[0] = new User(id);
-                    final UserController[] usc = new UserController[2];
-                    usc[0] = new UserController(getAppContext());
-                    usc[0].getUserPhotos(user[0], 5, 0);
-                    usc[0].setListener(new RequestListener() {
-                        @Override
-                        public void onRequestReady(int requmber) {
-                            Log.d("URLSSSS", usc[0].getPhotoUrl().toString());
-                        }
-                    });
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
-            }
-        });*/
-
     }
-
 }
