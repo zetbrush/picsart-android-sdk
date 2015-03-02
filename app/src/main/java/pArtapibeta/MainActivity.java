@@ -76,8 +76,6 @@ public class MainActivity extends Activity implements RequestListener {
             public void onClick(View view) {
                 authDialog = new Dialog(MainActivity.this);
                 authDialog.setContentView(R.layout.auth_dialog);
-                // alert.setContentView(R.layout.auth_dialog);
-
                 web = (WebView) authDialog.findViewById(R.id.webv);
                 web.getSettings().setJavaScriptEnabled(true);
                 web.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
@@ -145,11 +143,8 @@ public class MainActivity extends Activity implements RequestListener {
                             Toast.makeText(getApplicationContext(),
                                     "Error Occured", Toast.LENGTH_SHORT).show();
 
-
                         }
-
                     }
-
                 });
 
                 String authURL = PicsArtConst.OAUTH_URL + "?redirect_uri=" + PicsArtConst.REDIRECT_URI + "&response_type=code&client_id=" + PicsArtConst.CLIENT_ID;
@@ -161,9 +156,7 @@ public class MainActivity extends Activity implements RequestListener {
                 authDialog.setTitle("Authorize PicsArt");
                 authDialog.setCancelable(true);
             }
-
         });
-
     }
 
     final Context myApp = this;
@@ -263,23 +256,29 @@ public class MainActivity extends Activity implements RequestListener {
         }
     }
 
-
     public void onTestCallClick(View v) {
 
-        UserController userController=new UserController(getApplicationContext());
+        final UserController userController = new UserController(getApplicationContext());
         //userController.requestUserFollowers("161436357000102",0,0);
         //userController.requestUserFollowing("161436357000102",0,0);
         //userController.requestLikedPhotos("161436357000102",0,0);
         //userController.requestBlockedUsers("161436357000102",0,0);
 
-        userController.blockUserWithID("161436357000102","161436357000102");
+        //userController.followUserWithID("160573178000102");
+        //userController.unblockUserWithID("161263489000102");
+        //userController.blockUserWithID("161263489000102");
+        //userController.requestUser("160573178000102");
+
+        userController.uploadUserCover();
+
         userController.setListener(new RequestListener() {
             @Override
             public void onRequestReady(int requmber) {
-                if(requmber==8){
+                if (requmber == 4) {
 
+                    userController.getUser().getName();
                 }
-                if(requmber==9){
+                if (requmber == 9) {
 
                 }
             }

@@ -1,11 +1,14 @@
 package pArtapibeta;
 
+import android.util.Log;
+
 import org.json.JSONObject;
 
 import test.api.picsart.com.picsart_api_test.PicsArtConst;
 
 
 public class User {
+
     private String id;
     private String name;
     private String username;
@@ -19,18 +22,36 @@ public class User {
     private Location location;
     private String[] followers;
 
-    //String url = PicsArtConst.MY_PROFILE_URL+PicsArtConst.TOKEN_URL_PREFIX+MainActivity.getAccessToken();
 
     public User() {
-
     }
 
     public User(String id) {
-
         this.id = id;
-
     }
 
+
+    public void parseFrom(Object o) {
+
+        try {
+
+            JSONObject jobj = (JSONObject) o;
+
+            id = String.valueOf(jobj.getString(PicsArtConst.paramsUserProfile[2]));
+            name = jobj.getString(PicsArtConst.paramsUserProfile[1]);
+            username = jobj.getString(PicsArtConst.paramsUserProfile[0]);
+            photo = jobj.getString(PicsArtConst.paramsUserProfile[7]);
+            //  cover = (String)jobj.get(PicsArtConst.paramsUserProfile[19]);
+            followingCount = jobj.getInt(PicsArtConst.paramsUserProfile[12]);
+            followersCownt = jobj.getInt(PicsArtConst.paramsUserProfile[20]);
+            likesCount = jobj.getInt(PicsArtConst.paramsUserProfile[8]);
+            photosCount = jobj.getInt(PicsArtConst.paramsUserProfile[6]);
+            //location = (Location)jobj.get(PicsArtConst.paramsUserProfile[9]);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public void parseFrom(String id, String name, String username, String photo, String cover, Tag[] tags, int followingCount, int followersCownt, int likesCount, int photosCount, Location location, String[] followers) {
 
@@ -50,40 +71,6 @@ public class User {
     }
 
 
-    public void parseFrom(Object o) {
-
-        try {
-            JSONObject jobj = (JSONObject) o;
-
-            id = String.valueOf(jobj.getString(PicsArtConst.paramsUserProfile[2]));
-            name = jobj.getString(PicsArtConst.paramsUserProfile[1]);
-            username = jobj.getString(PicsArtConst.paramsUserProfile[0]);
-            photo = jobj.getString(PicsArtConst.paramsUserProfile[7]);
-            //  cover = (String)jobj.get(PicsArtConst.paramsUserProfile[19]);
-            followingCount = jobj.getInt(PicsArtConst.paramsUserProfile[12]);
-            followersCownt = jobj.getInt(PicsArtConst.paramsUserProfile[20]);
-            likesCount = jobj.getInt(PicsArtConst.paramsUserProfile[8]);
-            photosCount = jobj.getInt(PicsArtConst.paramsUserProfile[6]);
-            //location = (Location)jobj.get(PicsArtConst.paramsUserProfile[9]);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    // url = PicsArtConst.USE_PROFILE_URL+id+PicsArtConst.TOKEN_URL_PREFIX+MainActivity.getAccessToken();;
-
-                           /* try {
-                                userProfileRessult[0] = new ObjectMapper().readValue(response.toString(), HashMap.class);
-
-
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }*/
-
-
     public String[] getFollowers() {
         return followers;
     }
@@ -101,6 +88,7 @@ public class User {
     }
 
     public String getName() {
+        Log.d("bababababababab", name);
         return name;
     }
 

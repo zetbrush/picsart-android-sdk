@@ -62,7 +62,13 @@ public abstract class JsonRequest<T> extends Request<T> {
 
     @Override
     protected void deliverResponse(T response) {
-        mListener.onResponse(response);
+
+        try {
+            mListener.onResponse(response);
+        } catch (Exception e) {
+           // e.printStackTrace();
+        }
+
     }
 
     @Override

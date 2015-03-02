@@ -1,7 +1,12 @@
 package pArtapibeta;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Environment;
+import android.os.Looper;
+import android.util.Base64;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -15,6 +20,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -22,6 +29,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -35,11 +45,13 @@ import test.api.picsart.com.picsart_api_test.PicsArtConst;
 
 public class UserController {
 
+
     public static final String MY_LOGS = "My_Logs";
-    Context ctx;
-    pArtapibeta.RequestListener listener;
 
+    private Context ctx;
+    private pArtapibeta.RequestListener listener;
 
+    private User user;
     private String[] photoUrl;
     private ArrayList<String> userFollowing;
     private ArrayList<String> userFollowers;
@@ -57,6 +69,10 @@ public class UserController {
         this.listener = listener;
     }
 
+
+    public User getUser() {
+        return user;
+    }
 
     public String[] getPhotoUrl() {
         return photoUrl;
@@ -87,11 +103,57 @@ public class UserController {
     }
 
 
+    public void requestUser() {
+
+        assert this.listener != null;
+        String url = PicsArtConst.SHOW_USER_URL + "me?token=" + MainActivity.getAccessToken();
+        PARequest req = new PARequest(Request.Method.GET, url, null, null);
+        SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
+        req.setRequestListener(new PARequest.PARequestListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+
+            @Override
+            public void onResponse(Object response) {
+                Log.d(MY_LOGS, response.toString());
+                user = new User();
+                user.parseFrom(response);
+                UserController.this.listener.onRequestReady(5);
+            }
+        });
+
+    }
+
+    public void requestUser(String id) {     //    3
+
+        assert this.listener != null;
+        String url = PicsArtConst.SHOW_USER_URL + id + "?token=" + MainActivity.getAccessToken();
+        PARequest req = new PARequest(Request.Method.GET, url, null, null);
+        SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
+        req.setRequestListener(new PARequest.PARequestListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+
+            @Override
+            public void onResponse(Object response) {
+                Log.d(MY_LOGS, response.toString());
+                user = new User();
+                user.parseFrom(response);
+                UserController.this.listener.onRequestReady(3);
+            }
+        });
+    }
+
+
     public void requestBlockedUsers(User user, int limit, int offset) {
         requestBlockedUsers(user.getId(), limit, offset);
     }
 
-    public void requestBlockedUsers(String userId, int limit, int offset) {
+    public void requestBlockedUsers(String userId, int limit, int offset) {    //   4
 
         blockedUsers = new ArrayList<>();
 
@@ -108,7 +170,7 @@ public class UserController {
             @Override
             public void onResponse(Object response) {
                 Log.d(MY_LOGS, response.toString());
-                UserController.this.listener.onRequestReady(6);
+                UserController.this.listener.onRequestReady(4);
 
             }
         });
@@ -120,7 +182,7 @@ public class UserController {
         requestPlaces(user.getId(), limit, offset);
     }
 
-    public void requestPlaces(String userId, int limit, int offset) {
+    public void requestPlaces(String userId, int limit, int offset) {    //  5
 
         userPlaces = new ArrayList<>();
 
@@ -137,7 +199,7 @@ public class UserController {
             @Override
             public void onResponse(Object response) {
                 Log.d(MY_LOGS, response.toString());
-                UserController.this.listener.onRequestReady(6);
+                UserController.this.listener.onRequestReady(5);
             }
         });
     }
@@ -147,7 +209,7 @@ public class UserController {
         requestTags(user.getId(), limit, offset);
     }
 
-    public void requestTags(String userId, int limit, int offset) {
+    public void requestTags(String userId, int limit, int offset) {    // 6
 
         userTags = new ArrayList<>();
 
@@ -176,7 +238,7 @@ public class UserController {
 
     }
 
-    public void requestUserPhotos(String userId, int limit, int offset) {
+    public void requestUserPhotos(String userId, int limit, int offset) {    //  7
 
         photoUrl = new String[limit];
 
@@ -214,7 +276,7 @@ public class UserController {
         requestUserFollowers(user.getId(), limit, offset);
     }
 
-    public void requestUserFollowers(String userId, int limit, int offset) {
+    public void requestUserFollowers(String userId, int limit, int offset) {    //   8
 
         userFollowers = new ArrayList<>();
 
@@ -252,7 +314,7 @@ public class UserController {
         requestUserFollowing(user.getId(), limit, offset);
     }
 
-    public void requestUserFollowing(String userId, int limit, int offset) {
+    public void requestUserFollowing(String userId, int limit, int offset) {    //   9
 
         userFollowing = new ArrayList<>();
 
@@ -290,7 +352,7 @@ public class UserController {
         requestLikedPhotos(user.getId(), limit, offset);
     }
 
-    public void requestLikedPhotos(String userId, int limit, int offset) {
+    public void requestLikedPhotos(String userId, int limit, int offset) {    //   10
 
         userLikedPhotos = new ArrayList<>();
 
@@ -313,7 +375,7 @@ public class UserController {
     }
 
 
-    public void blockUserWithID(String userId, String blockingId) {
+    public void blockUserWithID(String id) {
 
         /*assert this.listener != null;
         String url = PicsArtConst.BLOCK_USER_WITH_ID + "blocks?token=" + MainActivity.getAccessToken();
@@ -347,10 +409,10 @@ public class UserController {
         //160573178000102
         //161263489000102
 
-        new BlockUserAsyncTask().execute();
+        new BlockUserAsyncTask().execute(id);
     }
 
-    class BlockUserAsyncTask extends AsyncTask<Void, Void, Void> {
+    class BlockUserAsyncTask extends AsyncTask<String, Void, Void> {
 
         InputStream is;
         JSONObject jObj;
@@ -361,11 +423,13 @@ public class UserController {
         }
 
         @Override
-        protected Void doInBackground(Void... text) {
+        protected Void doInBackground(String... id) {
+
+            //161263489000102
 
             ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 
-            nameValuePairs.add(new BasicNameValuePair("block_id", "161263489000102"));
+            nameValuePairs.add(new BasicNameValuePair("block_id", id[0]));
 
             try {
 
@@ -419,12 +483,12 @@ public class UserController {
     }
 
 
-    public void followUserWithID(int id) {
+    public void followUserWithID(String id) {
 
-        new FollowUserAsyncTask().execute();
+        new FollowUserAsyncTask().execute(id);
     }
 
-    class FollowUserAsyncTask extends AsyncTask<Void, Void, Void> {
+    class FollowUserAsyncTask extends AsyncTask<String, Void, Void> {
 
         InputStream is;
         JSONObject jObj;
@@ -435,11 +499,11 @@ public class UserController {
         }
 
         @Override
-        protected Void doInBackground(Void... text) {
+        protected Void doInBackground(String... id) {
 
             ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 
-            nameValuePairs.add(new BasicNameValuePair("following_id", "160573178000102"));
+            nameValuePairs.add(new BasicNameValuePair("following_id", id[0]));
 
             try {
 
@@ -491,12 +555,12 @@ public class UserController {
     }
 
 
-    public void unblockUserWithID() {
+    public void unblockUserWithID(String id) {
 
-        new UnblockUserAsyncTask().execute();
+        new UnblockUserAsyncTask().execute(id);
     }
 
-    class UnblockUserAsyncTask extends AsyncTask<Void, Void, Void> {
+    class UnblockUserAsyncTask extends AsyncTask<String, Void, Void> {
 
         InputStream is;
         JSONObject jObj;
@@ -507,12 +571,15 @@ public class UserController {
         }
 
         @Override
-        protected Void doInBackground(Void... text) {
+        protected Void doInBackground(String... id) {
 
             try {
 
+
+                //161263489000102
+
                 HttpClient httpClient = new DefaultHttpClient();
-                HttpDelete httpDelete = new HttpDelete(PicsArtConst.UNBLOCK_USER_WITH_ID + MainActivity.getAccessToken());
+                HttpDelete httpDelete = new HttpDelete(PicsArtConst.UNBLOCK_USER_WITH_ID + id[0] + "?token=" + MainActivity.getAccessToken());
                 HttpResponse httpResponse = httpClient.execute(httpDelete);
                 HttpEntity httpEntity = httpResponse.getEntity();
                 is = httpEntity.getContent();
@@ -560,6 +627,7 @@ public class UserController {
 
     public void uploadUserCover() {
 
+        //API Key    cd371244-3887-405b-82d1-7aadcb2617b9
         new UploadCoverAsyncTask().execute();
 
     }
@@ -577,42 +645,20 @@ public class UserController {
         @Override
         protected Void doInBackground(Void... text) {
 
-           /*//**//* Bitmap bitmap = Bitmap.createBitmap(6,6,Bitmap.Config.RGB_565);
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream); //compress to which format you want.
-            byte [] byte_arr = stream.toByteArray();
-            String image_str = String.valueOf(Base64.encode(byte_arr, Base64.NO_WRAP));
-            ArrayList<NameValuePair> nameValuePairs = new  ArrayList<NameValuePair>();
-
-            nameValuePairs.add(new BasicNameValuePair("image",image_str));
-
-            try{
-                HttpClient httpclient = new DefaultHttpClient();
-                HttpPost httppost = new HttpPost("http://stage.i.picsart.com/api/users/cover/add.json?token=tMQdLWML0kspa8qQDvWyzm235Id2Cv9ypicsart11VNuSx6BNk4cMX7VH");
-                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-                HttpResponse response = httpclient.execute(httppost);
-                String the_string_response = convertResponseToString(response);
-                Looper.loop();
-                Log.d("gagagagagagaggg", "Response " + the_string_response);
-            }catch(Exception e){
-                  Log.d("gagagagagagaGGA","ERROR " + e.getMessage());
-                  System.out.println("Error in http connection "+e.toString());
-            }*//**//*
-
-
+            Bitmap bm = Bitmap.createBitmap(10, 10, Bitmap.Config.RGB_565);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            Bitmap compare = Bitmap.createBitmap(6, 6, Bitmap.Config.RGB_565);
-            compare.eraseColor(Color.GRAY);
-            compare.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-            byte[] imageBytes = baos.toByteArray();
+            bm.compress(Bitmap.CompressFormat.JPEG, 40, baos);
+            byte[] byteImage_photo = baos.toByteArray();
+            String encodedImage = Base64.encodeToString(byteImage_photo, Base64.DEFAULT);
 
-            be = new ByteArrayEntity(imageBytes);
+            ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+            nameValuePairs.add(new BasicNameValuePair("file", encodedImage));
 
             try {
 
-                httpClient = new DefaultHttpClient();
-                httpPost = new HttpPost("http://stage.i.picsart.com/api/users/cover/add.json?token=tMQdLWML0kspa8qQDvWyzm235Id2Cv9ypicsart11VNuSx6BNk4cMX7VH");
-                httpPost.setEntity(be);
+                HttpClient httpClient = new DefaultHttpClient();
+                HttpPost httpPost = new HttpPost("https://api.picsart.com/users/cover/add.json?key=cd371244-3887-405b-82d1-7aadcb2617b9");
+                httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                 HttpResponse httpResponse = httpClient.execute(httpPost);
                 HttpEntity httpEntity = httpResponse.getEntity();
                 is = httpEntity.getContent();
@@ -644,15 +690,34 @@ public class UserController {
                 jObj = new JSONObject(json);
             } catch (JSONException e) {
                 Log.e("JSON Parser", "Error parsing data " + e.toString());
+            }
+
+            /*String url = "https://api.picsart.com/users/cover/add.json?key=cd371244-3887-405b-82d1-7aadcb2617b9";
+            File file = new File("storage/emulated/0/DCIM/Camera/",
+                    "aaa.jpeg");
+            try {
+                HttpClient httpclient = new DefaultHttpClient();
+
+                HttpPost httppost = new HttpPost(url);
+
+                InputStreamEntity reqEntity = new InputStreamEntity(
+                        new FileInputStream(file), -1);
+                reqEntity.setContentType("binary/octet-stream");
+                reqEntity.setChunked(true); // Send in multiple parts if needed
+                httppost.setEntity(reqEntity);
+                HttpResponse response = httpclient.execute(httppost);
+                //Do something with response...
+
+                Log.d(MY_LOGS,response.toString());
+            } catch (Exception e) {
+                // show error
             }*/
             return null;
         }
 
         @Override
         protected void onPostExecute(Void result) {
-            Log.d("gagagagagagagagag", "json send:   " + json);
+            Log.d(MY_LOGS, "json send:   " + json);
         }
     }
-
-
 }
