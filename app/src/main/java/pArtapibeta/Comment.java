@@ -30,5 +30,10 @@ public class Comment {
         this.id = id;
     }
 
+    @Override
+    public String toString(){
+        return this.text + " " + this.created.toString() + " "+ this.id;
+    }
+
 
 }

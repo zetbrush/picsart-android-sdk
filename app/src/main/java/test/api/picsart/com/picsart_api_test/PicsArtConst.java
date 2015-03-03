@@ -12,14 +12,20 @@ public class PicsArtConst {
     public static final String TOKEN_URL = "http://stage.i.picsart.com/api/oauth2/token";
     public static final String OAUTH_URL = "http://stage.i.picsart.com/api/oauth2/authorize";
     public static final String TOKEN_URL_PREFIX = ".json?token=";
-    public static final String MY_PROFILE_URL = "http://stage.i.picsart.com/api/users/show/me";
-    public static final String USE_PROFILE_URL = "http://stage.i.picsart.com/api/users/show/";
+    public static final String MY_PROFILE_URL = "http://stage.i.picsart.com/api/users/me";
+    public static final String USE_PROFILE_URL = "http://stage.i.picsart.com/api/users/";
     public static final String Get_PHOTO_URL ="http://stage.i.picsart.com/api/photos/";
     public static final String Get_PHOTO_URL_PUB ="https://api.picsart.com/photos/";
     public static final String TOKEN_PREFIX = "?token=";
-
+    public static final String Photo_UPLOAD_URL = "https://stage.i.picsart.com/api/photos/";
 
     public static final String GET_PHOTO_FILTER = "?filter=";
+    public static final String APIKEY = "d97fb4fa-63e5-4a59-a84a-5124376b11ed";
+    public static final String API_PREFX = "?key=";
+    public static final String PHOTO_UPLOAD_URL = "https://api.picsart.com/photos/add.json";
+    public static final String PHOTO_COMMENT_URL ="https://api.picsart.com/photo/";
+
+
 
     public static final String SHOW_USER_URL = "http://stage.i.picsart.com/api/users/show/me.json?token=";
     public static final String SHOW_USER_FOLLOWERS = "http://stage.i.picsart.com/api/followers/show/";
@@ -32,6 +38,7 @@ public class PicsArtConst {
     public static final String SHOW_USER_TAGS = "http://stage.i.picsart.com/api/users/";
     public static final String SHOW_USER_PLACES = "http://stage.i.picsart.com/api/users/";
     public static final String SHOW_BLOCKED_USERS = "http://stage.i.picsart.com/api/users/";
+
 
     public static final String[] paramsUserProfile =
             new String[]{

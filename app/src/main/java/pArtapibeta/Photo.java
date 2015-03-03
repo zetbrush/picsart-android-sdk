@@ -11,10 +11,14 @@ import test.api.picsart.com.picsart_api_test.PicsArtConst;
  * Created by Arman on 2/23/15.
  */
 public class Photo {
+    private String path;
+
+
+
     private String id;
     private URL url;
     private String title;
-    private Tag[] tags;
+    private Tag tags;
     private Date created;
     private boolean isMature;
     private int width;
@@ -28,7 +32,24 @@ public class Photo {
     private User owner;
     private String ownerID;
     private Location location;
+    private Comment[] comments;
 
+
+    public Comment[] getComments() {
+        return comments;
+    }
+
+    public void setComments(Comment[] comments) {
+        this.comments = comments;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
 
     public String getTitle() {
         return title;
@@ -46,7 +67,7 @@ public class Photo {
         return url;
     }
 
-    public Tag[] getTags() {
+    public Tag getTags() {
         return tags;
     }
 
@@ -99,7 +120,7 @@ public class Photo {
     }
 
 
-    public Photo(String id, URL url, String title, Tag[] tags, Date crrated, boolean isMature, int width, int height, int likesCount, int viewsCount, int commentsCount, int repostsCount, boolean isLiked, boolean isReposted, String ownerid, Location location) {
+    public Photo(String id, URL url, String title, Tag tags, Date crrated, boolean isMature, int width, int height, int likesCount, int viewsCount, int commentsCount, int repostsCount, boolean isLiked, boolean isReposted, String ownerid, Location location) {
        init(id, url, title, tags, created,
                isMature, width, height, likesCount, viewsCount, commentsCount, repostsCount, isLiked, isReposted, ownerid, location);
     }
@@ -114,7 +135,7 @@ public class Photo {
             String id = jobj.getString(PicsArtConst.paramsPhotoInfo[0]);
             URL url = (URL) jobj.get(PicsArtConst.paramsPhotoInfo[1]);
             String title = (String) jobj.get(PicsArtConst.paramsPhotoInfo[2]);
-          //  Tag tags = (Tag) jobj.get(PicsArtConst.paramsPhotoInfo[22]);
+            Tag tags = new Tag( jobj.getJSONArray(PicsArtConst.paramsPhotoInfo[22]));
             Date created = (Date) jobj.get(PicsArtConst.paramsPhotoInfo[3]);
             boolean isMature = (boolean) jobj.get(PicsArtConst.paramsPhotoInfo[4]);
             int width = (int) jobj.get(PicsArtConst.paramsPhotoInfo[5]);
@@ -127,7 +148,7 @@ public class Photo {
             boolean isReposted = (boolean) jobj.get(PicsArtConst.paramsPhotoInfo[12]);
             String ownerid = (String) jobj.get(PicsArtConst.paramsPhotoInfo[13]);
             //Location location = (Location)jobj.get(PicsArtConst.paramsPhotoInfo[21]);
-            init(id, url, title, null, created,
+            init(id, url, title, tags, created,
                     isMature, width, height, likesCount, viewsCount, commentsCount, repostsCount, isLiked, isReposted, ownerid, null);
 
         } catch (Exception e) {
@@ -159,7 +180,7 @@ public class Photo {
 
     }
 
-    private void init(String id, URL url, String title, Tag[] tags, Date crrated, boolean isMature, int width, int height, int likesCount, int viewsCount, int commentsCount, int repostsCount, boolean isLiked, boolean isReposted, String ownerid, Location location){
+    private void init(String id, URL url, String title, Tag tags, Date crrated, boolean isMature, int width, int height, int likesCount, int viewsCount, int commentsCount, int repostsCount, boolean isLiked, boolean isReposted, String ownerid, Location location){
         this.id = id;
         this.url = url;
         this.title = title;
@@ -179,9 +200,21 @@ public class Photo {
     }
 
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
+    public void setTags(Tag tags) {
+        this.tags = tags;
+    }
 
+    public void setMature(boolean isMature) {
+        this.isMature = isMature;
+    }
 
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 }
 
 

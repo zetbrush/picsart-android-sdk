@@ -35,9 +35,6 @@ public class UserController {
     }
 
 
-
-
-
     public UserController(Context ctx, String token){
         this.ctx=ctx;
         this.token = token;
@@ -111,9 +108,10 @@ public class UserController {
         });
 
     }
+
     public void requestUser(){
         assert this.listener !=null;
-        String url = PicsArtConst.MY_PROFILE_URL+PicsArtConst.TOKEN_URL_PREFIX+token;
+        String url = PicsArtConst.MY_PROFILE_URL+PicsArtConst.TOKEN_PREFIX+token;
         PARequest req = new PARequest(Request.Method.GET,url,null,null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {

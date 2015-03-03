@@ -48,7 +48,7 @@ static LinkedList<Photo> photoList = null;
 
 
     public static Context getAppContext() {
-        return MainActivity.context;
+        return context;
     }
 
     public static String getAccessToken(){
@@ -62,7 +62,7 @@ static LinkedList<Photo> photoList = null;
 
         Access = (TextView) findViewById(R.id.Access);
         auth = (Button) findViewById(R.id.auth);
-        MainActivity.context = getApplicationContext();
+        MainActivity.context = this.getApplicationContext();
         try{
             pref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
              token = pref.getString("access_Token","");
@@ -268,6 +268,18 @@ static LinkedList<Photo> photoList = null;
     }
 
 
+        //////listener for picking
+
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent data) {
+        if (requestCode == 88) {    //Picking path of photo
+            if (resultCode == RESULT_OK) {
+
+
+            }
+        }
+    }
+
     public void onTestCallClick(View v){
         PARequest.PARequestListener<JSONObject> listn = null;
 
@@ -327,10 +339,35 @@ static LinkedList<Photo> photoList = null;
             }
         });*/
 
+     /*   ///Example  uploading photo to account/////
+
+        Photo toUpload = new Photo();
+        toUpload.setLocation(new Location("poxoooc","Qaxaaaq","Plac@@@","State@@","Zipcod@@","Armenia",new Coordiantes("40.00","36.00")));
+        toUpload.setTitle("nkariii anun 2");
+        toUpload.setTags(new Tag("tag1", "tag2", "tag3"));
+        toUpload.setPath("/storage/removable/sdcard1/DCIM/100ANDRO/DSC_0025.jpg");
+        PhotoController.uploadPhoto(toUpload);
+
+        ////////////////////////////////////////////*/
+
+        final Comment[] comments = PhotoController.getComments("163086538001202",3,0);
+
+        PhotoController.setSt_Listener(new RequestListener() {
+            @Override
+            public void onRequestReady(int requmber) {
+                for(Comment com : comments) {
+                    Log.d("Comments ",com.toString());
+                }
+            }
+        });
+
+
+
+
        String url;
        final  PhotoController[] pc = new PhotoController[1];
         pc[0] = new PhotoController(getAppContext(),getAccessToken());
-        pc[0].requestPhoto("123123123123");
+        pc[0].requestPhoto("123123345345456");
         pc[0].setListener(new RequestListener() {
             @Override
             public void onRequestReady(int requmber) {
@@ -346,18 +383,25 @@ static LinkedList<Photo> photoList = null;
           usc[0].setListener(new RequestListener() {
               @Override
               public void onRequestReady(int requmber) {
+
                 String myyyid =  usc[0].getUser().getId();
                   Log.d("My userID", myyyid);
+                  Log.d("My userphoto", usc[0].getUser().getPhoto());
                   usc[1] = new UserController(getAppContext(),getAccessToken());
                   usc[1].requestUserPhotos(myyyid,5,0);
                   usc[1].setListener(new RequestListener() {
                       @Override
                       public void onRequestReady(int requmber) {
                           Log.d("photo urls of my", usc[1].getUserphotosurls().toString());
+
+
+
                      }
                   });
               }
           });
+
+
 
 
 
@@ -477,6 +521,7 @@ static LinkedList<Photo> photoList = null;
 
     @Override
     public void onStop(){
+        super.onStop();
         SingletoneRequestQue.getInstance(getAppContext()).getRequestQueue().stop();
     }
 
