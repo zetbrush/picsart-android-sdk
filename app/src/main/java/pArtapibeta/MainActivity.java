@@ -33,15 +33,15 @@ import test.api.picsart.com.picsart_api_test.PicsArtConst;
 
 public class MainActivity extends Activity implements RequestListener {
 
-    static LinkedList<Photo> photoList = null;
+    private static LinkedList<Photo> photoList = null;
     private static Context context;
-    WebView web;
-    Button auth;
-    SharedPreferences pref;
-    TextView Access;
-    ProgressDialog pDialog;
-    Button testcallBtt;
-    static String token;
+    private WebView web;
+    private Button auth;
+    private SharedPreferences pref;
+    private TextView Access;
+    private ProgressDialog pDialog;
+    private Button testcallBtt;
+    private static String token;
 
 
     public static Context getAppContext() {

@@ -7,7 +7,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
-import org.codehaus.jackson.map.ObjectMapper;
+//import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -34,7 +34,7 @@ public class TempUserProfile {
                         Log.d("Response", response.toString());
 
                         try {
-                            userProfileRessult = new ObjectMapper().readValue(response.toString(), HashMap.class);
+                            //userProfileRessult = new ObjectMapper().readValue(response.toString(), HashMap.class);
                             for (int i = 0; i < TempUserProfile.userProfileRessult.size() && i < 13; i++) {
                                 str.append("\n" + PicsArtConst.paramsUserProfile[i] + "   " + TempUserProfile.userProfileRessult.get(PicsArtConst.paramsUserProfile[i]));
                             }

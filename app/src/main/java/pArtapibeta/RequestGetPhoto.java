@@ -9,7 +9,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.codehaus.jackson.map.ObjectMapper;
+//import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,7 +40,7 @@ public class RequestGetPhoto extends AsyncTask<String, String, String> {
     DefaultHttpClient httpClient;
 
     public static HashMap<String, Object> getPhotoHashM() throws IOException {
-        photoInfo = new ObjectMapper().readValue(jObj.toString(), HashMap.class);
+        //photoInfo = new ObjectMapper().readValue(jObj.toString(), HashMap.class);
         return photoInfo;
 
     }
