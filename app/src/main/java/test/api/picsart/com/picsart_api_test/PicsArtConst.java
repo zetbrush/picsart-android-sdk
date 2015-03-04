@@ -23,9 +23,12 @@ public class PicsArtConst {
     public static final String APIKEY = "d97fb4fa-63e5-4a59-a84a-5124376b11ed";
     public static final String API_PREFX = "?key=";
     public static final String PHOTO_UPLOAD_URL = "https://api.picsart.com/photos/add.json";
-    public static final String PHOTO_COMMENT_URL ="https://api.picsart.com/photo/";
+    public static final String PHOTO_COMMENT_URL ="https://api.picsart.com/photos/show/";
+    public static final String PHOTO_COVER_URL="https://api.picsart.com/users/cover/add.json";
+    public static final String PHOTO_AVATAR_URL ="https://api.picsart.com/users/photo/add.json";
 
-
+    public static final String PHOTO_COMMENTS_URL = "https://api.picsart.com/photos/comments/show/";
+    public static final String PHOTO_ADD_COMMENT_URL ="https://api.picsart.com/photos/comments/add/";
 
     public static final String SHOW_USER_URL = "http://stage.i.picsart.com/api/users/show/me.json?token=";
     public static final String SHOW_USER_FOLLOWERS = "http://stage.i.picsart.com/api/followers/show/";

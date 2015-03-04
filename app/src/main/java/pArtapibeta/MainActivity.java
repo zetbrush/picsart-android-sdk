@@ -339,28 +339,27 @@ static LinkedList<Photo> photoList = null;
             }
         });*/
 
-     /*   ///Example  uploading photo to account/////
+       ///Example  uploading photo to account/////
+/*
 
-        Photo toUpload = new Photo();
+       Photo toUpload = new Photo(Photo.IS.COVER);
         toUpload.setLocation(new Location("poxoooc","Qaxaaaq","Plac@@@","State@@","Zipcod@@","Armenia",new Coordiantes("40.00","36.00")));
         toUpload.setTitle("nkariii anun 2");
         toUpload.setTags(new Tag("tag1", "tag2", "tag3"));
         toUpload.setPath("/storage/removable/sdcard1/DCIM/100ANDRO/DSC_0025.jpg");
         PhotoController.uploadPhoto(toUpload);
+*/
 
-        ////////////////////////////////////////////*/
 
-        final Comment[] comments = PhotoController.getComments("163086538001202",3,0);
-
+        PhotoController.getComments("163086538001202",3,5);
         PhotoController.setSt_Listener(new RequestListener() {
             @Override
             public void onRequestReady(int requmber) {
-                for(Comment com : comments) {
+                for(Comment com : PhotoController.getComments()) {
                     Log.d("Comments ",com.toString());
                 }
             }
         });
-
 
 
 
@@ -375,6 +374,9 @@ static LinkedList<Photo> photoList = null;
 
             }
         });
+
+
+
 
         final UserController[] usc = new UserController[2];
 

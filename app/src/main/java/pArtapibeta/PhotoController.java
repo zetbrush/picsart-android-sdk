@@ -57,17 +57,21 @@ public  class PhotoController  {
     static  RequestListener st_listener;
     String token;
     volatile Photo photo;
-    volatile Comment[] comments;
+    static volatile Comment[][] comm = new Comment[1][];
 
 
+
+
+    public static Comment[] getComments() {
+        return comm[0];
+    }
 
 
     public Photo getPhoto() {
         return photo;
     }
 
-
-     public static synchronized  void uploadPhoto(Photo... photo) {
+    public static synchronized  void uploadPhoto(Photo... photo) {
            new ImageUploadTask().execute(photo);
 
     }
@@ -79,7 +83,8 @@ public  class PhotoController  {
     public static void setSt_Listener(RequestListener listener){
         PhotoController.st_listener=listener;
     }
-     public synchronized void requestPhoto(String id) {
+
+    public synchronized void requestPhoto(String id) {
         assert this.listener !=null;
         String url = PicsArtConst.Get_PHOTO_URL + id + PicsArtConst.TOKEN_PREFIX+token;
         PARequest request = new PARequest(Request.Method.GET, url, null,null);
@@ -92,7 +97,7 @@ public  class PhotoController  {
             @Override
             public void onResponse(Object response) {
                 Log.d("Response 9", response.toString());
-                photo = new Photo();
+                photo = new Photo(Photo.IS.GENERAL);
                 photo.parseFrom(response);
                 listener.onRequestReady(9);
             }
@@ -103,48 +108,60 @@ public  class PhotoController  {
     }
 
 
-
-
     public PhotoController(Context ctx,String token){
     this.ctx = ctx;
     this.token = token;
     }
 
 
+    /**
+     *
+     * @param photoId  id of photo
+     * @param limit max limit to show
+     * @param offset  starting index to count
+     *
+     * */
+    public static synchronized  void getComments(String photoId,final int limit, final int offset){
 
-    public static synchronized  Comment[] getComments(String id,int limit, int offset){
-        final Comment[][] comm = new Comment[1][];
-        String url = PicsArtConst.PHOTO_COMMENT_URL+id+".json"+PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
-
+        String url = PicsArtConst.PHOTO_COMMENTS_URL+photoId+".json"+PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
         PARequest req = new PARequest(Request.Method.GET,url,null,null);
         SingletoneRequestQue.getInstance(MainActivity.getAppContext()).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 
+
             }
             @Override
             public void onResponse(Object response)  {
 
                 try {
-                    JSONArray phots = ((JSONObject)response).getJSONArray("comments");
-                    Comment[] comment= new Comment[phots.length()];
-                    for (int i = 0; i < phots.length(); i++) {
-                        JSONObject val = phots.getJSONObject(i);
+                    JSONArray _comArr = ((JSONObject)response).getJSONArray("response");
+                    Comment[] comment= new Comment[_comArr.length()];
+                    for (int i = 0; i < _comArr.length(); i++) {
+                        JSONObject val = _comArr.getJSONObject(i);
                         String txt = val.getString("text");
-                        Date crtd = new Date(val.getString("created"));
-                        String cmid = val.getString("id");
-                        comment[i]=(new Comment(txt,crtd,cmid));
-
+                       // Date crtd = new Date(val.getString("created"));
+                        String cmid = val.getString("_id");
+                        comment[i]=(new Comment(txt,null,cmid));
                     }
+                    int nwOffset=0;
+                    int nwlimit=0;
+                    if(offset>comment.length){ nwOffset =comment.length;} else if(offset<0){nwOffset=0;} else{nwOffset=offset;}
+                    if(limit>comment.length) {nwlimit =comment.length;} else if(limit<0) {nwlimit=0;} else{ nwlimit=limit;}
+                    if(nwlimit-nwOffset<0)nwlimit=nwOffset;
+                    Comment[] tmp = new Comment[nwlimit-nwOffset];
+                    for(int i =nwOffset,j=0; i<nwlimit ;i++,j++) {
+                        tmp[j]=comment[i];
+                    }
+                    comm[0]=tmp;
                     st_listener.onRequestReady(555);
-                    comm[0] = comment;
                 } catch ( Exception e) {
                     e.printStackTrace();
                 }
             }
         });
-        return comm[0];
+
     }
 
 
@@ -167,6 +184,7 @@ public  class PhotoController  {
     }
 
     public void comment(String comment){
+
         //TODO
     }
 
@@ -195,24 +213,27 @@ public  class PhotoController  {
                 try {
                     Looper.getMainLooper();
                     Looper.prepare();
-                    File file = new File(phot[0].getPath());
+                    File file = new File(ph.getPath());
                     HttpClient httpClient = new DefaultHttpClient();
-
-                    HttpPost httpPost = new HttpPost((PicsArtConst.PHOTO_UPLOAD_URL) + PicsArtConst.API_PREFX + PicsArtConst.APIKEY);
-                    MultipartEntity entity = new MultipartEntity(
-                            HttpMultipartMode.BROWSER_COMPATIBLE);
-
-                    //Location loc = new Location("poxoc","Qaxaq","Plac@","State","Zipcod@","Armenia",new Coordiantes("40.00","36.00"));
-                    BasicNameValuePair[] tmp = phot[0].getLocation().getLocationPair();
-                    for (int i = 0; i < tmp.length; i++) {
-                        entity.addPart(tmp[i].getName(), new StringBody(tmp[i].getValue()));
-                    }
+                    String url ="";
+                    MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
                     entity.addPart("file", new FileBody(file));
-
-                    for (String str : phot[0].getTags().getTagValues()) {
-                        entity.addPart("tags[]", new StringBody(str));
+                    if (ph.isFor == Photo.IS.AVATAR) {
+                        url =PicsArtConst.PHOTO_AVATAR_URL+PicsArtConst.API_PREFX+PicsArtConst.APIKEY;
+                    } else if (ph.isFor == Photo.IS.COVER){
+                        url= PicsArtConst.PHOTO_COVER_URL+PicsArtConst.API_PREFX+PicsArtConst.APIKEY;
+                    }else {
+                        url = PicsArtConst.PHOTO_UPLOAD_URL + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
+                        BasicNameValuePair[] tmp = ph.getLocation().getLocationPair();
+                        for (int i = 0; i < tmp.length; i++) {
+                            entity.addPart(tmp[i].getName(), new StringBody(tmp[i].getValue()));
+                        }
+                        for (String str : ph.getTags().getTagValues()) {
+                            entity.addPart("tags[]", new StringBody(str));
+                        }
+                        entity.addPart("title", new StringBody(ph.getTitle()));
                     }
-                    entity.addPart("title", new StringBody(phot[0].getTitle()));
+                    HttpPost httpPost = new HttpPost(url);
                     httpPost.setEntity(entity);
                     HttpResponse response = httpClient.execute(httpPost);
                     HttpEntity httpEntity = response.getEntity();
@@ -241,7 +262,6 @@ public  class PhotoController  {
                     e.getMessage();
                     Log.e("Buffer Error", "Error converting result " + e.toString());
                 }
-                // Parse the String to a JSON Object
                 try {
                     jObj = new JSONObject(json);
                 } catch (JSONException e) {

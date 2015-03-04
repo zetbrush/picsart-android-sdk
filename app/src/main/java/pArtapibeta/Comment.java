@@ -32,7 +32,7 @@ public class Comment {
 
     @Override
     public String toString(){
-        return this.text + " " + this.created.toString() + " "+ this.id;
+        return this.text + " " + /*this.created.toString() + */ " " + this.id;
     }
 
 
