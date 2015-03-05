@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -259,29 +260,40 @@ public class MainActivity extends Activity implements RequestListener {
     public void onTestCallClick(View v) {
 
         final UserController userController = new UserController(getApplicationContext());
-        //userController.requestUserFollowers("161436357000102",0,0);
-        //userController.requestUserFollowing("161436357000102",0,0);
-        //userController.requestLikedPhotos("161436357000102",0,0);
-        //userController.requestBlockedUsers("161436357000102",0,0);
+        Photo photo=new Photo();
+        photo.setIs(Photo.IS.AVATAR);
+        photo.setPath("/storage/sdcard0/aa.jpg");
 
-        //userController.followUserWithID("160573178000102");
-        //userController.unblockUserWithID("161263489000102");
-        //userController.blockUserWithID("161263489000102");
-        //userController.requestUser("160573178000102");
+        //userController.requestUserFollowing("me",0,UserController.MAX_LIMIT);
+        //userController.requestLikedPhotos("me",0,UserController.MAX_LIMIT);
+        //userController.requestBlockedUsers("me",0,UserController.MAX_LIMIT);
+        //userController.requestTags("me",1,6);
+        //userController.requestUserPhotos("me",0,UserController.MAX_LIMIT);
 
-        userController.uploadUserCover();
+        userController.followUserWithID("45033295");
+        //userController.unblockUserWithID("153741055000102","160573178000102");
+        //userController.blockUserWithID("153741055000102");
+        //userController.requestUser("156064667000102");
+
+
+
+        //userController.uploadUserCover(photo);
 
         userController.setListener(new RequestListener() {
             @Override
             public void onRequestReady(int requmber) {
-                if (requmber == 4) {
+                if (requmber == 12) {
 
-                    userController.getUser().getName();
+                    //userController.requestBlockedUsers("me",0,UserController.MAX_LIMIT);
+                    //Log.d("gagagagagag",userController.getUserPlaces().get(1).getPlace().toString());
                 }
-                if (requmber == 9) {
+                if (requmber == 3) {
+
+                    Log.d("gagagagagag",userController.getUser().getName());
 
                 }
             }
         });
+        //Log.d("gagagagagag", Environment.getExternalStorageDirectory().toString());
     }
 }

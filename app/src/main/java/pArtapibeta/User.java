@@ -1,7 +1,5 @@
 package pArtapibeta;
 
-import android.util.Log;
-
 import org.json.JSONObject;
 
 import test.api.picsart.com.picsart_api_test.PicsArtConst;
@@ -16,12 +14,11 @@ public class User {
     private String cover;
     private Tag[] tags;
     private int followingCount;
-    private int followersCownt;
+    private int followersCount;
     private int likesCount;
     private int photosCount;
     private Location location;
     private String[] followers;
-
 
     public User() {
     }
@@ -43,7 +40,7 @@ public class User {
             photo = jobj.getString(PicsArtConst.paramsUserProfile[7]);
             //  cover = (String)jobj.get(PicsArtConst.paramsUserProfile[19]);
             followingCount = jobj.getInt(PicsArtConst.paramsUserProfile[12]);
-            followersCownt = jobj.getInt(PicsArtConst.paramsUserProfile[20]);
+            followersCount = jobj.getInt(PicsArtConst.paramsUserProfile[20]);
             likesCount = jobj.getInt(PicsArtConst.paramsUserProfile[8]);
             photosCount = jobj.getInt(PicsArtConst.paramsUserProfile[6]);
             //location = (Location)jobj.get(PicsArtConst.paramsUserProfile[9]);
@@ -62,7 +59,7 @@ public class User {
         this.cover = cover;
         this.tags = tags;
         this.followingCount = followingCount;
-        this.followersCownt = followersCownt;
+        this.followersCount = followersCownt;
         this.likesCount = likesCount;
         this.photosCount = photosCount;
         this.location = location;
@@ -88,7 +85,6 @@ public class User {
     }
 
     public String getName() {
-        Log.d("bababababababab", name);
         return name;
     }
 
@@ -137,11 +133,11 @@ public class User {
     }
 
     public int getFollowersCownt() {
-        return followersCownt;
+        return followersCount;
     }
 
     public void setFollowersCownt(int followersCownt) {
-        this.followersCownt = followersCownt;
+        this.followersCount = followersCownt;
     }
 
     public int getLikesCount() {
@@ -167,4 +163,5 @@ public class User {
     public void setLocation(Location location) {
         this.location = location;
     }
+
 }

@@ -16,20 +16,30 @@ public class PicsArtConst {
     public static final String Get_PHOTO_URL_PUB = "https://api.picsart.com/photos/";
     public static final String TOKEN_PREFIX = "?token=";
 
+    public static final String APIKEY = "cd371244-3887-405b-82d1-7aadcb2617b9";
+    public static final String API_PREFX = "?key=";
+    public static final String API_TEST_PREF = ".json?key=";
+
 
     public static final String GET_PHOTO_FILTER = "?filter=";
 
-    public static final String SHOW_USER_URL = "http://stage.i.picsart.com/api/users/";
-    public static final String SHOW_USER_FOLLOWERS = "http://stage.i.picsart.com/api/followers/show/";
-    public static final String SHOW_USER_FOLLOWING = "http://stage.i.picsart.com/api/following/show/";
-    public static final String SHOW_USER_LIKED_PHOTOS = "http://stage.i.picsart.com/api/users/likes/show/";
-    public static final String GET_USER_PHOTOS_LIST = "http://stage.i.picsart.com/api/users/";
-    public static final String BLOCK_USER_WITH_ID = "http://stage.i.picsart.com/api/users/161436357000102/";
-    public static final String UNBLOCK_USER_WITH_ID = "http://stage.i.picsart.com/api/users/me/blocks/";
-    public static final String FOLLOW_USER_WITH_ID = "http://stage.i.picsart.com/api/users/me/following?token=";
-    public static final String SHOW_USER_TAGS = "http://stage.i.picsart.com/api/users/";
-    public static final String SHOW_USER_PLACES = "http://stage.i.picsart.com/api/users/";
-    public static final String SHOW_BLOCKED_USERS = "http://stage.i.picsart.com/api/users/";
+    public static final String SHOW_USER_URL = "https://api.picsart.com/users/show/";
+    public static final String SHOW_USER_FOLLOWERS = "https://api.picsart.com/followers/show/";
+    public static final String SHOW_USER_FOLLOWING = "https://api.picsart.com/following/show/";
+    public static final String SHOW_USER_LIKED_PHOTOS = "https://api.picsart.com/users/likes/show/";
+    public static final String SHOW_USER_TAGS = "https://api.picsart.com/users/photos/tags/";
+    public static final String SHOW_USER_PLACES = "https://api.picsart.com/users/photos/places/";
+    public static final String SHOW_BLOCKED_USERS = "https://api.picsart.com/blocks/show/";
+    public static final String SHOW_USER_PHOTOS_LIST = "https://api.picsart.com/users/photos/show/";
+
+    public static final String BLOCK_USER_WITH_ID = "https://api.picsart.com/blocks/add/";
+    public static final String UNBLOCK_USER_WITH_ID = "https://api.picsart.com/blocks/remove/";
+    public static final String FOLLOW_USER_WITH_ID = "https://api.picsart.com/following/add/";
+
+    public static final String UPLOAD_COVER_PHOTO = "https://api.picsart.com/users/cover/add.json";
+    public static final String UPLOAD_AVATAR_PHOTO = "https://api.picsart.com/users/photo/add.json";
+    public static final String UPLOAD_PROFILE_PHOTO = "https://api.picsart.com/photos/add.json";
+
 
     public static final String[] paramsUserProfile =
             new String[]{

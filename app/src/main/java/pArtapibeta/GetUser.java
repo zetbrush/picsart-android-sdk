@@ -71,7 +71,6 @@ public class GetUser extends AsyncTask<String,String, JSONObject> {
     }
 
 
-
     public JSONObject getUserObject(String address,String token,String client_id) {
         // Making HTTP request
         try {

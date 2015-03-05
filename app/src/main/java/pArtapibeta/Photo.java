@@ -1,15 +1,21 @@
 package pArtapibeta;
 
+import org.json.JSONObject;
+
 import java.net.URL;
 import java.util.Date;
+
+import test.api.picsart.com.picsart_api_test.PicsArtConst;
 
 
 public class Photo {
 
+    public enum IS {COVER,AVATAR,GENERAL}
+    private String path;
     private String id;
     private URL url;
     private String title;
-    private Tag[] tags;
+    private Tag tags;
     private Date created;
     private boolean isMature;
     private int width;
@@ -23,55 +29,40 @@ public class Photo {
     private User owner;
     private String ownerID;
     private Location location;
+    private Comment[] comments;
+    private IS is;
 
 
-
-    public Photo(String id, URL url, String title, Tag[] tags, Date crrated, boolean isMature, int width, int height, int likesCount, int viewsCount, int commentsCount, int repostsCount, boolean isLiked, boolean isReposted, String ownerid, Location location) {
-        this.id = id;
-        this.url = url;
-        this.title = title;
-        this.tags = tags;
-        this.created = crrated;
-        this.isMature = isMature;
-
-        this.width = width;
-        this.height = height;
-        this.likesCount = likesCount;
-        this.viewsCount = viewsCount;
-        this.commentsCount = commentsCount;
-        this.repostsCount = repostsCount;
-        this.isLiked = isLiked;
-        this.isReposted = isReposted;
-        this.ownerID = ownerid;
-        this.location = location;
+    public IS getIs() {
+        return is;
     }
 
-    public Photo(String id, URL url, String title, Date crrated, String ownerid) {
-        this.id = id;
-        this.title = title;
-        this.created = crrated;
-        this.ownerID = ownerid;
-        this.url = url;
-        this.tags = null;
-        //this.isMature = false;
-        //this.width = width;
-        //this.height = height;
-        //this.likesCount = likesCount;
-        //this.viewsCount = viewsCount;
-        //this.commentsCount = commentsCount;
-        //this.repostsCount = repostsCount;
-        //this.isLiked = isLiked;
-        //this.isReposted = isReposted;
-        //this.location = location;
+    public void setIs(IS is) {
+        this.is = is;
     }
 
-    public Photo(){
-        this(null,null,null,null,null);
+    public Comment[] getComments() {
+        return comments;
+    }
 
+    public void setComments(Comment[] comments) {
+        this.comments = comments;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public String getTitle() {
         return title;
+    }
+
+    public int getWidth() {
+        return width;
     }
 
     public String getId() {
@@ -82,7 +73,7 @@ public class Photo {
         return url;
     }
 
-    public Tag[] getTags() {
+    public Tag getTags() {
         return tags;
     }
 
@@ -92,78 +83,6 @@ public class Photo {
 
     public boolean isMature() {
         return isMature;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setUrl(URL url) {
-        this.url = url;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setTags(Tag[] tags) {
-        this.tags = tags;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
-    public void setMature(boolean isMature) {
-        this.isMature = isMature;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public void setLikesCount(int likesCount) {
-        this.likesCount = likesCount;
-    }
-
-    public void setViewsCount(int viewsCount) {
-        this.viewsCount = viewsCount;
-    }
-
-    public void setCommentsCount(int commentsCount) {
-        this.commentsCount = commentsCount;
-    }
-
-    public void setRepostsCount(int repostsCount) {
-        this.repostsCount = repostsCount;
-    }
-
-    public void setLiked(boolean isLiked) {
-        this.isLiked = isLiked;
-    }
-
-    public void setReposted(boolean isReposted) {
-        this.isReposted = isReposted;
-    }
-
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
-
-    public void setOwnerID(String ownerID) {
-        this.ownerID = ownerID;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
     }
 
     public int getHeight() {
@@ -204,5 +123,102 @@ public class Photo {
 
     public Location getLocation() {
         return location;
+    }
+
+
+    public Photo(String id, URL url, String title, Tag tags, Date crrated, boolean isMature, int width, int height, int likesCount, int viewsCount, int commentsCount, int repostsCount, boolean isLiked, boolean isReposted, String ownerid, Location location) {
+        init(id, url, title, tags, created,
+                isMature, width, height, likesCount, viewsCount, commentsCount, repostsCount, isLiked, isReposted, ownerid, location);
+    }
+
+    public void parseFrom(Object o) throws ClassCastException {
+        JSONObject oo = (JSONObject) o;
+        parseFrom(oo);
+    }
+
+    public void parseFrom(JSONObject jobj) {
+        try {
+            String id = jobj.getString(PicsArtConst.paramsPhotoInfo[0]);
+            URL url = (URL) jobj.get(PicsArtConst.paramsPhotoInfo[1]);
+            String title = (String) jobj.get(PicsArtConst.paramsPhotoInfo[2]);
+            Tag tags = new Tag(jobj.getJSONArray(PicsArtConst.paramsPhotoInfo[22]));
+            Date created = (Date) jobj.get(PicsArtConst.paramsPhotoInfo[3]);
+            boolean isMature = (boolean) jobj.get(PicsArtConst.paramsPhotoInfo[4]);
+            int width = (int) jobj.get(PicsArtConst.paramsPhotoInfo[5]);
+            int height = (int) jobj.get(PicsArtConst.paramsPhotoInfo[6]);
+            int likesCount = (int) jobj.get(PicsArtConst.paramsPhotoInfo[7]);
+            int viewsCount = (int) jobj.get(PicsArtConst.paramsPhotoInfo[8]);
+            int commentsCount = (int) jobj.get(PicsArtConst.paramsPhotoInfo[9]);
+            int repostsCount = (int) jobj.get(PicsArtConst.paramsPhotoInfo[10]);
+            boolean isLiked = (boolean) jobj.get(PicsArtConst.paramsPhotoInfo[11]);
+            boolean isReposted = (boolean) jobj.get(PicsArtConst.paramsPhotoInfo[12]);
+            String ownerid = (String) jobj.get(PicsArtConst.paramsPhotoInfo[13]);
+            //Location location = (Location)jobj.get(PicsArtConst.paramsPhotoInfo[21]);
+            init(id, url, title, tags, created,
+                    isMature, width, height, likesCount, viewsCount, commentsCount, repostsCount, isLiked, isReposted, ownerid, null);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Photo(String id, URL url, String title, Date crrated, String ownerid) {
+        this.id = id;
+        this.title = title;
+        this.created = crrated;
+        this.ownerID = ownerid;
+        this.url = url;
+        this.tags = null;
+        //this.isMature = false;
+        //this.width = width;
+        //this.height = height;
+        //this.likesCount = likesCount;
+        //this.viewsCount = viewsCount;
+        // this.commentsCount = commentsCount;
+        //this.repostsCount = repostsCount;
+        //this.isLiked = isLiked;
+        //this.isReposted = isReposted;
+        //this.location = location;
+    }
+
+    public Photo() {
+        this(null, null, null, null, null);
+
+    }
+
+    private void init(String id, URL url, String title, Tag tags, Date crrated, boolean isMature, int width, int height, int likesCount, int viewsCount, int commentsCount, int repostsCount, boolean isLiked, boolean isReposted, String ownerid, Location location) {
+        this.id = id;
+        this.url = url;
+        this.title = title;
+        this.tags = tags;
+        this.created = crrated;
+        this.isMature = isMature;
+        this.width = width;
+        this.height = height;
+        this.likesCount = likesCount;
+        this.viewsCount = viewsCount;
+        this.commentsCount = commentsCount;
+        this.repostsCount = repostsCount;
+        this.isLiked = isLiked;
+        this.isReposted = isReposted;
+        this.ownerID = ownerid;
+        this.location = location;
+    }
+
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setTags(Tag tags) {
+        this.tags = tags;
+    }
+
+    public void setMature(boolean isMature) {
+        this.isMature = isMature;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 }
