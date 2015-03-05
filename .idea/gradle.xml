@@ -8,8 +8,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/android-volley-1.0.10" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/vol1.0.11" />
           </set>
         </option>
       </GradleProjectSettings>

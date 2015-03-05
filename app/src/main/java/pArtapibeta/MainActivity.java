@@ -350,8 +350,8 @@ static LinkedList<Photo> photoList = null;
         PhotoController.uploadPhoto(toUpload);
 */
 
-
-        PhotoController.getComments("163086538001202",3,5);
+            //////////// Getting given comments Count//////
+     /*   PhotoController.getComments("163086538001202",3,5);
         PhotoController.setSt_Listener(new RequestListener() {
             @Override
             public void onRequestReady(int requmber) {
@@ -360,6 +360,19 @@ static LinkedList<Photo> photoList = null;
                 }
             }
         });
+       */
+        ///////////////////////////
+        PhotoController.setSt_Listener(new RequestListener() {
+            @Override
+            public void onRequestReady(int requmber) {
+                if(requmber==444){
+                    Log.d("Commented"," comment");
+                }
+            }
+        });
+        PhotoController.comment("163086538001202","blabla codeee comment");
+
+
 
 
 

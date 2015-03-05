@@ -14,10 +14,12 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -45,6 +47,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import test.api.picsart.com.picsart_api_test.PicsArtConst;
 
@@ -165,6 +169,8 @@ public  class PhotoController  {
     }
 
 
+
+
     public Comment getCommentByid(String id){
         //TODO
         return new Comment(null,null,null);
@@ -182,11 +188,68 @@ public  class PhotoController  {
     public void updateData(){
         //TODO
     }
+/**
+ *
+ * */
+    public static synchronized void comment(String photoID, final String comment) {
 
-    public void comment(String comment){
+        String url = PicsArtConst.PHOTO_ADD_COMMENT_URL+photoID+".json"+PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
+         PARequest req = new PARequest(Request.Method.POST,url, null,new PARequest.PARequestListener() {
+             @Override
+             public void onErrorResponse(VolleyError error) {
 
-        //TODO
-    }
+             }
+
+             @Override
+             public void onResponse(Object response) {
+                 Log.d("Response ", response.toString());
+             }
+         })
+         {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("is_social","1");
+                params.put("text", comment);
+                return params;
+            };
+
+             // params.put("Content-Type", "fmultipart/form-data");
+
+        };
+
+        SingletoneRequestQue.getInstance(MainActivity.getAppContext()).addToRequestQueue(req);
+        req.setRequestListener(new PARequest.PARequestListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+
+            @Override
+            public void onResponse(Object response) {
+           //  Log.d("Response ", response.toString());
+                st_listener.onRequestReady(444);
+            }
+        });
+
+/*
+        Map<String, String> hedr = req.getHeaders();
+            hedr= new HashMap<>();
+            hedr.put("Content-Type", "multipart/form-data");*/
+
+          /*  String bdtype =req.getBodyContentType();
+            bdtype ="multipart/form-data";*/
+
+                //params.put("is_social","1");
+
+
+
+
+
+
+    };
+
+
 
     public boolean like(){
         //TODO

@@ -95,7 +95,7 @@
     <orderEntry type="library" exported="" name="robospice-1.4.14" level="project" />
     <orderEntry type="library" exported="" name="httpmime-4.3" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-21.0.2" level="project" />
-    <orderEntry type="module" module-name="android-volley-1.0.10" exported="" />
+    <orderEntry type="module" module-name="vol1.0.11" exported="" />
   </component>
 </module>
 
