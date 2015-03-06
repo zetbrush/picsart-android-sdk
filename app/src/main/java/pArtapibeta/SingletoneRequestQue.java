@@ -15,14 +15,11 @@ import com.android.volley.toolbox.Volley;
 /**
  * Created by Arman on 2/20/15.
  */
-public class SingletoneRequestQue  {
+public class SingletoneRequestQue {
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
     private static Context mCtx;
     static SingletoneRequestQue mInstance = null;
-
-
-
 
 
     private SingletoneRequestQue(Context context) {

@@ -368,15 +368,31 @@ static LinkedList<Photo> photoList = null;
                 if(requmber==444){
                     Log.d("Commented"," comment");
                 }
+                if(requmber==2222){
+
+                    Log.d("Photo is updated"," is updated");
+                }
+
+
             }
+
+
+
         });
-        PhotoController.comment("163086538001202","blabla codeee comment");
+       // PhotoController.comment("163086538001202","blabla codeee comment");
+
+        Photo phh = new Photo(Photo.IS.GENERAL);
+        phh.setLocation(new Location("nor poxoc","nor Qaxaaaq","nor Plac@@@","nor State@@","nor Zipcod@@","Armenia",new Coordiantes("nor 40.00","nor 36.00")));
+        phh.setTitle("nor nkariii anun 2");
+        phh.setTags(new Tag("nor tag1", "nor tag2", "nor tag3"));
+        phh.setId("163086538001202");
+
+        PhotoController.updateData(phh);
 
 
 
 
-
-       String url;
+      /* String url;
        final  PhotoController[] pc = new PhotoController[1];
         pc[0] = new PhotoController(getAppContext(),getAccessToken());
         pc[0].requestPhoto("123123345345456");
@@ -414,7 +430,7 @@ static LinkedList<Photo> photoList = null;
                      }
                   });
               }
-          });
+          });*/
 
 
 

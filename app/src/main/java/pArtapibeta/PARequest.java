@@ -11,6 +11,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,7 +33,8 @@ public class PARequest extends JsonObjectRequest{
  PARequestListener requestListener;
  private Map<String, String> mPostParams;
  private Map<String, String> mPostHeaders;
-    String bdtype;
+    StringRequest gfg;
+String bdtype;
 
     public PARequest(int method, String url, JSONObject jsonRequest, PARequestListener listener ) {
 
@@ -43,6 +45,9 @@ public class PARequest extends JsonObjectRequest{
     public void setRequestListener(PARequestListener listener) {
         this.requestListener = listener;
     }
+
+
+
 
 
 

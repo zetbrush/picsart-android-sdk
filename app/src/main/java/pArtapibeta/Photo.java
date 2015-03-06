@@ -27,6 +27,9 @@ public class Photo {
     private boolean isLiked;
     private boolean isReposted;
     private User owner;
+
+
+
     private String ownerID;
     private Location location;
     private Comment[] comments;
@@ -36,8 +39,13 @@ public class Photo {
     public IS getIsFor() {
         return isFor;
     }
+
     public void setIsFor(IS uiFor) {
         this.isFor = uiFor;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Comment[] getComments() {

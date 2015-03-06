@@ -1,7 +1,7 @@
 package pArtapibeta;
 
 /**
- * Created by intern on 3/3/15.
+ * Created by Arman on 3/3/15.
  */
 public class Coordiantes {
     String location_lat;

@@ -1,7 +1,7 @@
 package pArtapibeta;
 
 /**
- * Created by intern on 2/19/15.
+ * Created by Arman on 2/19/15.
  */
 public class Place {
 

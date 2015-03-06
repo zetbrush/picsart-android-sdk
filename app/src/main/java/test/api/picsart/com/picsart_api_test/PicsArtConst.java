@@ -29,6 +29,13 @@ public class PicsArtConst {
 
     public static final String PHOTO_COMMENTS_URL = "https://api.picsart.com/photos/comments/show/";
     public static final String PHOTO_ADD_COMMENT_URL ="https://api.picsart.com/photos/comments/add/";
+    public static final String PHOTO_REMOVE_COMMENT_URL ="https://api.picsart.com/photos/comments/remove/";
+
+
+    public static final String PHOTO_LIKE_URL="https://api.picsart.com/photos/likes/add/";
+    public static final String PHOTO_UNLIKE_URL="https://api.picsart.com/photos/likes/remove/";
+    public static final String PHOTO_UPDATE_INFO_URL="https://api.picsart.com/photos/update/";
+
 
     public static final String SHOW_USER_URL = "http://stage.i.picsart.com/api/users/show/me.json?token=";
     public static final String SHOW_USER_FOLLOWERS = "http://stage.i.picsart.com/api/followers/show/";

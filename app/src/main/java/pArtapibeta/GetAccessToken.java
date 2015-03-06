@@ -29,6 +29,7 @@ public class GetAccessToken {
     static InputStream is = null;
     static JSONObject jObj = null;
     static String json = "";
+
     public GetAccessToken() {
     }
     List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -92,5 +93,4 @@ public class GetAccessToken {
     }
 
 
-    
 }

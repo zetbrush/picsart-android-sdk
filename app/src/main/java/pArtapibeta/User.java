@@ -36,14 +36,14 @@ public class User {
     private Location location;
     private String[] followers;
 
-   //String url = PicsArtConst.MY_PROFILE_URL+PicsArtConst.TOKEN_URL_PREFIX+MainActivity.getAccessToken();
+    //String url = PicsArtConst.MY_PROFILE_URL+PicsArtConst.TOKEN_URL_PREFIX+MainActivity.getAccessToken();
 
-    public User( ){
+    public User() {
 
 
     }
 
-    public User(String id){
+    public User(String id) {
         this.id = id;
 
     }
@@ -65,29 +65,28 @@ public class User {
     }
 
 
-
-
-    public void parseFrom(Object o){
+    public void parseFrom(Object o) {
         try {
             JSONObject jobj = (JSONObject) o;
 
             id = String.valueOf(jobj.getString(PicsArtConst.paramsUserProfile[2]));
-            name =  jobj.getString(PicsArtConst.paramsUserProfile[1]);
-            username =  jobj.getString(PicsArtConst.paramsUserProfile[0]);
-            photo =  jobj.getString(PicsArtConst.paramsUserProfile[7]);
-          //  cover = (String)jobj.get(PicsArtConst.paramsUserProfile[19]);
-            followingCount =  jobj.getInt(PicsArtConst.paramsUserProfile[12]);
-            followersCownt =  jobj.getInt(PicsArtConst.paramsUserProfile[20]);
-            likesCount =  jobj.getInt(PicsArtConst.paramsUserProfile[8]);
-            photosCount =  jobj.getInt(PicsArtConst.paramsUserProfile[6]);
+            name = jobj.getString(PicsArtConst.paramsUserProfile[1]);
+            username = jobj.getString(PicsArtConst.paramsUserProfile[0]);
+            photo = jobj.getString(PicsArtConst.paramsUserProfile[7]);
+            //  cover = (String)jobj.get(PicsArtConst.paramsUserProfile[19]);
+            followingCount = jobj.getInt(PicsArtConst.paramsUserProfile[12]);
+            followersCownt = jobj.getInt(PicsArtConst.paramsUserProfile[20]);
+            likesCount = jobj.getInt(PicsArtConst.paramsUserProfile[8]);
+            photosCount = jobj.getInt(PicsArtConst.paramsUserProfile[6]);
             //location = (Location)jobj.get(PicsArtConst.paramsUserProfile[9]);
 
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        catch (Exception e){e.printStackTrace();}
     }
 
 
-                    // url = PicsArtConst.USE_PROFILE_URL+id+PicsArtConst.TOKEN_URL_PREFIX+MainActivity.getAccessToken();;
+    // url = PicsArtConst.USE_PROFILE_URL+id+PicsArtConst.TOKEN_URL_PREFIX+MainActivity.getAccessToken();;
 
                            /* try {
                                 userProfileRessult[0] = new ObjectMapper().readValue(response.toString(), HashMap.class);
@@ -194,8 +193,6 @@ public class User {
     public void setLocation(Location location) {
         this.location = location;
     }
-
-
 
 
 }

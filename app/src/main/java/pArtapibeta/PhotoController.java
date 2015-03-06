@@ -46,6 +46,8 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,39 +58,34 @@ import test.api.picsart.com.picsart_api_test.PicsArtConst;
  * Created by Arman on 2/23/15.
  */
 public  class PhotoController  {
-    Context ctx;
-    RequestListener listener;
-    static  RequestListener st_listener;
-    String token;
-    volatile Photo photo;
-    static volatile Comment[][] comm = new Comment[1][];
+    Context                     ctx;
+    RequestListener             listener;
+    static  RequestListener     st_listener;
+    String                      token;
+    volatile Photo              photo;
+    static volatile Comment     _comment;
 
+
+    static volatile Comment[][] comm = new Comment[1][];
 
 
 
     public static Comment[] getComments() {
         return comm[0];
     }
-
-
     public Photo getPhoto() {
         return photo;
     }
 
-    public static synchronized  void uploadPhoto(Photo... photo) {
+
+
+
+    public static synchronized  void    uploadPhoto(Photo... photo) {
            new ImageUploadTask().execute(photo);
 
     }
 
-    public void setListener(RequestListener listener){
-        this.listener=listener;
-    }
-
-    public static void setSt_Listener(RequestListener listener){
-        PhotoController.st_listener=listener;
-    }
-
-    public synchronized void requestPhoto(String id) {
+    public synchronized void            requestPhoto(String id) {
         assert this.listener !=null;
         String url = PicsArtConst.Get_PHOTO_URL + id + PicsArtConst.TOKEN_PREFIX+token;
         PARequest request = new PARequest(Request.Method.GET, url, null,null);
@@ -111,13 +108,6 @@ public  class PhotoController  {
 
     }
 
-
-    public PhotoController(Context ctx,String token){
-    this.ctx = ctx;
-    this.token = token;
-    }
-
-
     /**
      *
      * @param photoId  id of photo
@@ -125,7 +115,7 @@ public  class PhotoController  {
      * @param offset  starting index to count
      *
      * */
-    public static synchronized  void getComments(String photoId,final int limit, final int offset){
+    public static synchronized  void    getComments(String photoId,final int limit, final int offset){
 
         String url = PicsArtConst.PHOTO_COMMENTS_URL+photoId+".json"+PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
         PARequest req = new PARequest(Request.Method.GET,url,null,null);
@@ -145,7 +135,7 @@ public  class PhotoController  {
                     for (int i = 0; i < _comArr.length(); i++) {
                         JSONObject val = _comArr.getJSONObject(i);
                         String txt = val.getString("text");
-                       // Date crtd = new Date(val.getString("created"));
+                        // Date crtd = new Date(val.getString("created"));
                         String cmid = val.getString("_id");
                         comment[i]=(new Comment(txt,null,cmid));
                     }
@@ -168,33 +158,10 @@ public  class PhotoController  {
 
     }
 
-
-
-
-    public Comment getCommentByid(String id){
-        //TODO
-        return new Comment(null,null,null);
-    }
-
-    public void removeComment(String id){
-
-        //TODO
-    }
-    /*public User[] getLikes(){
-        //TODO
-
-    }*/
-
-    public void updateData(){
-        //TODO
-    }
-/**
- *
- * */
-    public static synchronized void comment(String photoID, final String comment) {
+    public static synchronized void     comment(String photoID, final String comment) {
 
         String url = PicsArtConst.PHOTO_ADD_COMMENT_URL+photoID+".json"+PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
-         PARequest req = new PARequest(Request.Method.POST,url, null,new PARequest.PARequestListener() {
+       /*  PARequest req = new PARequest(Request.Method.POST,url, null,new PARequest.PARequestListener() {
              @Override
              public void onErrorResponse(VolleyError error) {
 
@@ -216,50 +183,231 @@ public  class PhotoController  {
 
              // params.put("Content-Type", "fmultipart/form-data");
 
-        };
+        };*/
+
+        StringRequest req = new StringRequest(Request.Method.POST,url,
+
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("response inner", response);
+                        st_listener.onRequestReady(444);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                })
+        {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("is_social", "1");
+                params.put("text", comment);
+                return params;
+
+            } };
 
         SingletoneRequestQue.getInstance(MainActivity.getAppContext()).addToRequestQueue(req);
+
+          /*  req.setRequestListener(new PARequest.PARequestListener()
+
+            {
+                @Override
+                public void onErrorResponse (VolleyError error){
+
+            }
+
+                @Override
+                public void onResponse (Object response){
+                //  Log.d("Response ", response.toString());
+                st_listener.onRequestReady(444);
+            }
+            }
+
+            );*/
+
+
+    }
+
+    public static synchronized void     removeComment(String photoId, final String commentId){
+        String url = PicsArtConst.PHOTO_REMOVE_COMMENT_URL+photoId+".json"+PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
+        StringRequest req = new StringRequest(Request.Method.POST,url,
+
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("RemoveComment ", response);
+                        st_listener.onRequestReady(666);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                })
+        {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("comment_id", commentId);
+                return params;
+
+            } };
+
+        SingletoneRequestQue.getInstance(MainActivity.getAppContext()).addToRequestQueue(req);
+
+    }
+
+    /**
+     *
+     * @param photo new photo info to apply
+     *              @see first alll the data must be inited on photo then to start using this method
+     * */
+    public static synchronized void     updateData(final Photo photo){
+        JSONObject jobj = new JSONObject();
+        final ArrayList<String> tgss =new ArrayList<>();
+        for(String tgs: photo.getTags().getTagValues())
+        {
+            tgss.add(tgs);
+
+        }
+        JSONArray tgarr ;
+        tgarr = new JSONArray();
+        tgarr.put(tgss);
+
+        try {
+            jobj.put("tags",tgarr);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        BasicNameValuePair[] tmp = photo.getLocation().getLocationPair();
+        for(BasicNameValuePair pair : tmp){
+            try {
+                jobj.put(pair.getName(),pair.getValue());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            jobj.put("title",photo.getTitle());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        String url = PicsArtConst.PHOTO_UPDATE_INFO_URL+photo.getId()+".json"+PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
+        PARequest req = new PARequest(Request.Method.POST,url, jobj  ,null);
+
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 
             }
-
             @Override
             public void onResponse(Object response) {
-           //  Log.d("Response ", response.toString());
-                st_listener.onRequestReady(444);
+                Log.d("UpdatedonLisData ", response.toString());
+                st_listener.onRequestReady(2222);
             }
         });
 
-/*
-        Map<String, String> hedr = req.getHeaders();
-            hedr= new HashMap<>();
-            hedr.put("Content-Type", "multipart/form-data");*/
+        SingletoneRequestQue.getInstance(MainActivity.getAppContext()).addToRequestQueue(req);
 
-          /*  String bdtype =req.getBodyContentType();
-            bdtype ="multipart/form-data";*/
-
-                //params.put("is_social","1");
-
-
-
-
-
-
-    };
-
-
-
-    public boolean like(){
-        //TODO
-        return false;
     }
 
-    public boolean unLike(){
-        //TODO
-        return false;
+    public static synchronized void     like(String photoId){
+        String url = PicsArtConst.PHOTO_LIKE_URL+photoId+".json"+PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
+        StringRequest req = new StringRequest(Request.Method.POST,url,
+
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("PhotoLike ", response);
+                        st_listener.onRequestReady(999);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("PhotoLike ", error.toString());
+                        st_listener.onRequestReady(999);
+                    }
+                })
+        {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("is_social", "1");
+                return params;
+
+            } };
+
+        SingletoneRequestQue.getInstance(MainActivity.getAppContext()).addToRequestQueue(req);
+
+
     }
+
+    public static synchronized void     unLike(String photoId){
+        String url = PicsArtConst.PHOTO_UNLIKE_URL+photoId+".json"+PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
+        StringRequest req = new StringRequest(Request.Method.POST,url,
+
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("PhotoUnlike ", response);
+                        st_listener.onRequestReady(1111);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("PhotoUnlike ", error.toString());
+                        st_listener.onRequestReady(1111);
+                    }
+                })
+        {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                //  params.put("is_social", "1");
+                return params;
+
+            } };
+
+        SingletoneRequestQue.getInstance(MainActivity.getAppContext()).addToRequestQueue(req);
+    }
+
+
+    public              PhotoController(Context ctx,String token){
+    this.ctx = ctx;
+    this.token = token;
+    }
+    public void         setListener(RequestListener listener){
+        this.listener=listener;
+    }
+    public static void  setSt_Listener(RequestListener listener){
+        PhotoController.st_listener=listener;
+    }
+
+
+
+
+
+    public Comment getCommentByid(String id){
+        //TODO
+        return new Comment(null,null,null);
+    }
+
+
+
+
+    /*public User[] getLikes(){
+        //TODO
+
+    }*/
 
 
 
