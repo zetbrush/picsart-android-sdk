@@ -1,9 +1,7 @@
 package pArtapibeta;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -12,12 +10,9 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -89,8 +84,6 @@ public class MainActivity extends Activity implements RequestListener {
                     @Override
                     public boolean shouldOverrideUrlLoading(WebView view, String url) {
                         Log.i("ShouldOvver", " rideUrlLoading" + url);
-
-
                         return false;
                     }
 
@@ -129,7 +122,6 @@ public class MainActivity extends Activity implements RequestListener {
                             edit.putString("Code", authCode);
                             edit.commit();
 
-
                             new TokenGet().execute();
 
                             Toast.makeText(getApplicationContext(),
@@ -163,7 +155,7 @@ public class MainActivity extends Activity implements RequestListener {
     final Context myApp = this;
 
 
-    private class SomWebViewDefClient extends WebViewClient {
+    /*private class SomWebViewDefClient extends WebViewClient {
 
         @Override
         public void onPageStarted(WebView view, String url,
@@ -190,7 +182,7 @@ public class MainActivity extends Activity implements RequestListener {
                 view.canGoBack();
             }
         }
-    }
+    }*/
 
     private class TokenGet extends AsyncTask<String, String, JSONObject> {
         private ProgressDialog pDialog;
@@ -209,7 +201,7 @@ public class MainActivity extends Activity implements RequestListener {
 
         @Override
         protected JSONObject doInBackground(String... args) {
-            GetAccessToken jParser = new GetAccessToken();
+            GetAccessToken jParser = new GetAccessToken(MainActivity.context);
             JSONObject json = jParser.gettoken(PicsArtConst.TOKEN_URL, Code, PicsArtConst.CLIENT_ID,
                     PicsArtConst.CLIENT_SECRET, PicsArtConst.REDIRECT_URI, PicsArtConst.GRANT_TYPE);
             return json;
@@ -260,36 +252,35 @@ public class MainActivity extends Activity implements RequestListener {
     public void onTestCallClick(View v) {
 
         final UserController userController = new UserController(getApplicationContext());
-        Photo photo=new Photo();
-        photo.setIs(Photo.IS.AVATAR);
+        Photo photo = new Photo(Photo.IS.GENERAL);
+
         photo.setPath("/storage/sdcard0/aa.jpg");
 
-        //userController.requestUserFollowing("me",0,UserController.MAX_LIMIT);
-        //userController.requestLikedPhotos("me",0,UserController.MAX_LIMIT);
-        //userController.requestBlockedUsers("me",0,UserController.MAX_LIMIT);
-        //userController.requestTags("me",1,6);
-        //userController.requestUserPhotos("me",0,UserController.MAX_LIMIT);
+        userController.requestUserFollowing("me", 0, UserController.MAX_LIMIT);  //  9
+        //userController.requestUserFollowers("me",0,UserController.MAX_LIMIT);  //  8
+        //userController.requestLikedPhotos("me",0,UserController.MAX_LIMIT);    //  10
+        //userController.requestBlockedUsers("me",0,UserController.MAX_LIMIT);   //  4
+        //userController.requestTags("me",2,6);                                  //  6
+        //userController.requestUserPhotos("me",0,UserController.MAX_LIMIT);     //  7
 
-        userController.followUserWithID("45033295");
+        //userController.followUserWithID("45033295");
         //userController.unblockUserWithID("153741055000102","160573178000102");
         //userController.blockUserWithID("153741055000102");
         //userController.requestUser("156064667000102");
 
-
-
-        //userController.uploadUserCover(photo);
+        //userController.uploadUserPhoto(photo);
 
         userController.setListener(new RequestListener() {
             @Override
             public void onRequestReady(int requmber) {
-                if (requmber == 12) {
+                if (requmber == 9) {
 
                     //userController.requestBlockedUsers("me",0,UserController.MAX_LIMIT);
                     //Log.d("gagagagagag",userController.getUserPlaces().get(1).getPlace().toString());
                 }
                 if (requmber == 3) {
 
-                    Log.d("gagagagagag",userController.getUser().getName());
+                    Log.d("gagagagagag", userController.getUser().getName());
 
                 }
             }

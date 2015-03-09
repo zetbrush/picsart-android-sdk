@@ -51,8 +51,6 @@ public class TempUserProfile {
                         Log.d("Error.Response", error.toString());
                     }
                 }
-
-
         );
 
         return getRequest;

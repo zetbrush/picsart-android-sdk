@@ -156,7 +156,7 @@ public class UserController {
         requestUserFollowers(user.getId(), offset, limit);
     }
 
-    public void requestUserFollowers(String userId, final int offset, final int limit) throws IllegalArgumentException {    //   8
+    public void requestUserFollowers(String userId, final int offset, final int limit) {    //   8
 
         /**
          * checking argument validation
@@ -189,7 +189,7 @@ public class UserController {
                     JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
                     max_limit = limit > jsonArray.length() ? jsonArray.length() : limit;
 
-                    for (int i = offset; i < max_limit; i++) {
+                    for (int i = offset; i <= max_limit; i++) {
 
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         userFollowers.add(jsonObject.getString("id"));
@@ -241,9 +241,9 @@ public class UserController {
                 try {
 
                     JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
-                    max_limit = limit > jsonArray.length() ? jsonArray.length() : limit;
+                    max_limit = limit >= jsonArray.length() ? jsonArray.length()-1 : limit;
 
-                    for (int i = offset; i < max_limit; i++) {
+                    for (int i = offset; i <= max_limit; i++) {
 
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         userFollowing.add(jsonObject.getString("id"));
@@ -296,7 +296,7 @@ public class UserController {
                     JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
                     max_limit = limit > jsonArray.length() ? jsonArray.length() : limit;
 
-                    for (int i = offset; i < max_limit; i++) {
+                    for (int i = offset; i <= max_limit; i++) {
 
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         Photo photo = new Photo(jsonObject.getString("id"), new URL(jsonObject.getString("url")), null, null, jsonObject.getJSONObject("user").getString("id"));
@@ -353,7 +353,7 @@ public class UserController {
                     JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
                     max_limit = limit > jsonArray.length() ? jsonArray.length() : limit;
 
-                    for (int i = offset; i < max_limit; i++) {
+                    for (int i = offset; i <= max_limit; i++) {
 
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         blockedUsers.add(jsonObject.getString("id"));
@@ -408,7 +408,7 @@ public class UserController {
                     JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
                     max_limit = limit > jsonArray.length() ? jsonArray.length() : limit;
 
-                    for (int i = offset; i < max_limit; i++) {
+                    for (int i = offset; i <= max_limit; i++) {
 
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         userPlaces.add(new Place(jsonObject.getString("place")));
@@ -461,7 +461,7 @@ public class UserController {
                     JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
                     max_limit = limit > jsonArray.length() ? jsonArray.length() : limit;
 
-                    for (int i = offset; i < max_limit; i++) {
+                    for (int i = offset; i <= max_limit; i++) {
 
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         userTags.add(new Tag(jsonObject.getString("tag")));
@@ -517,7 +517,7 @@ public class UserController {
                     JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
                     max_limit = limit > jsonArray.length() ? jsonArray.length() : limit;
 
-                    for (int i = offset; i < max_limit; i++) {
+                    for (int i = offset; i <= max_limit; i++) {
 
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         Photo photo = new Photo(jsonObject.getString("id"), new URL(jsonObject.getString("url")), null, null, jsonObject.getJSONObject("user").getString("id"));
@@ -540,7 +540,7 @@ public class UserController {
     public void blockUserWithID(final String blockingId) {
 
         assert this.listener != null;
-        String url = PicsArtConst.BLOCK_USER_WITH_ID +blockingId+ PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+        String url = PicsArtConst.BLOCK_USER_WITH_ID + blockingId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
 
         PARequest req = new PARequest(Request.Method.POST, url, null, null) {
 
@@ -569,7 +569,7 @@ public class UserController {
     public void unblockUserWithID(final String unblockingId) {
 
         assert this.listener != null;
-        String url = PicsArtConst.UNBLOCK_USER_WITH_ID +unblockingId+ PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+        String url = PicsArtConst.UNBLOCK_USER_WITH_ID + unblockingId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
 
         PARequest req = new PARequest(Request.Method.POST, url, null, null) {
 
@@ -595,7 +595,7 @@ public class UserController {
     public void followUserWithID(final String followingId) {
 
         assert this.listener != null;
-        String url = PicsArtConst.FOLLOW_USER_WITH_ID +followingId+ PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+        String url = PicsArtConst.FOLLOW_USER_WITH_ID + followingId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
 
         PARequest req = new PARequest(Request.Method.POST, url, null, null) {
 
@@ -643,22 +643,20 @@ public class UserController {
         @Override
         protected Void doInBackground(Photo... photo) {
 
-
             try {
+
                 Looper.getMainLooper();
                 Looper.prepare();
-                if (photo[0].getIs() == Photo.IS.COVER) {
-                    url = PicsArtConst.UPLOAD_COVER_PHOTO + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
-                } else if (photo[0].getIs() == Photo.IS.AVATAR) {
 
+                if (photo[0].getIsFor() == Photo.IS.COVER) {
+                    url = PicsArtConst.UPLOAD_COVER_PHOTO + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
+                } else if (photo[0].getIsFor() == Photo.IS.AVATAR) {
                     url = PicsArtConst.UPLOAD_AVATAR_PHOTO + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
                 } else {
-
                     url = PicsArtConst.UPLOAD_PROFILE_PHOTO + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
                 }
 
                 HttpClient httpClient = new DefaultHttpClient();
-
                 HttpPost httpPost = new HttpPost(url);
                 MultipartEntity entity = new MultipartEntity(
                         HttpMultipartMode.BROWSER_COMPATIBLE);
@@ -676,6 +674,7 @@ public class UserController {
                 e.printStackTrace();
             }
             try {
+
                 BufferedReader reader = new BufferedReader(new InputStreamReader(
                         is, "iso-8859-1"), 8);
                 StringBuilder sb = new StringBuilder();
@@ -706,4 +705,5 @@ public class UserController {
             Log.d(MY_LOGS, "json send:   " + json);
         }
     }
+
 }

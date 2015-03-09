@@ -11,6 +11,7 @@ import com.android.volley.toolbox.Volley;
 
 
 public class SingletoneRequestQue {
+
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
     private static Context mCtx;
@@ -44,7 +45,6 @@ public class SingletoneRequestQue {
         }
         return mInstance;
     }
-
 
     public RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {

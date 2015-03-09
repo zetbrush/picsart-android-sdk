@@ -9,8 +9,6 @@ import test.api.picsart.com.picsart_api_test.PicsArtConst;
 
 
 public class Photo {
-
-    public enum IS {COVER,AVATAR,GENERAL}
     private String path;
     private String id;
     private URL url;
@@ -30,15 +28,16 @@ public class Photo {
     private String ownerID;
     private Location location;
     private Comment[] comments;
-    private IS is;
+    IS isFor;
 
+    enum IS {AVATAR, COVER, GENERAL}
 
-    public IS getIs() {
-        return is;
+    public IS getIsFor() {
+        return isFor;
     }
 
-    public void setIs(IS is) {
-        this.is = is;
+    public void setIsFor(IS uiFor) {
+        this.isFor = uiFor;
     }
 
     public Comment[] getComments() {
@@ -153,9 +152,9 @@ public class Photo {
             boolean isLiked = (boolean) jobj.get(PicsArtConst.paramsPhotoInfo[11]);
             boolean isReposted = (boolean) jobj.get(PicsArtConst.paramsPhotoInfo[12]);
             String ownerid = (String) jobj.get(PicsArtConst.paramsPhotoInfo[13]);
-            //Location location = (Location)jobj.get(PicsArtConst.paramsPhotoInfo[21]);
+            Location location = (Location) jobj.get(PicsArtConst.paramsPhotoInfo[21]);
             init(id, url, title, tags, created,
-                    isMature, width, height, likesCount, viewsCount, commentsCount, repostsCount, isLiked, isReposted, ownerid, null);
+                    isMature, width, height, likesCount, viewsCount, commentsCount, repostsCount, isLiked, isReposted, ownerid, location);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -181,8 +180,9 @@ public class Photo {
         //this.location = location;
     }
 
-    public Photo() {
+    public Photo(IS isFor) {
         this(null, null, null, null, null);
+        this.isFor = isFor;
 
     }
 
@@ -221,4 +221,5 @@ public class Photo {
     public void setLocation(Location location) {
         this.location = location;
     }
+
 }

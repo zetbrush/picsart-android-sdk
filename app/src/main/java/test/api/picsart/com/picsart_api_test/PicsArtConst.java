@@ -8,7 +8,7 @@ public class PicsArtConst {
     public static final String REDIRECT_URI = "localhost";
     public static final String GRANT_TYPE = "authorization_code";
     public static final String TOKEN_URL = "http://stage.i.picsart.com/api/oauth2/token";
-    public static final String OAUTH_URL = "http://stage.i.picsart.com/api/oauth2/authorize";
+    public static final String OAUTH_URL = "http://stage.i.picsart.com/api/oauth2/authorize";  //https://api.picsart.com/oauth2/authorize
     public static final String TOKEN_URL_PREFIX = ".json?token=";
     public static final String MY_PROFILE_URL = "http://stage.i.picsart.com/api/users/show/me";
     public static final String USE_PROFILE_URL = "http://stage.i.picsart.com/api/users/show/";
@@ -20,8 +20,14 @@ public class PicsArtConst {
     public static final String API_PREFX = "?key=";
     public static final String API_TEST_PREF = ".json?key=";
 
-
     public static final String GET_PHOTO_FILTER = "?filter=";
+
+    public static final String PHOTO_UPLOAD_URL = "https://api.picsart.com/photos/add.json";
+    public static final String PHOTO_COMMENT_URL = "https://api.picsart.com/photos/show/";
+    public static final String PHOTO_COVER_URL = "https://api.picsart.com/users/cover/add.json";
+    public static final String PHOTO_AVATAR_URL = "https://api.picsart.com/users/photo/add.json";
+    public static final String PHOTO_COMMENTS_URL = "https://api.picsart.com/photos/comments/show/";
+    public static final String PHOTO_ADD_COMMENT_URL = "https://api.picsart.com/photos/comments/add/";
 
     public static final String SHOW_USER_URL = "https://api.picsart.com/users/show/";
     public static final String SHOW_USER_FOLLOWERS = "https://api.picsart.com/followers/show/";
@@ -39,7 +45,6 @@ public class PicsArtConst {
     public static final String UPLOAD_COVER_PHOTO = "https://api.picsart.com/users/cover/add.json";
     public static final String UPLOAD_AVATAR_PHOTO = "https://api.picsart.com/users/photo/add.json";
     public static final String UPLOAD_PROFILE_PHOTO = "https://api.picsart.com/photos/add.json";
-
 
     public static final String[] paramsUserProfile =
             new String[]{
@@ -62,7 +67,7 @@ public class PicsArtConst {
                     "zip",              //16
                     "country",          //17
                     "coordinates",      //18
-                    "cover",             //19
+                    "cover",            //19
                     "followers_count"   //20
             };
 
@@ -89,7 +94,7 @@ public class PicsArtConst {
                     "coordinates",      //18
                     "cover",            //19
                     "followers_count",  //20
-                    "location",         // 21
+                    "location",         //21
                     "tags"              //22
             };
 }
