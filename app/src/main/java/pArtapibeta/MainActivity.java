@@ -130,7 +130,19 @@ static LinkedList<Photo> photoList = null;
                             edit.commit();
 
 
-                            new TokenGet().execute();
+                          // new TokenGet().execute();
+
+                            String Code = pref.getString("Code", "");
+                            AccessToken.setListener(new RequestListener() {
+                                @Override
+                                public void onRequestReady(int requmber) {
+                                    MainActivity.token = AccessToken.getAccessToken();
+                                    Log.d("Token is ready: ", MainActivity.token);
+                                }
+                            });
+                            AccessToken.requestAccessToken(PicsArtConst.TOKEN_URL, Code, PicsArtConst.CLIENT_ID,
+                                    PicsArtConst.CLIENT_SECRET, PicsArtConst.REDIRECT_URI, PicsArtConst.GRANT_TYPE);
+
 
                             Toast.makeText(getApplicationContext(),
                                     "Authorization Code is: " + authCode,
@@ -168,34 +180,6 @@ static LinkedList<Photo> photoList = null;
     final Context myApp = this;
 
 
-
-
-    private class SomWebViewDefClient extends WebViewClient {
-
-        @Override
-        public void onPageStarted(WebView view, String url,
-                                  Bitmap favicon) {
-            super.onPageStarted(view, url, favicon);
-            view.getSettings().setJavaScriptEnabled(true);
-            view.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-            view.canGoBackOrForward(1);
-
-        }
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-
-            return true;
-        }
-        @Override
-        public void onLoadResource (WebView view, String url){
-            if(url.contains("http://stage.i.picsart.com/api/oauth2/localhost?code=")){
-                view.stopLoading();
-                //Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                //startActivity(intent);
-                view.canGoBack();
-            }
-        }
-    }
 
     private class TokenGet extends AsyncTask<String, String, JSONObject> {
         private ProgressDialog pDialog;

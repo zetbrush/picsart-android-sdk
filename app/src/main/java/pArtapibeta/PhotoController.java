@@ -64,8 +64,7 @@ public  class PhotoController  {
     String                      token;
     volatile Photo              photo;
     static volatile Comment     _comment;
-
-
+    static volatile Photo[] photos;
     static volatile Comment[][] comm = new Comment[1][];
 
 
@@ -76,11 +75,17 @@ public  class PhotoController  {
     public Photo getPhoto() {
         return photo;
     }
-
+    public Photo[] getPhotos() {
+        return photos;
+    }
+    public void setPhotos(Photo[] photos) {
+        this.photos = photos;
+    }
 
 
 
     public static synchronized  void    uploadPhoto(Photo... photo) {
+
            new ImageUploadTask().execute(photo);
 
     }
@@ -98,8 +103,8 @@ public  class PhotoController  {
             @Override
             public void onResponse(Object response) {
                 Log.d("Response 9", response.toString());
-                photo = new Photo(Photo.IS.GENERAL);
-                photo.parseFrom(response);
+                //photo = new Photo(Photo.IS.GENERAL);
+                photo= PhotoFactory.parseFrom(response);
                 listener.onRequestReady(9);
             }
         });
@@ -394,20 +399,20 @@ public  class PhotoController  {
 
 
 
-
-
     public Comment getCommentByid(String id){
         //TODO
         return new Comment(null,null,null);
     }
 
 
-
-
     /*public User[] getLikes(){
         //TODO
 
     }*/
+
+    public synchronized void searchPhotos(){
+
+    }
 
 
 

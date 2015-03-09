@@ -85,14 +85,9 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 21 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="robospice-ui-spicelist-1.4.14" level="project" />
     <orderEntry type="library" exported="" name="jackson-all-1.7.4" level="project" />
-    <orderEntry type="library" exported="" name="robospice-spring-android-1.4.14" level="project" />
     <orderEntry type="library" exported="" name="support-v4-21.0.2" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-21.0.2" level="project" />
-    <orderEntry type="library" exported="" name="robospice-google-http-client-1.4.14" level="project" />
-    <orderEntry type="library" exported="" name="robospice-okhttp-1.4.14" level="project" />
-    <orderEntry type="library" exported="" name="robospice-1.4.14" level="project" />
     <orderEntry type="library" exported="" name="httpmime-4.3" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-21.0.2" level="project" />
     <orderEntry type="module" module-name="vol1.0.11" exported="" />
