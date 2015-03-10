@@ -2,7 +2,7 @@ package pArtapibeta;
 
 import org.apache.http.message.BasicNameValuePair;
 
-import java.util.HashMap;
+import pArtapibeta.pojo.PojoLocation;
 
 /**
  * Created by Arman on 2/19/15.
@@ -47,9 +47,18 @@ public class Location {
 
     }
 
+    public Location(PojoLocation loc){
+        this.street = loc.getStreet();
+        this.place = loc.getPlace();
+        this.city = loc.getCity();
+        this.state = loc.getState();
+        this.zip = loc.getZip();
+        //this.coordinates = new Coordiantes(loc.getCoordinates().get(0).toString(), loc.getCoordinates().get(1).toString());
+    }
+
     @Override
     public String toString() {
-        return street + " " + city + " " + state + " " + zip + " " + country + " " + coordinates;
+        return " "+street + " " + city + " " + state + " " + zip + " " + country + " " + coordinates;
 
     }
 

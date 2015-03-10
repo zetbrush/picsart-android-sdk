@@ -1,4 +1,4 @@
-package test.api.picsart.com.picsart_api_test;
+package pArtapibeta;
 
 /**
  * Created by Arman on 2/9/15.
@@ -15,7 +15,7 @@ public class PicsArtConst {
     public static final String MY_PROFILE_URL = "http://stage.i.picsart.com/api/users/me";
     public static final String USE_PROFILE_URL = "http://stage.i.picsart.com/api/users/";
     public static final String Get_PHOTO_URL ="http://stage.i.picsart.com/api/photos/";
-    public static final String Get_PHOTO_URL_PUB ="https://api.picsart.com/photos/";
+    public static final String Get_PHOTO_URL_PUB ="https://api.picsart.com/photos/show/";
     public static final String TOKEN_PREFIX = "?token=";
     public static final String Photo_UPLOAD_URL = "https://stage.i.picsart.com/api/photos/";
 

@@ -19,19 +19,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.VolleyError;
-
-import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URL;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 
-import test.api.picsart.com.picsart_api_test.PicsArtConst;
+import test.pArtapibeta.testPhoto;
 
 
 public class MainActivity extends Activity implements RequestListener {
@@ -135,7 +128,7 @@ static LinkedList<Photo> photoList = null;
                             String Code = pref.getString("Code", "");
                             AccessToken.setListener(new RequestListener() {
                                 @Override
-                                public void onRequestReady(int requmber) {
+                                public void onRequestReady(int requmber,String mmsg) {
                                     MainActivity.token = AccessToken.getAccessToken();
                                     Log.d("Token is ready: ", MainActivity.token);
                                 }
@@ -242,7 +235,7 @@ static LinkedList<Photo> photoList = null;
 
 
     @Override
-    public void onRequestReady(int reqnumber) {
+    public void onRequestReady(int reqnumber,String mmsg) {
 
         if(reqnumber ==1)
         {
@@ -264,66 +257,16 @@ static LinkedList<Photo> photoList = null;
         }
     }
 
-    public void onTestCallClick(View v){
+    public void onTestCallClick(View v) {
+
+
         PARequest.PARequestListener<JSONObject> listn = null;
-
-        //// Volley Get request ///
-       /* JsonObjectRequest  req= new UserProfile().makeRequest();
-        RequestQueue que = Volley.newRequestQueue(this);
-        que.add(req);*/
-
-
-      TextView jj = (TextView)findViewById(R.id.Access);
-       // User aaa = new User();
-
-/*
-      if (aaa.available)
-        aaa.testPrint();*/
-
-
-       // jj.setText();
+        TextView jj = (TextView) findViewById(R.id.Access);
 
 
 
-        ////// END of Volley Test Request ///
-/*
-        final Photo[] ph = new Photo[2];
-        new RequestGetPhoto(new OnRequestReady() {
-            @Override
-            public void onRequestReady(int requmber) {
-                ph[0] =RequestGetPhoto.getPhoto();
-                Log.d("Photo Title ",ph[0].getTitle());
-            }
-        }).execute(PicsArtConst.Get_PHOTO_URL,"123123123123",PicsArtConst.TOKEN_PREFIX+getAccessToken());
-*/
 
-
-
-    /*    Photo photo = null;
-        String   url = PicsArtConst.Get_PHOTO_URL + "123123123123"+ PicsArtConst.TOKEN_PREFIX+getAccessToken();
-        PARequest req = new PARequest(Request.Method.GET, url, null, listn);
-        SingletoneRequestQue.getInstance(getAppContext()).addToRequestQueue(req);
-        req.setRequestListener(new PARequest.PARequestListener<JSONObject>() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("Photo Info ", error.toString());
-            }
-
-            @Override
-            public void onResponse(Object response) {
-
-                try {
-                    Log.d("Photo Info ", "   1 HEREEEEE");
-                    Photo tmp = new Photo();
-                    tmp.parseFrom(response);
-
-                }
-                catch (Exception e){e.printStackTrace();}
-
-            }
-        });*/
-
-       ///Example  uploading photo to account/////
+        ///Example  uploading photo to account/////
 /*
 
        Photo toUpload = new Photo(Photo.IS.COVER);
@@ -334,7 +277,7 @@ static LinkedList<Photo> photoList = null;
         PhotoController.uploadPhoto(toUpload);
 */
 
-            //////////// Getting given comments Count//////
+        //////////// Getting given comments Count//////
      /*   PhotoController.getComments("163086538001202",3,5);
         PhotoController.setSt_Listener(new RequestListener() {
             @Override
@@ -345,193 +288,56 @@ static LinkedList<Photo> photoList = null;
             }
         });
        */
-        ///////////////////////////
+
+
+        /////////////////////////// Static Listener for Photo Request Stuff //////////////////////
+
         PhotoController.setSt_Listener(new RequestListener() {
             @Override
-            public void onRequestReady(int requmber) {
-                if(requmber==444){
-                    Log.d("Commented"," comment");
+            public void onRequestReady(int requmber, String msg) {
+                if (requmber == 444) {
+                    Log.d("Commented", " comment");
                 }
-                if(requmber==2222){
+                if (requmber == 2222) {
 
-                    Log.d("Photo is updated"," is updated");
+                    Log.d("Photo is updated", " is updated");
                 }
 
+                if (requmber == 0001) {    ////PhotoInfo Get Test Case
+                    Log.i("TEST|Ph.Contr|: ", msg);
+                }
+
+                if (requmber == 0002) {    ////PhotoInfo Get Test Case
+                    Log.i("TEST|Ph.Contr|: ", msg);
+                }
 
             }
 
 
-
         });
-       // PhotoController.comment("163086538001202","blabla codeee comment");
+
+        // PhotoController.comment("163086538001202","blabla codeee comment");
 
         Photo phh = new Photo(Photo.IS.GENERAL);
-        phh.setLocation(new Location("nor poxoc","nor Qaxaaaq","nor Plac@@@","nor State@@","nor Zipcod@@","Armenia",new Coordiantes("nor 40.00","nor 36.00")));
+        phh.setLocation(new Location("nor poxoc", "nor Qaxaaaq", "nor Plac@@@", "nor State@@", "nor Zipcod@@", "Armenia", new Coordiantes("nor 40.00", "nor 36.00")));
         phh.setTitle("nor nkariii anun 2");
         phh.setTags(new Tag("nor tag1", "nor tag2", "nor tag3"));
         phh.setId("163086538001202");
-
-        PhotoController.updateData(phh);
-
+        PhotoController.updatePhotoData(phh);
 
 
 
-      /* String url;
-       final  PhotoController[] pc = new PhotoController[1];
-        pc[0] = new PhotoController(getAppContext(),getAccessToken());
-        pc[0].requestPhoto("123123345345456");
-        pc[0].setListener(new RequestListener() {
-            @Override
-            public void onRequestReady(int requmber) {
-                Log.d("PhotoContr ", "Photo height " + pc[0].getPhoto().getTitle().toString());
-
-            }
-        });
+        testPhoto.testGetPhotoInfo("163086538001202", token);
+        testPhoto.testLike("163086538001202",token);
 
 
-
-
-        final UserController[] usc = new UserController[2];
-
-        usc[0]= new UserController(getAppContext(),getAccessToken());
-        usc[0].requestUser();
-          usc[0].setListener(new RequestListener() {
-              @Override
-              public void onRequestReady(int requmber) {
-
-                String myyyid =  usc[0].getUser().getId();
-                  Log.d("My userID", myyyid);
-                  Log.d("My userphoto", usc[0].getUser().getPhoto());
-                  usc[1] = new UserController(getAppContext(),getAccessToken());
-                  usc[1].requestUserPhotos(myyyid,5,0);
-                  usc[1].setListener(new RequestListener() {
-                      @Override
-                      public void onRequestReady(int requmber) {
-                          Log.d("photo urls of my", usc[1].getUserphotosurls().toString());
-
-
-
-                     }
-                  });
-              }
-          });*/
-
-
-
-
-
-
-
-       /* final User[] user = new User[1];
-        url = PicsArtConst.MY_PROFILE_URL+PicsArtConst.TOKEN_URL_PREFIX+getAccessToken();
-        PARequest req2 = new PARequest(Request.Method.GET, url, null, listn);
-        SingletoneRequestQue.getInstance(getAppContext()).addToRequestQueue(req2);
-        req2.setRequestListener(new PARequest.PARequestListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-
-            @Override
-            public void onResponse(Object respon) {
-                 try {
-                            JSONObject response = (JSONObject)respon;
-                               // userProfileRessult[0] = new ObjectMapper().readValue(response.toString(), HashMap.class);
-
-                                String id= String.valueOf(response.getString(PicsArtConst.paramsUserProfile[2]));
-                                String name= (String)response.get(PicsArtConst.paramsUserProfile[1]);
-                                String    username= (String)response.get(PicsArtConst.paramsUserProfile[0]);
-                              *//* //String     photo = (String)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[7]);
-                                //cover = (String)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[19]);
-                                followingCount = (int)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[12]);
-                                followersCownt = (int)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[20]);
-                                likesCount = (int)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[8]);
-                                photosCount = (int)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[6]);
-                                //location = (Location)userProfileRessult[0].get(PicsArtConst.paramsUserProfile[9]);*//*
-
-                       user[0]= new User(id);
-                     final UserController[] usc = new UserController[2];
-                     usc[0]= new UserController(getAppContext());
-                     usc[0].requestUserPhotos(user[0], 5, 0);
-                     usc[0].setListener(new RequestListener() {
-                         @Override
-                         public void onRequestReady(int requmber) {
-                             Log.d("URLSSSS", usc[0].getUserphotosurls().
-                                     toString());
-                         }
-                     });
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-
-
-            }
-        });
-
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-       /*new GetUser(new OnRequestReady() {
-           @Override
-           public void onRequestReady(int requmber) {
-
-               Log.d("NAMEEEE on inner", " listener " + GetUser.namee);
-           }
-       }).execute(PicsArtConst.USER_PROFILE_URL,PicsArtConst.TOKEN_URL_PREFIX+token, PicsArtConst.CLIENT_ID);
-        */
 
     }
 
 
 
-   /* private class GetUser extends AsyncTask<String,String, JSONObject> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-        }
-
-        @Override
-        protected JSONObject doInBackground(String... args) {
-            GetAccessToken jParser = new GetAccessToken();
-            JSONObject json = jParser.getUserObject("http://stage.i.picsart.com/api/users/show/me.json?token=", token, CLIENT_ID);
-            return json;
-
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject json) {
-            if (json != null) {
-                try {
-
-                    String name = json.getString("name");
-                    String username = json.getString("username");
-                    String photo = json.getString("photo");
-                    Toast.makeText(getApplicationContext(), " " + name + "\n" + username + "\n" + photo, Toast.LENGTH_LONG).show();
-
-                } catch (JSONException e) {
-
-                }
 
 
-            }
-        }
-    }*/
 
 
     @Override

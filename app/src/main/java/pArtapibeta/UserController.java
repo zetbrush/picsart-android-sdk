@@ -1,6 +1,5 @@
 package pArtapibeta;
 
-import android.app.DownloadManager;
 import android.content.Context;
 
 import com.android.volley.Request;
@@ -12,9 +11,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-
-import test.api.picsart.com.picsart_api_test.PicsArtConst;
 
 /**
  * Created by Arman on 2/25/15.
@@ -74,7 +70,7 @@ public class UserController {
                     String url = val.getString("url");
                     userphotosurls.add(url);
                 }
-                 UserController.this.listener.onRequestReady(7);
+                 UserController.this.listener.onRequestReady(7,"");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -100,13 +96,12 @@ public class UserController {
                 try {
                      user = new User();
                      user.parseFrom(response);
-                    UserController.this.listener.onRequestReady(7);
+                    UserController.this.listener.onRequestReady(7,"");
                 } catch ( Exception e) {
                     e.printStackTrace();
                 }
             }
         });
-
     }
 
     public void requestUser(){
@@ -126,7 +121,7 @@ public class UserController {
                 try {
                     user = new User();
                     user.parseFrom(response);
-                    UserController.this.listener.onRequestReady(7);
+                    UserController.this.listener.onRequestReady(7,"");
                 } catch ( Exception e) {
                     e.printStackTrace();
                 }

@@ -1,11 +1,7 @@
 package pArtapibeta;
 
-import org.json.JSONObject;
-
 import java.net.URL;
 import java.util.Date;
-
-import test.api.picsart.com.picsart_api_test.PicsArtConst;
 
 /**
  * Created by Arman on 2/23/15.
@@ -13,19 +9,19 @@ import test.api.picsart.com.picsart_api_test.PicsArtConst;
 public class Photo {
     private String path;
     private String id;
-    private URL url;
+    private String url;
     private String title;
     private Tag tags;
-    private Date created;
-    private boolean isMature;
+    private String created;
+    private boolean mature;
     private int width;
     private int height;
-    private int likesCount;
-    private int viewsCount;
-    private int commentsCount;
-    private int repostsCount;
-    private boolean isLiked;
-    private boolean isReposted;
+    private int likes_count;
+    private int views_count;
+    private int comments_count;
+    private int reposts_count;
+    private boolean is_liked;
+    private boolean is_reposted;
     private User owner;
 
 
@@ -34,7 +30,7 @@ public class Photo {
     private Location location;
     private Comment[] comments;
     IS isFor;
-    enum IS{AVATAR,COVER,GENERAL}
+   public enum IS{AVATAR,COVER,GENERAL}
 
     public IS getIsFor() {
         return isFor;
@@ -76,7 +72,7 @@ public class Photo {
         return id;
     }
 
-    public URL getUrl() {
+    public String getUrl() {
         return url;
     }
 
@@ -84,12 +80,12 @@ public class Photo {
         return tags;
     }
 
-    public Date getCreated() {
+    public String getCreated() {
         return created;
     }
 
     public boolean isMature() {
-        return isMature;
+        return mature;
     }
 
     public int getHeight() {
@@ -97,27 +93,27 @@ public class Photo {
     }
 
     public int getLikesCount() {
-        return likesCount;
+        return likes_count;
     }
 
     public int getViewsCount() {
-        return viewsCount;
+        return views_count;
     }
 
     public int getCommentsCount() {
-        return commentsCount;
+        return comments_count;
     }
 
     public int getRepostsCount() {
-        return repostsCount;
+        return reposts_count;
     }
 
     public boolean isLiked() {
-        return isLiked;
+        return is_liked;
     }
 
     public boolean isReposted() {
-        return isReposted;
+        return is_reposted;
     }
 
     public User getOwner() {
@@ -133,19 +129,14 @@ public class Photo {
     }
 
 
-    public Photo(String id, URL url, String title, Tag tags, Date crrated, boolean isMature, int width, int height, int likesCount, int viewsCount, int commentsCount, int repostsCount, boolean isLiked, boolean isReposted, String ownerid, Location location) {
+    public Photo(String id, String url, String title, Tag tags, String crrated, boolean isMature, int width, int height, int likesCount, int viewsCount, int commentsCount, int repostsCount, boolean isLiked, boolean isReposted, String ownerID, Location location) {
        init(id, url, title, tags, created,
-               isMature, width, height, likesCount, viewsCount, commentsCount, repostsCount, isLiked, isReposted, ownerid, location);
+               isMature, width, height, likesCount, viewsCount, commentsCount, repostsCount, isLiked, isReposted,  ownerID, location);
     }
 
-    /*public void parseFrom(Object o) throws ClassCastException{
-        JSONObject oo = (JSONObject) o;
-        parseFrom(oo);
-    }*/
 
 
-
-    public Photo(String id, URL url, String title, Date crrated, String ownerid) {
+    public Photo(String id, String url, String title, String crrated, String ownerid) {
         this.id = id;
         this.title = title;
         this.created = crrated;
@@ -161,22 +152,22 @@ public class Photo {
 
     }
 
-    private void init(String id, URL url, String title, Tag tags, Date crrated, boolean isMature, int width, int height, int likesCount, int viewsCount, int commentsCount, int repostsCount, boolean isLiked, boolean isReposted, String ownerid, Location location){
+    private void init(String id, String url, String title, Tag tags, String crrated, boolean isMature, int width, int height, int likesCount, int viewsCount, int commentsCount, int repostsCount, boolean isLiked, boolean isReposted, String ownerID, Location location){
         this.id = id;
         this.url = url;
         this.title = title;
         this.tags = tags;
         this.created = crrated;
-        this.isMature = isMature;
+        this.mature = isMature;
         this.width = width;
         this.height = height;
-        this.likesCount = likesCount;
-        this.viewsCount = viewsCount;
-        this.commentsCount = commentsCount;
-        this.repostsCount = repostsCount;
-        this.isLiked = isLiked;
-        this.isReposted = isReposted;
-        this.ownerID = ownerid;
+        this.likes_count = likesCount;
+        this.views_count = viewsCount;
+        this.comments_count = commentsCount;
+        this.reposts_count = repostsCount;
+        this.is_liked = isLiked;
+        this.is_reposted = isReposted;
+        this.ownerID = ownerID;
         this.location = location;
     }
 
@@ -190,7 +181,7 @@ public class Photo {
     }
 
     public void setMature(boolean isMature) {
-        this.isMature = isMature;
+        this.mature = isMature;
     }
 
     public void setLocation(Location location) {

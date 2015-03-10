@@ -3,6 +3,7 @@ package pArtapibeta;
 import android.util.Log;
 
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by Arman on 2/19/15.
@@ -21,13 +22,19 @@ public class Tag {
             tagValues[i] = name[i];
         }
     }
+    public Tag(List<String> name) {
+        this.tagValues = new String[name.size()];
+        for (int i = 0; i < name.size(); i++) {
+            tagValues[i] = name.get(i);
+        }
+    }
 
-    public Tag(Object name) {
+    /*public Tag(Object name) {
         try {
             this.tagValues = (String[]) name;
         } catch (Exception e) {
             Log.e("PicsArt", "can't init Tag on given Object..");
         }
-    }
+    }*/
 
 }

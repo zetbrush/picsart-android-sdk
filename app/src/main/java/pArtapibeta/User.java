@@ -1,23 +1,8 @@
 package pArtapibeta;
 
-import android.util.Log;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONObject;
 
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Observable;
-import java.util.Observer;
-
-import test.api.picsart.com.picsart_api_test.PicsArtConst;
+import pArtapibeta.pojo.PojoUser;
 
 /**
  * Created by Arman on 2/19/15.
@@ -96,6 +81,7 @@ public class User {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }*/
+
 
 
     public String[] getFollowers() {

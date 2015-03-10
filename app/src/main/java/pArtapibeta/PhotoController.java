@@ -1,24 +1,16 @@
 package pArtapibeta;
 
-import android.app.Activity;
-import android.app.Application;
-import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.Looper;
 import android.util.Base64;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 
 import org.apache.http.HttpEntity;
@@ -42,17 +34,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import test.api.picsart.com.picsart_api_test.PicsArtConst;
 
 /**
  * Created by Arman on 2/23/15.
@@ -60,6 +45,15 @@ import test.api.picsart.com.picsart_api_test.PicsArtConst;
 public  class PhotoController  {
     Context                     ctx;
     RequestListener             listener;
+
+    public static RequestListener getSt_listener() {
+        return st_listener;
+    }
+
+    public static void setSt_listener(RequestListener st_listener) {
+        PhotoController.st_listener = st_listener;
+    }
+
     static  RequestListener     st_listener;
     String                      token;
     volatile Photo              photo;
@@ -93,19 +87,22 @@ public  class PhotoController  {
     public synchronized void            requestPhoto(String id) {
         assert this.listener !=null;
         String url = PicsArtConst.Get_PHOTO_URL + id + PicsArtConst.TOKEN_PREFIX+token;
+        url = PicsArtConst.Get_PHOTO_URL_PUB + id + ".json"+PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
         PARequest request = new PARequest(Request.Method.GET, url, null,null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(request);
         request.setRequestListener(new PARequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("Error", error.toString());
+                listener.onRequestReady(101,error.toString());
+
             }
             @Override
             public void onResponse(Object response) {
                 Log.d("Response 9", response.toString());
                 //photo = new Photo(Photo.IS.GENERAL);
                 photo= PhotoFactory.parseFrom(response);
-                listener.onRequestReady(9);
+                listener.onRequestReady(102,response.toString());
             }
         });
 
@@ -154,7 +151,7 @@ public  class PhotoController  {
                         tmp[j]=comment[i];
                     }
                     comm[0]=tmp;
-                    st_listener.onRequestReady(555);
+                    st_listener.onRequestReady(555,"");
                 } catch ( Exception e) {
                     e.printStackTrace();
                 }
@@ -196,7 +193,7 @@ public  class PhotoController  {
                     @Override
                     public void onResponse(String response) {
                         Log.d("response inner", response);
-                        st_listener.onRequestReady(444);
+                        st_listener.onRequestReady(444,"");
                     }
                 },
                 new Response.ErrorListener() {
@@ -245,7 +242,7 @@ public  class PhotoController  {
                     @Override
                     public void onResponse(String response) {
                         Log.d("RemoveComment ", response);
-                        st_listener.onRequestReady(666);
+                        st_listener.onRequestReady(666,"");
                     }
                 },
                 new Response.ErrorListener() {
@@ -270,9 +267,9 @@ public  class PhotoController  {
     /**
      *
      * @param photo new photo info to apply
-     *              @see first alll the data must be inited on photo then to start using this method
+     *              @see  alll the data must be inited on photo then to start using this method
      * */
-    public static synchronized void     updateData(final Photo photo){
+    public static synchronized void     updatePhotoData(final Photo photo){
         JSONObject jobj = new JSONObject();
         final ArrayList<String> tgss =new ArrayList<>();
         for(String tgs: photo.getTags().getTagValues())
@@ -315,7 +312,7 @@ public  class PhotoController  {
             @Override
             public void onResponse(Object response) {
                 Log.d("UpdatedonLisData ", response.toString());
-                st_listener.onRequestReady(2222);
+                st_listener.onRequestReady(2222,"");
             }
         });
 
@@ -323,7 +320,7 @@ public  class PhotoController  {
 
     }
 
-    public static synchronized void     like(String photoId){
+    public synchronized void     like(String photoId){
         String url = PicsArtConst.PHOTO_LIKE_URL+photoId+".json"+PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
         StringRequest req = new StringRequest(Request.Method.POST,url,
 
@@ -331,14 +328,16 @@ public  class PhotoController  {
                     @Override
                     public void onResponse(String response) {
                         Log.d("PhotoLike ", response);
-                        st_listener.onRequestReady(999);
+                        listener.onRequestReady(202,response);
+                       // st_listener.onRequestReady(999,response);
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("PhotoLike ", error.toString());
-                        st_listener.onRequestReady(999);
+                        Log.d("PhotoLikeError ", error.toString());
+                        listener.onRequestReady(203,error.toString());
+                       // st_listener.onRequestReady(999,"");
                     }
                 })
         {
@@ -355,7 +354,7 @@ public  class PhotoController  {
 
     }
 
-    public static synchronized void     unLike(String photoId){
+    public synchronized void     unLike(String photoId){
         String url = PicsArtConst.PHOTO_UNLIKE_URL+photoId+".json"+PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
         StringRequest req = new StringRequest(Request.Method.POST,url,
 
@@ -363,14 +362,16 @@ public  class PhotoController  {
                     @Override
                     public void onResponse(String response) {
                         Log.d("PhotoUnlike ", response);
-                        st_listener.onRequestReady(1111);
+                        listener.onRequestReady(301,response);
+                        //st_listener.onRequestReady(1111,"");
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d("PhotoUnlike ", error.toString());
-                        st_listener.onRequestReady(1111);
+                        listener.onRequestReady(302,error.toString());
+                        //st_listener.onRequestReady(1111,"");
                     }
                 })
         {
