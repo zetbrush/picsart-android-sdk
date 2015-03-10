@@ -24,4 +24,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.2'
     compile project(':android-volley-1.0.10')
     compile files('libs/httpmime-4.3.5.jar')
+    compile files('libs/gson-2.3.1.jar')
+    compile files('libs/jackson-annotations-2.1.2.jar')
 }

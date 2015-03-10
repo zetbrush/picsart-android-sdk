@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import java.util.LinkedList;
 
+import pArtapibeta.test.pArtapibeta.TestUser;
 import test.api.picsart.com.picsart_api_test.PicsArtConst;
 
 
@@ -152,38 +153,6 @@ public class MainActivity extends Activity implements RequestListener {
         });
     }
 
-    final Context myApp = this;
-
-
-    /*private class SomWebViewDefClient extends WebViewClient {
-
-        @Override
-        public void onPageStarted(WebView view, String url,
-                                  Bitmap favicon) {
-            super.onPageStarted(view, url, favicon);
-            view.getSettings().setJavaScriptEnabled(true);
-            view.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-            view.canGoBackOrForward(1);
-
-        }
-
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-
-            return true;
-        }
-
-        @Override
-        public void onLoadResource(WebView view, String url) {
-            if (url.contains("http://stage.i.picsart.com/api/oauth2/localhost?code=")) {
-                view.stopLoading();
-                //Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                //startActivity(intent);
-                view.canGoBack();
-            }
-        }
-    }*/
-
     private class TokenGet extends AsyncTask<String, String, JSONObject> {
         private ProgressDialog pDialog;
         String Code;
@@ -252,11 +221,11 @@ public class MainActivity extends Activity implements RequestListener {
     public void onTestCallClick(View v) {
 
         final UserController userController = new UserController(getApplicationContext());
-        Photo photo = new Photo(Photo.IS.GENERAL);
+        //Photo photo = new Photo(Photo.IS.GENERAL);
 
-        photo.setPath("/storage/sdcard0/aa.jpg");
+        //photo.setPath("/storage/sdcard0/aa.jpg");
 
-        userController.requestUserFollowing("me", 0, UserController.MAX_LIMIT);  //  9
+        //userController.requestUserFollowing("me", 0, UserController.MAX_LIMIT);  //  9
         //userController.requestUserFollowers("me",0,UserController.MAX_LIMIT);  //  8
         //userController.requestLikedPhotos("me",0,UserController.MAX_LIMIT);    //  10
         //userController.requestBlockedUsers("me",0,UserController.MAX_LIMIT);   //  4
@@ -266,7 +235,7 @@ public class MainActivity extends Activity implements RequestListener {
         //userController.followUserWithID("45033295");
         //userController.unblockUserWithID("153741055000102","160573178000102");
         //userController.blockUserWithID("153741055000102");
-        //userController.requestUser("156064667000102");
+        userController.requestUser("me");   //  5
 
         //userController.uploadUserPhoto(photo);
 
@@ -285,6 +254,23 @@ public class MainActivity extends Activity implements RequestListener {
                 }
             }
         });
+
+        /*final TestUser testUser=new TestUser(MainActivity.getAppContext());
+        //testUser.testUserFollowers();
+        //testUser.testUserFollowing();
+        testUser.testUserFollow();
+        testUser.setListener(new RequestListener() {
+            @Override
+            public void onRequestReady(int requmber) {
+                if (requmber == 22) {
+                    Log.d("gagagagagagg", testUser.isFollowers() + "");
+                }
+                if (requmber == 44) {
+                    Log.d("gagagagagagg", testUser.getLiked() + "");
+                }
+            }
+        });*/
+
         //Log.d("gagagagagag", Environment.getExternalStorageDirectory().toString());
     }
 }

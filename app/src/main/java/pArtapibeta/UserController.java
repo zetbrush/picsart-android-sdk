@@ -13,6 +13,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -37,6 +39,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -143,10 +146,21 @@ public class UserController {
 
             @Override
             public void onResponse(Object response) {
-                Log.d(MY_LOGS, response.toString());
+                /*Log.d(MY_LOGS, response.toString());
                 user = new User();
                 user.parseFrom(response);
-                UserController.this.listener.onRequestReady(3);
+                UserController.this.listener.onRequestReady(3);*/
+
+                Gson gson = new Gson();
+
+                pArtapibeta.pojo.User target = new pArtapibeta.pojo.User();
+                String json = gson.toJson(response); // serializes target to Json
+                Log.d(MY_LOGS, "json:  "+json);
+
+                pArtapibeta.pojo.User user1=new pArtapibeta.pojo.User();
+                user1=gson.fromJson(json, pArtapibeta.pojo.User.class);
+
+                Log.d(MY_LOGS, "target:  "+user1.getUsername());
             }
         });
     }
@@ -187,7 +201,7 @@ public class UserController {
                 try {
 
                     JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
-                    max_limit = limit > jsonArray.length() ? jsonArray.length() : limit;
+                    max_limit = limit >= jsonArray.length() ? jsonArray.length() - 1 : limit;
 
                     for (int i = offset; i <= max_limit; i++) {
 
@@ -241,7 +255,7 @@ public class UserController {
                 try {
 
                     JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
-                    max_limit = limit >= jsonArray.length() ? jsonArray.length()-1 : limit;
+                    max_limit = limit >= jsonArray.length() ? jsonArray.length() - 1 : limit;
 
                     for (int i = offset; i <= max_limit; i++) {
 
@@ -294,7 +308,7 @@ public class UserController {
                 try {
 
                     JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
-                    max_limit = limit > jsonArray.length() ? jsonArray.length() : limit;
+                    max_limit = limit >= jsonArray.length() ? jsonArray.length()-1 : limit;
 
                     for (int i = offset; i <= max_limit; i++) {
 
@@ -351,7 +365,7 @@ public class UserController {
                 try {
 
                     JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
-                    max_limit = limit > jsonArray.length() ? jsonArray.length() : limit;
+                    max_limit = limit >= jsonArray.length() ? jsonArray.length()-1 : limit;
 
                     for (int i = offset; i <= max_limit; i++) {
 
@@ -406,7 +420,7 @@ public class UserController {
                 try {
 
                     JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
-                    max_limit = limit > jsonArray.length() ? jsonArray.length() : limit;
+                    max_limit = limit >= jsonArray.length() ? jsonArray.length()-1 : limit;
 
                     for (int i = offset; i <= max_limit; i++) {
 
@@ -459,7 +473,7 @@ public class UserController {
                 try {
 
                     JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
-                    max_limit = limit > jsonArray.length() ? jsonArray.length() : limit;
+                    max_limit = limit >= jsonArray.length() ? jsonArray.length()-1 : limit;
 
                     for (int i = offset; i <= max_limit; i++) {
 
@@ -515,7 +529,7 @@ public class UserController {
                 try {
 
                     JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
-                    max_limit = limit > jsonArray.length() ? jsonArray.length() : limit;
+                    max_limit = limit >= jsonArray.length() ? jsonArray.length()-1 : limit;
 
                     for (int i = offset; i <= max_limit; i++) {
 
