@@ -568,4 +568,10 @@ public class User {
         this.tagsCount = tagsCount;
     }
 
+    @Override
+    public String toString() {
+        return "id: "+id+"\tname:  "+name+"\tusername:  "+username+"\tstatus:  "+status+"\tphoto:  "+
+                photo+"\tfollowing count:  "+followersCount+"\tfollowers count:  "+followersCount+
+                "\tuser likes count:  "+likesCount+"\temail:  "+email+"\tkey:  "+key;
+    }
 }

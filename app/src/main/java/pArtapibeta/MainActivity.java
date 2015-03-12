@@ -22,6 +22,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import pArtapibeta.test.pArtapibeta.TestUser;
@@ -237,48 +238,53 @@ public class MainActivity extends Activity implements RequestListener {
         //userController.unblockUserWithID("153741055000102","160573178000102");
         //userController.blockUserWithID("153741055000102");
         //userController.requestUser("156064667000102");   //  5
-        //userController.requestUser();
+        userController.requestUser("me");
+        userController.requestUser("159662182001102");
+        userController.requestUser("133845195001102");
+        userController.requestUser("157908798000102");
+        userController.requestUser("152204235000102");
+        userController.requestUser("157190773001102");
+
+        final ArrayList<User> arrrarra=new ArrayList<>();
 
         //userController.uploadUserPhoto(photo);
 
-        /*userController.setListener(new RequestListener() {
+        userController.setListener(new RequestListener() {
             @Override
             public void onRequestReady(int requmber, String msg) {
-                if (requmber == 102) {
-
-                    Log.d(MY_LOGS,""+userController.getUser().getTagsCount());
-                    Log.d(MY_LOGS,""+userController.getUser().getEmail());
-                    Log.d(MY_LOGS,""+userController.getUser().getCover());
-                    Log.d(MY_LOGS,""+userController.getUser().getTags().size());
+                if (requmber == 210) {
 
                 }
-                if (requmber == 205) {
-
-                    Log.d(MY_LOGS, userController.getUser().getName());
-
-                }
-            }
-        });*/
-
-        userController.setSt_listener(new RequestListener() {
-            @Override
-            public void onRequestReady(int requmber, String message) {
-
-                if (requmber == 118) {
-                    Log.d(MY_LOGS, "userProfile id :  " + message);
-                }
-                if (requmber == 116) {
-                    Log.d(MY_LOGS, "userProfile:  " + message);
+                if (requmber == 202) {
+                    arrrarra.add(userController.getUser());
                 }
             }
         });
 
-        //TestUser.testUserFollowing("me");
-        //TestUser.testUserLikedPhotos("me");
-        //TestUser.testUserBlockedUsers("me");
-        //TestUser.testUserPlaces("me");
+        for (int i=0;i<5;i++){
+            Log.d(MY_LOGS,arrrarra.get(i).getName());
+        }
+
+       /* userController.setSt_listener(new RequestListener() {
+            @Override
+            public void onRequestReady(int requmber, String message) {
+
+                if (requmber == 117) {
+                    Log.d(MY_LOGS, "userProfile id :  " + message);
+                }
+                if (requmber == 118) {
+                    Log.d(MY_LOGS, "userProfile:  " + message);
+                }
+            }
+        });*/
+
         //TestUser.testUserProfile();
         //TestUser.testUserProfile("me");
-        TestUser.testUserTags("me");
+        //TestUser.testUserFollowers("me",false);
+        //TestUser.testUserFollowing("me",true);
+        //TestUser.testUserLikedPhotos("me",true);
+        //TestUser.testUserBlockedUsers("me",false);
+        //TestUser.testUserPlaces("me",false);
+        //TestUser.testUserTags("me",true);
     }
 }

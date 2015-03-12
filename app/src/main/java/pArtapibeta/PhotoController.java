@@ -87,7 +87,7 @@ public class PhotoController {
             public void onResponse(Object response) {
                 Log.d("Response 9", response.toString());
                 photo = new Photo(Photo.IS.GENERAL);
-                photo.parseFrom(response);
+                //photo.parseFrom(response);
                 listener.onRequestReady(9,response.toString());
             }
         });

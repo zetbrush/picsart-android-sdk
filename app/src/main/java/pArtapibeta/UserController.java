@@ -3,6 +3,7 @@ package pArtapibeta;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Looper;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -63,8 +64,8 @@ public class UserController {
     private ArrayList<String> userFollowing;
     private ArrayList<String> userFollowers;
     private ArrayList<Photo> userLikedPhotos;
-    private ArrayList<Tag> userTags;
-    private ArrayList<Place> userPlaces;
+    private ArrayList<String> userTags;
+    private ArrayList<String> userPlaces;
     private ArrayList<String> blockedUsers;
 
     private static RequestListener st_listener;
@@ -107,11 +108,11 @@ public class UserController {
         return userLikedPhotos;
     }
 
-    public ArrayList<Tag> getUserTags() {
+    public ArrayList<String> getUserTags() {
         return userTags;
     }
 
-    public ArrayList<Place> getUserPlaces() {
+    public ArrayList<String> getUserPlaces() {
         return userPlaces;
     }
 
@@ -119,22 +120,6 @@ public class UserController {
         return blockedUsers;
     }
 
-    public static User parseFrom(Object object) {
-
-        try {
-
-            JSONObject jsonObject = (JSONObject) object;
-            Gson gson = new Gson();
-            User phh = gson.fromJson(jsonObject.toString(), User.class);
-            //Log.d("gagaggaga",""+phh.getId());
-            return phh;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
 
     public void requestUser() {
 
@@ -152,11 +137,10 @@ public class UserController {
             public void onResponse(Object response) {
                 Log.d(MY_LOGS, response.toString());
                 //user = new User();
-                user=parseFrom(response);
+                user=UserFactory.parseFrom(response);
                 UserController.this.listener.onRequestReady(205, response.toString());
             }
         });
-
     }
 
     public void requestUser(String id) {     //    3
@@ -179,7 +163,7 @@ public class UserController {
                 user.parseFrom(response);
                 UserController.this.listener.onRequestReady(3);*/
 
-                user = parseFrom(response);
+                user = UserFactory.parseFrom(response);
                 listener.onRequestReady(202, response.toString());
             }
         });
@@ -281,7 +265,7 @@ public class UserController {
 
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         userFollowing.add(jsonObject.getString("id"));
-                        Log.d(MY_LOGS, "following id:  " + jsonObject.getString("id"));
+                        //Log.d(MY_LOGS, "following id:  " + jsonObject.getString("id"));
 
                     }
                     UserController.this.listener.onRequestReady(209, response.toString());
@@ -334,7 +318,8 @@ public class UserController {
                     for (int i = offset; i <= max_limit; i++) {
 
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        Photo photo = new Photo(jsonObject.getString("id"), new URL(jsonObject.getString("url")), null, null, jsonObject.getJSONObject("user").getString("id"));
+                        Photo photo=PhotoFactory.parseFrom(jsonObject);
+                        //Photo photo = new Photo(jsonObject.getString("id"), new URL(jsonObject.getString("url")), null, null, jsonObject.getJSONObject("user").getString("id"));
                         userLikedPhotos.add(photo);
                         Log.d(MY_LOGS, "liked photo id :  " + photo.getId());
 
@@ -342,8 +327,6 @@ public class UserController {
                     UserController.this.listener.onRequestReady(210, response.toString());
 
                 } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
 
@@ -393,7 +376,7 @@ public class UserController {
 
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         blockedUsers.add(jsonObject.getString("id"));
-                        Log.d(MY_LOGS, "blocked user id :  " + jsonObject.getString("id"));
+                        //Log.d(MY_LOGS, "blocked user id :  " + jsonObject.getString("id"));
 
                     }
                     UserController.this.listener.onRequestReady(204, response.toString());
@@ -448,8 +431,8 @@ public class UserController {
                     for (int i = offset; i <= max_limit; i++) {
 
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        userPlaces.add(new Place(jsonObject.getString("place")));
-                        Log.d(MY_LOGS, jsonObject.getString("place"));
+                        userPlaces.add(jsonObject.getString("place"));
+                        //Log.d(MY_LOGS, jsonObject.getString("place"));
 
                     }
                     UserController.this.listener.onRequestReady(205, response.toString());
@@ -502,8 +485,8 @@ public class UserController {
                     for (int i = offset; i <= max_limit; i++) {
 
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        userTags.add(new Tag(jsonObject.getString("tag")));
-                        Log.d(MY_LOGS, jsonObject.getString("tag"));
+                        userTags.add(jsonObject.getString("tag"));
+                        //Log.d(MY_LOGS, jsonObject.getString("tag"));
 
                     }
                     UserController.this.listener.onRequestReady(206, response.toString());
@@ -558,7 +541,8 @@ public class UserController {
                     for (int i = offset; i <= max_limit; i++) {
 
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        Photo photo = new Photo(jsonObject.getString("id"), new URL(jsonObject.getString("url")), null, null, jsonObject.getJSONObject("user").getString("id"));
+                        Photo photo=PhotoFactory.parseFrom(jsonObject);
+                        //Photo photo = new Photo(jsonObject.getString("id"), new URL(jsonObject.getString("url")), null, null, jsonObject.getJSONObject("user").getString("id"));
                         userPhotos.add(photo);
                         Log.d(MY_LOGS, photo.getId());
 
@@ -566,8 +550,6 @@ public class UserController {
                     UserController.this.listener.onRequestReady(207, response.toString());
 
                 } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
             }
@@ -746,5 +728,6 @@ public class UserController {
             Log.d(MY_LOGS, "json send:   " + json);
         }
     }
+
 
 }
