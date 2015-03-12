@@ -22,6 +22,8 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 import test.pArtapibeta.testPhoto;
@@ -263,34 +265,30 @@ static LinkedList<Photo> photoList = null;
         PARequest.PARequestListener<JSONObject> listn = null;
         TextView jj = (TextView) findViewById(R.id.Access);
 
+         PhotoController pc = new PhotoController(getAppContext(),token);
+
 
 
 
         ///Example  uploading photo to account/////
-/*
 
-       Photo toUpload = new Photo(Photo.IS.COVER);
-        toUpload.setLocation(new Location("poxoooc","Qaxaaaq","Plac@@@","State@@","Zipcod@@","Armenia",new Coordiantes("40.00","36.00")));
-        toUpload.setTitle("nkariii anun 2");
-        toUpload.setTags(new Tag("tag1", "tag2", "tag3"));
-        toUpload.setPath("/storage/removable/sdcard1/DCIM/100ANDRO/DSC_0025.jpg");
-        PhotoController.uploadPhoto(toUpload);
-*/
+
+       Photo toUpload = new Photo(Photo.IS.GENERAL);
+        toUpload.setLocation(new Location("poxoooc","Qaxaaaq","Plac@@@","State@@","Zipcod@@","Armenia",new ArrayList<>(Arrays.asList(45,37))));
+        toUpload.setTitle("nkariii__anun3");
+        toUpload.setTags(new ArrayList<>(Arrays.asList("ntag1", "nag2", "ntag3")));
+        toUpload.setPath("/storage/removable/sdcard1/DCIM/100ANDRO/DSC_0008.jpg");
+       // PhotoController.uploadPhoto(toUpload);
+
 
         //////////// Getting given comments Count//////
-     /*   PhotoController.getComments("163086538001202",3,5);
-        PhotoController.setSt_Listener(new RequestListener() {
-            @Override
-            public void onRequestReady(int requmber) {
-                for(Comment com : PhotoController.getComments()) {
-                    Log.d("Comments ",com.toString());
-                }
-            }
-        });
-       */
+
+        PhotoController.getComments("163773067002202",0,50);
 
 
-        /////////////////////////// Static Listener for Photo Request Stuff //////////////////////
+
+
+        /////////////////////////// Static Listener for Photo Stuff //////////////////////
 
         PhotoController.setSt_Listener(new RequestListener() {
             @Override
@@ -307,28 +305,49 @@ static LinkedList<Photo> photoList = null;
                     Log.i("TEST|Ph.Contr|: ", msg);
                 }
 
-                if (requmber == 0002) {    ////PhotoInfo Get Test Case
+                if (requmber == 0002) {    ////PhotoInfo  Test Case
                     Log.i("TEST|Ph.Contr|: ", msg);
+                }
+
+                if (requmber == 44444) {    ////PhotoInfo  Upload Case
+                    Log.i("Photo is uploaded: ", msg);
+                }
+
+                if(requmber ==555){
+                    for(Comment com : PhotoController.getComments()) {
+                        Log.d("Comments ",com.getCreated() + " "+com.getText()  );
                 }
 
             }
 
 
+        }});
+
+
+        pc.setListener(new RequestListener() {
+            @Override
+            public void onRequestReady(int requmber, String message) {
+                Log.d("Comment resp", message);
+               // pc.comment("163773067002202", message.substring(0,20));
+            }
         });
 
-        // PhotoController.comment("163086538001202","blabla codeee comment");
+        pc.comment("163773067002202","blabla  comment 2");
+
 
         Photo phh = new Photo(Photo.IS.GENERAL);
-        phh.setLocation(new Location("nor poxoc", "nor Qaxaaaq", "nor Plac@@@", "nor State@@", "nor Zipcod@@", "Armenia", new Coordiantes("nor 40.00", "nor 36.00")));
+        phh.setLocation(new Location("nor poxoc", "nor Qaxaaaq", "nor Plac@@@", "nor State@@", "nor Zipcod@@", "Armenia", new ArrayList<Integer>(Arrays.asList(40,36))));
         phh.setTitle("nor nkariii anun 2");
-        phh.setTags(new Tag("nor tag1", "nor tag2", "nor tag3"));
+        phh.setTags(new ArrayList<>(Arrays.asList("nor tag1", "nor tag2", "nor tag3")));
         phh.setId("163086538001202");
-        PhotoController.updatePhotoData(phh);
+       // PhotoController.updatePhotoData(phh);
 
 
+      //  testPhoto.testGetPhotoInfo("163086538001202", token);
+      //  testPhoto.testLike("163086538001202", token);
+       // testPhoto.testUnLike("163086538001202",token);
+       // testPhoto.testComment("163086538001202","blaaaa",token);
 
-        testPhoto.testGetPhotoInfo("163086538001202", token);
-        testPhoto.testLike("163086538001202",token);
 
 
 
@@ -342,8 +361,7 @@ static LinkedList<Photo> photoList = null;
 
     @Override
     public void onStop(){
-        super.onStop();
-        SingletoneRequestQue.getInstance(getAppContext()).getRequestQueue().stop();
+
     }
 
 }

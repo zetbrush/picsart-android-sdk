@@ -1,55 +1,268 @@
 package pArtapibeta;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 
 /**
  * Created by Arman on 2/23/15.
  */
 public class Photo {
-    private String path;
-    private String id;
+
+    @SerializedName("likes_count")
+    @Expose
+    private Integer likesCount;
+
+    @SerializedName("tags")
+    @Expose
+    private List<String> tags = new ArrayList<String>();
+
+    @SerializedName("views_count")
+    @Expose
+    private Integer viewsCount;
+
+    @SerializedName("comments_count")
+    @Expose
+    private Integer commentsCount;
+
+    @SerializedName("location")
+    @Expose
+    private Location location;
+    @Expose
+    @SerializedName("status")
+    private String status;
+
+    @SerializedName("width")
+    @Expose
+    private Integer width;
+
+    @SerializedName("streams_count")
+    @Expose
+    private Integer streamsCount;
+
+    @SerializedName("url")
+    @Expose
     private String url;
+
+    @SerializedName("is_liked")
+    @Expose
+    private Boolean isLiked;
+
+    @SerializedName("id")
+    @Expose
+    private String id;
+
+    @SerializedName("title")
+    @Expose
     private String title;
-    private Tag tags;
+
+    @SerializedName("is_reposted")
+    @Expose
+    private Boolean isReposted;
+
+    @SerializedName("height")
+    @Expose
+    private Integer height;
+
+    @SerializedName("created")
+    @Expose
     private String created;
-    private boolean mature;
-    private int width;
-    private int height;
-    private int likes_count;
-    private int views_count;
-    private int comments_count;
-    private int reposts_count;
-    private boolean is_liked;
-    private boolean is_reposted;
+
+    @SerializedName("mature")
+    @Expose
+    private Boolean mature;
+
+
+    @SerializedName("reposts_count")
+    @Expose
+    private Integer repostsCount;
+
+    @SerializedName("public")
+    @Expose
+    private Boolean _public;
+
+    @SerializedName("user")
+    @Expose
     private User owner;
 
 
+    private String path;
 
     private String ownerID;
-    private Location location;
+
+    public Integer getLikesCount() {
+        return likesCount;
+    }
+
+    public void setLikesCount(Integer likesCount) {
+        this.likesCount = likesCount;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
+    public Integer getViewsCount() {
+        return viewsCount;
+    }
+
+    public void setViewsCount(Integer viewsCount) {
+        this.viewsCount = viewsCount;
+    }
+
+    public Integer getCommentsCount() {
+        return commentsCount;
+    }
+
+    public void setCommentsCount(Integer commentsCount) {
+        this.commentsCount = commentsCount;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
+    public Integer getStreamsCount() {
+        return streamsCount;
+    }
+
+    public void setStreamsCount(Integer streamsCount) {
+        this.streamsCount = streamsCount;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Boolean getIsLiked() {
+        return isLiked;
+    }
+
+    public void setIsLiked(Boolean isLiked) {
+        this.isLiked = isLiked;
+    }
+
+    public Boolean getIsReposted() {
+        return isReposted;
+    }
+
+    public void setIsReposted(Boolean isReposted) {
+        this.isReposted = isReposted;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
+    }
+
+    public void setCreated(String created) {
+        this.created = created;
+    }
+
+    public Boolean getMature() {
+        return mature;
+    }
+
+    public void setMature(Boolean mature) {
+        this.mature = mature;
+    }
+
+    public Integer getRepostsCount() {
+        return repostsCount;
+    }
+
+    public void setRepostsCount(Integer repostsCount) {
+        this.repostsCount = repostsCount;
+    }
+
+    public Boolean get_public() {
+        return _public;
+    }
+
+    public void set_public(Boolean _public) {
+        this._public = _public;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    public void setOwnerID(String ownerID) {
+        this.ownerID = ownerID;
+    }
+
     private Comment[] comments;
+
     IS isFor;
-   public enum IS{AVATAR,COVER,GENERAL}
+
+    public enum IS {AVATAR, COVER, GENERAL}
 
     public IS getIsFor() {
         return isFor;
     }
 
-    public void setIsFor(IS uiFor) {
-        this.isFor = uiFor;
+    public void setIsFor(IS isFor) {
+        this.isFor = isFor;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public Integer getWidth() {
+        return width;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public void setId(String id) {
         this.id = id;
     }
 
-    public Comment[] getComments() {
-        return comments;
+    public String getTitle() {
+        return title;
     }
 
-    public void setComments(Comment[] comments) {
-        this.comments = comments;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public String getCreated() {
+        return created;
+    }
+
+    public User getOwner() {
+        return owner;
     }
 
     public String getPath() {
@@ -60,80 +273,22 @@ public class Photo {
         this.path = path;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public Tag getTags() {
-        return tags;
-    }
-
-    public String getCreated() {
-        return created;
-    }
-
-    public boolean isMature() {
-        return mature;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public int getLikesCount() {
-        return likes_count;
-    }
-
-    public int getViewsCount() {
-        return views_count;
-    }
-
-    public int getCommentsCount() {
-        return comments_count;
-    }
-
-    public int getRepostsCount() {
-        return reposts_count;
-    }
-
-    public boolean isLiked() {
-        return is_liked;
-    }
-
-    public boolean isReposted() {
-        return is_reposted;
-    }
-
-    public User getOwner() {
-        return owner;
-    }
-
     public String getOwnerID() {
         return ownerID;
     }
 
-    public Location getLocation() {
-        return location;
+    public Comment[] getComments() {
+        return comments;
     }
 
-
-    public Photo(String id, String url, String title, Tag tags, String crrated, boolean isMature, int width, int height, int likesCount, int viewsCount, int commentsCount, int repostsCount, boolean isLiked, boolean isReposted, String ownerID, Location location) {
-       init(id, url, title, tags, created,
-               isMature, width, height, likesCount, viewsCount, commentsCount, repostsCount, isLiked, isReposted,  ownerID, location);
+    public void setComments(Comment[] comments) {
+        this.comments = comments;
     }
 
+    public Photo(String id, String url, String title, ArrayList tags, String crrated, boolean isMature, int width, int height, int likesCount, int viewsCount, int commentsCount, int repostsCount, boolean isLiked, boolean isReposted, String ownerID, Location location) {
+        init(id, url, title, tags, crrated,
+                isMature, width, height, likesCount, viewsCount, commentsCount, repostsCount, isLiked, isReposted, ownerID, location);
+    }
 
 
     public Photo(String id, String url, String title, String crrated, String ownerid) {
@@ -148,11 +303,11 @@ public class Photo {
 
     public Photo(IS isFor) {
         this(null, null, null, null, null);
-        this.isFor=isFor;
+        this.isFor = isFor;
 
     }
 
-    private void init(String id, String url, String title, Tag tags, String crrated, boolean isMature, int width, int height, int likesCount, int viewsCount, int commentsCount, int repostsCount, boolean isLiked, boolean isReposted, String ownerID, Location location){
+    private void init(String id, String url, String title, ArrayList tags, String crrated, boolean isMature, int width, int height, int likesCount, int viewsCount, int commentsCount, int repostsCount, boolean isLiked, boolean isReposted, String ownerID, Location location) {
         this.id = id;
         this.url = url;
         this.title = title;
@@ -161,32 +316,18 @@ public class Photo {
         this.mature = isMature;
         this.width = width;
         this.height = height;
-        this.likes_count = likesCount;
-        this.views_count = viewsCount;
-        this.comments_count = commentsCount;
-        this.reposts_count = repostsCount;
-        this.is_liked = isLiked;
-        this.is_reposted = isReposted;
+        this.likesCount = likesCount;
+        this.viewsCount = viewsCount;
+        this.commentsCount = commentsCount;
+        this.repostsCount = repostsCount;
+        this.isLiked = isLiked;
+        this.isReposted = isReposted;
         this.ownerID = ownerID;
         this.location = location;
     }
 
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
 
-    public void setTags(Tag tags) {
-        this.tags = tags;
-    }
-
-    public void setMature(boolean isMature) {
-        this.mature = isMature;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
 }
 
 

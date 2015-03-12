@@ -1,24 +1,65 @@
 package pArtapibeta;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONObject;
 
-import pArtapibeta.pojo.PojoUser;
+import java.util.ArrayList;
+import java.util.List;
+
+
 
 /**
  * Created by Arman on 2/19/15.
  */
 public class User {
+
+    @SerializedName("id")
+    @Expose
     private String id;
+
+    @SerializedName("name")
+    @Expose
     private String name;
+
+    @SerializedName("username")
+    @Expose
     private String username;
+
+    @SerializedName("photo")
+    @Expose
     private String photo;
+
+    @SerializedName("cover")
+    @Expose
     private String cover;
-    private Tag[] tags;
+
+    @SerializedName("tags")
+    @Expose
+    private List<String>tags = new ArrayList<>();
+
+
+    @SerializedName("followers_count")
+    @Expose
+    private int followersCount;
+
+
     private int followingCount;
-    private int followersCownt;
+
     private int likesCount;
+
+    @SerializedName("photos_count")
+    @Expose
     private int photosCount;
+
+    @SerializedName("is_verified")
+    @Expose
+    private boolean verified;
+
+
     private Location location;
+
     private String[] followers;
 
     //String url = PicsArtConst.MY_PROFILE_URL+PicsArtConst.TOKEN_URL_PREFIX+MainActivity.getAccessToken();
@@ -34,7 +75,7 @@ public class User {
     }
 
 
-    public void parseFrom(String id, String name, String username, String photo, String cover, Tag[] tags, int followingCount, int followersCownt, int likesCount, int photosCount, Location location, String[] followers) {
+    public void parseFrom(String id, String name, String username, String photo, String cover, ArrayList tags, int followingCount, int followersCownt, int likesCount, int photosCount, Location location, String[] followers) {
         this.id = id;
         this.name = name;
         this.username = username;
@@ -42,7 +83,7 @@ public class User {
         this.cover = cover;
         this.tags = tags;
         this.followingCount = followingCount;
-        this.followersCownt = followersCownt;
+        this.followersCount = followersCownt;
         this.likesCount = likesCount;
         this.photosCount = photosCount;
         this.location = location;
@@ -60,7 +101,7 @@ public class User {
             photo = jobj.getString(PicsArtConst.paramsUserProfile[7]);
             //  cover = (String)jobj.get(PicsArtConst.paramsUserProfile[19]);
             followingCount = jobj.getInt(PicsArtConst.paramsUserProfile[12]);
-            followersCownt = jobj.getInt(PicsArtConst.paramsUserProfile[20]);
+            followersCount = jobj.getInt(PicsArtConst.paramsUserProfile[20]);
             likesCount = jobj.getInt(PicsArtConst.paramsUserProfile[8]);
             photosCount = jobj.getInt(PicsArtConst.paramsUserProfile[6]);
             //location = (Location)jobj.get(PicsArtConst.paramsUserProfile[9]);
@@ -71,16 +112,6 @@ public class User {
     }
 
 
-    // url = PicsArtConst.USE_PROFILE_URL+id+PicsArtConst.TOKEN_URL_PREFIX+MainActivity.getAccessToken();;
-
-                           /* try {
-                                userProfileRessult[0] = new ObjectMapper().readValue(response.toString(), HashMap.class);
-
-
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }*/
 
 
 
@@ -132,11 +163,11 @@ public class User {
         this.cover = cover;
     }
 
-    public Tag[] getTags() {
-        return tags;
+    public ArrayList<String> getTags() {
+        return new ArrayList<>(tags);
     }
 
-    public void setTags(Tag[] tags) {
+    public void setTags(ArrayList tags) {
         this.tags = tags;
     }
 
@@ -148,12 +179,12 @@ public class User {
         this.followingCount = followingCount;
     }
 
-    public int getFollowersCownt() {
-        return followersCownt;
+    public int getFollowersCount() {
+        return followersCount;
     }
 
-    public void setFollowersCownt(int followersCownt) {
-        this.followersCownt = followersCownt;
+    public void setFollowersCount(int followersCownt) {
+        this.followersCount = followersCownt;
     }
 
     public int getLikesCount() {

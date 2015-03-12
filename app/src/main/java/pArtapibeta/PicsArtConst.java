@@ -17,8 +17,8 @@ public class PicsArtConst {
     public static final String Get_PHOTO_URL ="http://stage.i.picsart.com/api/photos/";
     public static final String Get_PHOTO_URL_PUB ="https://api.picsart.com/photos/show/";
     public static final String TOKEN_PREFIX = "?token=";
-    public static final String Photo_UPLOAD_URL = "https://stage.i.picsart.com/api/photos/";
 
+    public static final String Photo_UPLOAD_URL = "https://stage.i.picsart.com/api/photos/";
     public static final String GET_PHOTO_FILTER = "?filter=";
     public static final String APIKEY = "d97fb4fa-63e5-4a59-a84a-5124376b11ed";
     public static final String API_PREFX = "?key=";

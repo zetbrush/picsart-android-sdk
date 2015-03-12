@@ -12,6 +12,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.google.gson.Gson;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -51,6 +52,7 @@ public  class PhotoController  {
     }
 
     public static void setSt_listener(RequestListener st_listener) {
+        if(st_listener==null)
         PhotoController.st_listener = st_listener;
     }
 
@@ -59,12 +61,12 @@ public  class PhotoController  {
     volatile Photo              photo;
     static volatile Comment     _comment;
     static volatile Photo[] photos;
-    static volatile Comment[][] comm = new Comment[1][];
+    static volatile Comment[][] commentList = new Comment[1][];
 
 
 
     public static Comment[] getComments() {
-        return comm[0];
+        return commentList[0];
     }
     public Photo getPhoto() {
         return photo;
@@ -117,7 +119,7 @@ public  class PhotoController  {
      * @param offset  starting index to count
      *
      * */
-    public static synchronized  void    getComments(String photoId,final int limit, final int offset){
+    public static synchronized  void    getComments(String photoId,final int offset, final int limit ){
 
         String url = PicsArtConst.PHOTO_COMMENTS_URL+photoId+".json"+PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
         PARequest req = new PARequest(Request.Method.GET,url,null,null);
@@ -136,10 +138,11 @@ public  class PhotoController  {
                     Comment[] comment= new Comment[_comArr.length()];
                     for (int i = 0; i < _comArr.length(); i++) {
                         JSONObject val = _comArr.getJSONObject(i);
-                        String txt = val.getString("text");
+                        Gson gson = new Gson();
+                        //String txt = val.getString("text");
                         // Date crtd = new Date(val.getString("created"));
-                        String cmid = val.getString("_id");
-                        comment[i]=(new Comment(txt,null,cmid));
+                        // String cmid = val.getString("_id");
+                        comment[i]=(gson.fromJson(val.toString(),Comment.class));
                     }
                     int nwOffset=0;
                     int nwlimit=0;
@@ -150,7 +153,7 @@ public  class PhotoController  {
                     for(int i =nwOffset,j=0; i<nwlimit ;i++,j++) {
                         tmp[j]=comment[i];
                     }
-                    comm[0]=tmp;
+                    commentList[0]=tmp;
                     st_listener.onRequestReady(555,"");
                 } catch ( Exception e) {
                     e.printStackTrace();
@@ -160,46 +163,22 @@ public  class PhotoController  {
 
     }
 
-    public static synchronized void     comment(String photoID, final String comment) {
+    public  synchronized void     comment(String photoID, final String comment) {
 
         String url = PicsArtConst.PHOTO_ADD_COMMENT_URL+photoID+".json"+PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
-       /*  PARequest req = new PARequest(Request.Method.POST,url, null,new PARequest.PARequestListener() {
-             @Override
-             public void onErrorResponse(VolleyError error) {
-
-             }
-
-             @Override
-             public void onResponse(Object response) {
-                 Log.d("Response ", response.toString());
-             }
-         })
-         {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("is_social","1");
-                params.put("text", comment);
-                return params;
-            };
-
-             // params.put("Content-Type", "fmultipart/form-data");
-
-        };*/
-
         StringRequest req = new StringRequest(Request.Method.POST,url,
 
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Log.d("response inner", response);
-                        st_listener.onRequestReady(444,"");
+                        listener.onRequestReady(401,response);
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        listener.onRequestReady(403,error.toString());
                     }
                 })
         {
@@ -267,12 +246,12 @@ public  class PhotoController  {
     /**
      *
      * @param photo new photo info to apply
-     *              @see  alll the data must be inited on photo then to start using this method
+     *              @see   the data must be inited on photo then to start using this method
      * */
     public static synchronized void     updatePhotoData(final Photo photo){
         JSONObject jobj = new JSONObject();
         final ArrayList<String> tgss =new ArrayList<>();
-        for(String tgs: photo.getTags().getTagValues())
+        for(String tgs: photo.getTags())
         {
             tgss.add(tgs);
 
@@ -374,7 +353,7 @@ public  class PhotoController  {
                         //st_listener.onRequestReady(1111,"");
                     }
                 })
-        {
+         {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
@@ -417,7 +396,7 @@ public  class PhotoController  {
 
 
 
-    private static class ImageUploadTask extends AsyncTask<Photo, Integer, JSONObject> {
+    private  static class ImageUploadTask extends AsyncTask<Photo, Integer, JSONObject> {
 
         InputStream is = null;
         volatile JSONObject jObj = null;
@@ -445,7 +424,7 @@ public  class PhotoController  {
                         for (int i = 0; i < tmp.length; i++) {
                             entity.addPart(tmp[i].getName(), new StringBody(tmp[i].getValue()));
                         }
-                        for (String str : ph.getTags().getTagValues()) {
+                        for (String str : ph.getTags()) {
                             entity.addPart("tags[]", new StringBody(str));
                         }
                         entity.addPart("title", new StringBody(ph.getTitle()));
@@ -504,7 +483,7 @@ public  class PhotoController  {
             if (sResponse != null) {
                 try {
                     Log.d("response Upload", sResponse.toString());
-
+                    st_listener.onRequestReady(44444,"Image(es) is/are uploaded!!");
                 } catch (Exception e) {
                     Log.e(e.getClass().getName(), e.getMessage(), e);
                 }

@@ -1,14 +1,33 @@
 package pArtapibeta;
 
+import android.util.Log;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by Arman on 2/23/15.
  */
 public class Comment {
 
+    SimpleDateFormat sdf ;
+    @SerializedName("text")
+    @Expose
     private String text;
-    private Date created;
+
+    @SerializedName("created")
+    @Expose
+    private String created;
+
+    private Date creat ;
+    @SerializedName("_id")
+    @Expose
     private String id;
 
     public String getId() {
@@ -16,7 +35,15 @@ public class Comment {
     }
 
     public Date getCreated() {
-        return created;
+        if(creat==null) {
+            try {
+                sdf= new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
+                return creat =sdf.parse(created);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return creat;
     }
 
     public String getText() {
@@ -24,16 +51,23 @@ public class Comment {
     }
 
 
-    public Comment(String text, Date created, String id) {
+
+    public Comment(String text, String created, String id) {
+
+
         this.text = text;
-        this.created = created;
+        try {
+            this.created = created;
+            sdf= new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'X'");
+            this.creat = sdf.parse(created);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         this.id = id;
+
     }
 
-    @Override
-    public String toString(){
-        return this.text + " " + /*this.created.toString() + */ " " + this.id;
-    }
+
 
 
 }

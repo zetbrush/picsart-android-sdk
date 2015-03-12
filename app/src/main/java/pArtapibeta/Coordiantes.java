@@ -19,4 +19,9 @@ public class Coordiantes {
     public String getLocation_lon() {
         return location_lon;
     }
+
+    @Override
+    public String toString(){
+       return location_lat + ", " + location_lon;
+    }
 }

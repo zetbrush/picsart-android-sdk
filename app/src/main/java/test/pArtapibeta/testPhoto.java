@@ -21,8 +21,8 @@ public class testPhoto {
             @Override
             public void onRequestReady(int requmber,String mmsg) {
                 Photo redPhto = pc.getPhoto();
-                Log.d("Resp|Photo ", redPhto.getTitle() + redPhto.getOwnerID() + redPhto.getLocation());
-
+               // Log.d("Resp|Photo ", redPhto.getTitle() + redPhto.getOwnerID() + redPhto.getLocation());
+              //  Log.d("Resp|Photo ", redPhto.getOwner().getName() + redPhto.getOwner().getUsername() + redPhto.getLocation());
                 if(requmber ==101)
                     PhotoController.getSt_listener().onRequestReady(0001,"PhotoTest get Info --- FAILD || CONNECTION ERROR");
                 else if(mmsg.contains("error"))
@@ -36,7 +36,7 @@ public class testPhoto {
 
     }
 
-    public static void testLike(String usid, String token) {
+    public static void testLike(String phid, String token) {
 
         final PhotoController pc = new PhotoController(MainActivity.getAppContext(), token);
         pc.setListener(new RequestListener() {
@@ -51,11 +51,11 @@ public class testPhoto {
                     PhotoController.getSt_listener().onRequestReady(0002,"PhotoTest Like --- PASSED");
             }
         });
-        pc.like(usid);
+        pc.like(phid);
 
     }
 
-    public static void testUnLike(String usid, String token) {
+    public static void testUnLike(String phid, String token) {
 
         final PhotoController pc = new PhotoController(MainActivity.getAppContext(), token);
         pc.setListener(new RequestListener() {
@@ -63,16 +63,39 @@ public class testPhoto {
             public void onRequestReady(int requmber,String mmsg) {
 
                 if(requmber ==302)
-                    PhotoController.getSt_listener().onRequestReady(0002,"PhotoTest unLike --- FAILD || CONNECTION ERROR");
+                    PhotoController.getSt_listener().onRequestReady(0003,"PhotoTest unLike --- FAILD || CONNECTION ERROR");
                 else if(mmsg.contains("error"))
-                    PhotoController.getSt_listener().onRequestReady(0002,"PhotoTest unLike --- FAILD");
+                    PhotoController.getSt_listener().onRequestReady(0003,"PhotoTest unLike --- FAILD");
                 else
-                    PhotoController.getSt_listener().onRequestReady(0002,"PhotoTest unLike --- PASSED");
+                    PhotoController.getSt_listener().onRequestReady(0003,"PhotoTest unLike --- PASSED");
             }
         });
-        pc.unLike(usid);
+        pc.unLike(phid);
 
     }
+
+    public static  void testComment(String phid,String comment, String token){
+
+        final PhotoController pc = new PhotoController(MainActivity.getAppContext(), token);
+        pc.setListener(new RequestListener() {
+            @Override
+            public void onRequestReady(int requmber,String mmsg) {
+
+                if(requmber ==403)
+                    PhotoController.getSt_listener().onRequestReady(0004,"PhotoTest unLike --- FAILD || CONNECTION ERROR");
+                else if(mmsg.contains("error"))
+                    PhotoController.getSt_listener().onRequestReady(0004,"PhotoTest unLike --- FAILD");
+                else
+                    PhotoController.getSt_listener().onRequestReady(0004,"PhotoTest unLike --- PASSED");
+            }
+        });
+        pc.comment(phid,comment);
+    }
+
+
+
+
+
 
 
 
