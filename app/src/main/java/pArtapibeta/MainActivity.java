@@ -30,7 +30,8 @@ import test.api.picsart.com.picsart_api_test.PicsArtConst;
 
 public class MainActivity extends Activity implements RequestListener {
 
-    private static LinkedList<Photo> photoList = null;
+    public static final String MY_LOGS = "My_Logs";
+
     private static Context context;
     private WebView web;
     private Button auth;
@@ -211,7 +212,7 @@ public class MainActivity extends Activity implements RequestListener {
 
 
     @Override
-    public void onRequestReady(int reqnumber) {
+    public void onRequestReady(int reqnumber, String msg) {
 
         if (reqnumber == 1) {
             Log.d("MainListener", "reqnumber= " + reqnumber);
@@ -235,42 +236,49 @@ public class MainActivity extends Activity implements RequestListener {
         //userController.followUserWithID("45033295");
         //userController.unblockUserWithID("153741055000102","160573178000102");
         //userController.blockUserWithID("153741055000102");
-        userController.requestUser("me");   //  5
+        //userController.requestUser("156064667000102");   //  5
+        //userController.requestUser();
 
         //userController.uploadUserPhoto(photo);
 
-        userController.setListener(new RequestListener() {
+        /*userController.setListener(new RequestListener() {
             @Override
-            public void onRequestReady(int requmber) {
-                if (requmber == 9) {
+            public void onRequestReady(int requmber, String msg) {
+                if (requmber == 102) {
 
-                    //userController.requestBlockedUsers("me",0,UserController.MAX_LIMIT);
-                    //Log.d("gagagagagag",userController.getUserPlaces().get(1).getPlace().toString());
-                }
-                if (requmber == 3) {
-
-                    Log.d("gagagagagag", userController.getUser().getName());
+                    Log.d(MY_LOGS,""+userController.getUser().getTagsCount());
+                    Log.d(MY_LOGS,""+userController.getUser().getEmail());
+                    Log.d(MY_LOGS,""+userController.getUser().getCover());
+                    Log.d(MY_LOGS,""+userController.getUser().getTags().size());
 
                 }
-            }
-        });
+                if (requmber == 205) {
 
-        /*final TestUser testUser=new TestUser(MainActivity.getAppContext());
-        //testUser.testUserFollowers();
-        //testUser.testUserFollowing();
-        testUser.testUserFollow();
-        testUser.setListener(new RequestListener() {
-            @Override
-            public void onRequestReady(int requmber) {
-                if (requmber == 22) {
-                    Log.d("gagagagagagg", testUser.isFollowers() + "");
-                }
-                if (requmber == 44) {
-                    Log.d("gagagagagagg", testUser.getLiked() + "");
+                    Log.d(MY_LOGS, userController.getUser().getName());
+
                 }
             }
         });*/
 
-        //Log.d("gagagagagag", Environment.getExternalStorageDirectory().toString());
+        userController.setSt_listener(new RequestListener() {
+            @Override
+            public void onRequestReady(int requmber, String message) {
+
+                if (requmber == 118) {
+                    Log.d(MY_LOGS, "userProfile id :  " + message);
+                }
+                if (requmber == 116) {
+                    Log.d(MY_LOGS, "userProfile:  " + message);
+                }
+            }
+        });
+
+        //TestUser.testUserFollowing("me");
+        //TestUser.testUserLikedPhotos("me");
+        //TestUser.testUserBlockedUsers("me");
+        //TestUser.testUserPlaces("me");
+        //TestUser.testUserProfile();
+        //TestUser.testUserProfile("me");
+        TestUser.testUserTags("me");
     }
 }

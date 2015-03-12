@@ -64,7 +64,7 @@ public class GetUser extends AsyncTask<String,String, JSONObject> {
             } catch (JSONException e) {
 
             }
-            listener.onRequestReady(1);
+            listener.onRequestReady(1,"gag");
 
 
         }

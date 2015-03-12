@@ -96,7 +96,7 @@ public class RequestGetPhoto extends AsyncTask<String, String, String> {
                             Log.d("initing photo "," ");
                             Photo tmp = new Photo(id, url, title, null, created, isMature, width, height, likesCount, viewsCount, commentsCount, repostsCount, isLiked, isReposted, ownerid, null);
                             photo = tmp;
-                            listener.onRequestReady(9);
+                            listener.onRequestReady(9,"gag");
                             //   Location location = (Location)response.get(PicsArtConst.paramsPhotoInfo[21]);
 
 

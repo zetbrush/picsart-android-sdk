@@ -79,6 +79,8 @@ public class PhotoController {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("Error", error.toString());
+                listener.onRequestReady(309,error.toString());
+
             }
 
             @Override
@@ -86,7 +88,7 @@ public class PhotoController {
                 Log.d("Response 9", response.toString());
                 photo = new Photo(Photo.IS.GENERAL);
                 photo.parseFrom(response);
-                listener.onRequestReady(9);
+                listener.onRequestReady(9,response.toString());
             }
         });
 
@@ -153,7 +155,7 @@ public class PhotoController {
                         tmp[j] = comment[i];
                     }
                     comm[0] = tmp;
-                    st_listener.onRequestReady(555);
+                    st_listener.onRequestReady(555,response.toString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -221,7 +223,7 @@ public class PhotoController {
             @Override
             public void onResponse(Object response) {
                 //  Log.d("Response ", response.toString());
-                st_listener.onRequestReady(444);
+                st_listener.onRequestReady(444,response.toString());
             }
         });
 
@@ -258,7 +260,7 @@ public class PhotoController {
 
         @Override
         protected JSONObject doInBackground(Photo... phot) {
-            int iter = 0;
+            /*int iter = 0;
             for (Photo ph : phot) {
                 try {
                     Looper.getMainLooper();
@@ -320,7 +322,7 @@ public class PhotoController {
                 iter++;
                 publishProgress(iter);
 
-            }
+            }*/
             // Return JSON String
             return jObj;
 

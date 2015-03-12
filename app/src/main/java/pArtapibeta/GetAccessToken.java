@@ -44,17 +44,17 @@ public class GetAccessToken {
         context = ctx;
     }
 
-    /*List<NameValuePair> params = new ArrayList<NameValuePair>();
+    List<NameValuePair> params = new ArrayList<NameValuePair>();
     Map<String, String> mapn;
     DefaultHttpClient httpClient;
-    HttpPost httpPost;*/
+    HttpPost httpPost;
 
 
 
     public JSONObject gettoken(String address, final String token, final String client_id, final String client_secret, final String redirect_uri, final String grant_type) {
 
 
-        String url = address;
+        /*String url = address;
 
         JSONObject jsonObject=new JSONObject();
         try {
@@ -75,7 +75,7 @@ public class GetAccessToken {
         }
         PARequest req = new PARequest(Request.Method.POST, url, jsonObject, null) {
 
-           /* @Override
+            @Override
             protected Map<String, String> getParams() {
 
                 Map<String, String> params = new HashMap<String, String>();
@@ -96,7 +96,7 @@ public class GetAccessToken {
                 params.put("Authorization", "Basic " + base64EncodedCredentials);
 
                 return super.getHeaders();
-            }*/
+            }
         };
 
         SingletoneRequestQue.getInstance(context).addToRequestQueue(req);
@@ -112,9 +112,9 @@ public class GetAccessToken {
                 Log.d("gagagagaga", response.toString());
 
             }
-        });
+        });*/
         // Making HTTP request
-        /*try {
+        try {
             // DefaultHttpClient
             httpClient = new DefaultHttpClient();
             httpPost = new HttpPost(address);
@@ -162,7 +162,7 @@ public class GetAccessToken {
             jObj = new JSONObject(json);
         } catch (JSONException e) {
             Log.e("JSON Parser", "Error parsing data " + e.toString());
-        }*/
+        }
         // Return JSON String
         return jObj;
     }

@@ -45,6 +45,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import test.api.picsart.com.picsart_api_test.PicsArtConst;
 
@@ -65,6 +66,16 @@ public class UserController {
     private ArrayList<Tag> userTags;
     private ArrayList<Place> userPlaces;
     private ArrayList<String> blockedUsers;
+
+    private static RequestListener st_listener;
+
+    public static RequestListener getSt_listener() {
+        return st_listener;
+    }
+
+    public static void setSt_listener(RequestListener st_listener) {
+        UserController.st_listener = st_listener;
+    }
 
 
     public UserController(Context ctx) {
@@ -108,6 +119,22 @@ public class UserController {
         return blockedUsers;
     }
 
+    public static User parseFrom(Object object) {
+
+        try {
+
+            JSONObject jsonObject = (JSONObject) object;
+            Gson gson = new Gson();
+            User phh = gson.fromJson(jsonObject.toString(), User.class);
+            //Log.d("gagaggaga",""+phh.getId());
+            return phh;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 
     public void requestUser() {
 
@@ -118,15 +145,15 @@ public class UserController {
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                listener.onRequestReady(305, error.toString());
             }
 
             @Override
             public void onResponse(Object response) {
                 Log.d(MY_LOGS, response.toString());
-                user = new User();
-                user.parseFrom(response);
-                UserController.this.listener.onRequestReady(5);
+                //user = new User();
+                user=parseFrom(response);
+                UserController.this.listener.onRequestReady(205, response.toString());
             }
         });
 
@@ -142,6 +169,7 @@ public class UserController {
             @Override
             public void onErrorResponse(VolleyError error) {
 
+                listener.onRequestReady(302, error.toString());
             }
 
             @Override
@@ -151,23 +179,15 @@ public class UserController {
                 user.parseFrom(response);
                 UserController.this.listener.onRequestReady(3);*/
 
-                Gson gson = new Gson();
-
-                pArtapibeta.pojo.User target = new pArtapibeta.pojo.User();
-                String json = gson.toJson(response); // serializes target to Json
-                Log.d(MY_LOGS, "json:  "+json);
-
-                pArtapibeta.pojo.User user1=new pArtapibeta.pojo.User();
-                user1=gson.fromJson(json, pArtapibeta.pojo.User.class);
-
-                Log.d(MY_LOGS, "target:  "+user1.getUsername());
+                user = parseFrom(response);
+                listener.onRequestReady(202, response.toString());
             }
         });
     }
 
 
     public void requestUserFollowers(User user, final int offset, final int limit) {
-        requestUserFollowers(user.getId(), offset, limit);
+       // requestUserFollowers(user.getId(), offset, limit);
     }
 
     public void requestUserFollowers(String userId, final int offset, final int limit) {    //   8
@@ -190,7 +210,7 @@ public class UserController {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                UserController.this.listener.onRequestReady(308, error.toString());
             }
 
             @Override
@@ -210,7 +230,7 @@ public class UserController {
                         Log.d(MY_LOGS, "follower id:  " + jsonObject.getString("id"));
 
                     }
-                    UserController.this.listener.onRequestReady(8);
+                    UserController.this.listener.onRequestReady(208, response.toString());
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -221,7 +241,7 @@ public class UserController {
 
 
     public void requestUserFollowing(User user, final int offset, final int limit) {
-        requestUserFollowing(user.getId(), offset, limit);
+        //requestUserFollowing(user.getId(), offset, limit);
     }
 
     public void requestUserFollowing(String userId, final int offset, final int limit) {    //   9
@@ -244,7 +264,7 @@ public class UserController {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                UserController.this.listener.onRequestReady(309, error.toString());
             }
 
             @Override
@@ -264,7 +284,7 @@ public class UserController {
                         Log.d(MY_LOGS, "following id:  " + jsonObject.getString("id"));
 
                     }
-                    UserController.this.listener.onRequestReady(9);
+                    UserController.this.listener.onRequestReady(209, response.toString());
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -275,7 +295,7 @@ public class UserController {
 
 
     public void requestLikedPhotos(User user, final int offset, final int limit) {
-        requestLikedPhotos(user.getId(), offset, limit);
+        //requestLikedPhotos(user.getId(), offset, limit);
     }
 
     public void requestLikedPhotos(String userId, final int offset, final int limit) {    //   10
@@ -297,6 +317,7 @@ public class UserController {
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                UserController.this.listener.onRequestReady(310, error.toString());
 
             }
 
@@ -308,7 +329,7 @@ public class UserController {
                 try {
 
                     JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
-                    max_limit = limit >= jsonArray.length() ? jsonArray.length()-1 : limit;
+                    max_limit = limit >= jsonArray.length() ? jsonArray.length() - 1 : limit;
 
                     for (int i = offset; i <= max_limit; i++) {
 
@@ -318,7 +339,7 @@ public class UserController {
                         Log.d(MY_LOGS, "liked photo id :  " + photo.getId());
 
                     }
-                    UserController.this.listener.onRequestReady(10);
+                    UserController.this.listener.onRequestReady(210, response.toString());
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -332,7 +353,7 @@ public class UserController {
 
 
     public void requestBlockedUsers(User user, final int offset, final int limit) {
-        requestBlockedUsers(user.getId(), offset, limit);
+        //requestBlockedUsers(user.getId(), offset, limit);
     }
 
     public void requestBlockedUsers(String userId, final int offset, final int limit) {    //   4
@@ -354,6 +375,7 @@ public class UserController {
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                UserController.this.listener.onRequestReady(304, error.toString());
 
             }
 
@@ -365,7 +387,7 @@ public class UserController {
                 try {
 
                     JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
-                    max_limit = limit >= jsonArray.length() ? jsonArray.length()-1 : limit;
+                    max_limit = limit >= jsonArray.length() ? jsonArray.length() - 1 : limit;
 
                     for (int i = offset; i <= max_limit; i++) {
 
@@ -374,7 +396,7 @@ public class UserController {
                         Log.d(MY_LOGS, "blocked user id :  " + jsonObject.getString("id"));
 
                     }
-                    UserController.this.listener.onRequestReady(4);
+                    UserController.this.listener.onRequestReady(204, response.toString());
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -388,7 +410,7 @@ public class UserController {
 
 
     public void requestPlaces(User user, final int offset, final int limit) {
-        requestPlaces(user.getId(), offset, limit);
+        //requestPlaces(user.getId(), offset, limit);
     }
 
     public void requestPlaces(String userId, final int offset, final int limit) {    //  5
@@ -410,6 +432,7 @@ public class UserController {
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                UserController.this.listener.onRequestReady(305, error.toString());
 
             }
 
@@ -420,7 +443,7 @@ public class UserController {
                 try {
 
                     JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
-                    max_limit = limit >= jsonArray.length() ? jsonArray.length()-1 : limit;
+                    max_limit = limit >= jsonArray.length() ? jsonArray.length() - 1 : limit;
 
                     for (int i = offset; i <= max_limit; i++) {
 
@@ -429,7 +452,7 @@ public class UserController {
                         Log.d(MY_LOGS, jsonObject.getString("place"));
 
                     }
-                    UserController.this.listener.onRequestReady(5);
+                    UserController.this.listener.onRequestReady(205, response.toString());
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -440,7 +463,7 @@ public class UserController {
 
 
     public void requestTags(User user, final int offset, final int limit) {
-        requestTags(user.getId(), offset, limit);
+        //requestTags(user.getId(), offset, limit);
     }
 
     public void requestTags(String userId, final int offset, final int limit) {    // 6
@@ -462,6 +485,7 @@ public class UserController {
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                UserController.this.listener.onRequestReady(306, error.toString());
 
             }
 
@@ -473,7 +497,7 @@ public class UserController {
                 try {
 
                     JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
-                    max_limit = limit >= jsonArray.length() ? jsonArray.length()-1 : limit;
+                    max_limit = limit >= jsonArray.length() ? jsonArray.length() - 1 : limit;
 
                     for (int i = offset; i <= max_limit; i++) {
 
@@ -482,7 +506,7 @@ public class UserController {
                         Log.d(MY_LOGS, jsonObject.getString("tag"));
 
                     }
-                    UserController.this.listener.onRequestReady(6);
+                    UserController.this.listener.onRequestReady(206, response.toString());
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -494,8 +518,7 @@ public class UserController {
 
 
     public void requestUserPhotos(User user, final int offset, final int limit) {
-        requestUserPhotos(user.getId(), offset, limit);
-
+        //requestUserPhotos(user.getId(), offset, limit);
     }
 
     public void requestUserPhotos(String userId, final int offset, final int limit) {    //  7
@@ -518,6 +541,7 @@ public class UserController {
 
             @Override
             public void onErrorResponse(VolleyError error) {
+                UserController.this.listener.onRequestReady(307, error.toString());
 
             }
 
@@ -529,7 +553,7 @@ public class UserController {
                 try {
 
                     JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
-                    max_limit = limit >= jsonArray.length() ? jsonArray.length()-1 : limit;
+                    max_limit = limit >= jsonArray.length() ? jsonArray.length() - 1 : limit;
 
                     for (int i = offset; i <= max_limit; i++) {
 
@@ -539,7 +563,7 @@ public class UserController {
                         Log.d(MY_LOGS, photo.getId());
 
                     }
-                    UserController.this.listener.onRequestReady(7);
+                    UserController.this.listener.onRequestReady(207, response.toString());
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -564,6 +588,7 @@ public class UserController {
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                UserController.this.listener.onRequestReady(311, error.toString());
 
             }
 
@@ -571,7 +596,7 @@ public class UserController {
             public void onResponse(Object response) {
 
                 Log.d(MY_LOGS, response.toString());
-                UserController.this.listener.onRequestReady(11);
+                UserController.this.listener.onRequestReady(211, response.toString());
             }
         });
 
@@ -593,6 +618,7 @@ public class UserController {
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                UserController.this.listener.onRequestReady(312, error.toString());
 
             }
 
@@ -600,7 +626,7 @@ public class UserController {
             public void onResponse(Object response) {
 
                 Log.d(MY_LOGS, response.toString());
-                UserController.this.listener.onRequestReady(12);
+                UserController.this.listener.onRequestReady(212, response.toString());
             }
         });
 
@@ -625,6 +651,7 @@ public class UserController {
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                UserController.this.listener.onRequestReady(311, error.toString());
 
             }
 
@@ -632,7 +659,7 @@ public class UserController {
             public void onResponse(Object response) {
 
                 Log.d(MY_LOGS, response.toString());
-                UserController.this.listener.onRequestReady(11);
+                UserController.this.listener.onRequestReady(211, response.toString());
             }
         });
         //new FollowUserAsyncTask().execute(id);
