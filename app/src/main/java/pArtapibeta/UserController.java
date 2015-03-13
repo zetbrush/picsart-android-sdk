@@ -59,6 +59,16 @@ public class UserController {
     private Context ctx;
     private pArtapibeta.RequestListener listener;
 
+    public Req getListen() {
+        return listen;
+    }
+
+    public void setListen(Req listen) {
+        this.listen = listen;
+    }
+
+    private Req listen;
+
     private User user;
     private ArrayList<Photo> userPhotos;
     private ArrayList<String> userFollowing;
@@ -89,7 +99,14 @@ public class UserController {
 
 
     public User getUser() {
-        return user;
+        this.setListen(new Req() {
+            @Override
+            public User onRequestReady() {
+
+                    return user;
+            }
+        });
+        return null;
     }
 
     public ArrayList<Photo> getPhotoUrl() {

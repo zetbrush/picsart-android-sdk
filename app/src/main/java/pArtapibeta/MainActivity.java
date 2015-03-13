@@ -23,9 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
-import pArtapibeta.test.pArtapibeta.TestUser;
 import test.api.picsart.com.picsart_api_test.PicsArtConst;
 
 
@@ -238,6 +236,7 @@ public class MainActivity extends Activity implements RequestListener {
         //userController.unblockUserWithID("153741055000102","160573178000102");
         //userController.blockUserWithID("153741055000102");
         //userController.requestUser("156064667000102");   //  5
+
         userController.requestUser("me");
         userController.requestUser("159662182001102");
         userController.requestUser("133845195001102");
