@@ -59,16 +59,6 @@ public class UserController {
     private Context ctx;
     private pArtapibeta.RequestListener listener;
 
-    public Req getListen() {
-        return listen;
-    }
-
-    public void setListen(Req listen) {
-        this.listen = listen;
-    }
-
-    private Req listen;
-
     private User user;
     private ArrayList<Photo> userPhotos;
     private ArrayList<String> userFollowing;
@@ -99,14 +89,8 @@ public class UserController {
 
 
     public User getUser() {
-        this.setListen(new Req() {
-            @Override
-            public User onRequestReady() {
-
-                    return user;
-            }
-        });
-        return null;
+        //requestUser();
+        return user;
     }
 
     public ArrayList<Photo> getPhotoUrl() {
@@ -145,6 +129,7 @@ public class UserController {
         PARequest req = new PARequest(Request.Method.GET, url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
+
             @Override
             public void onErrorResponse(VolleyError error) {
                 listener.onRequestReady(305, error.toString());
@@ -167,6 +152,7 @@ public class UserController {
         PARequest req = new PARequest(Request.Method.GET, url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
+
             @Override
             public void onErrorResponse(VolleyError error) {
 

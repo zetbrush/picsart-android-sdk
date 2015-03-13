@@ -221,8 +221,9 @@ public class MainActivity extends Activity implements RequestListener {
     public void onTestCallClick(View v) {
 
         final UserController userController = new UserController(getApplicationContext());
-        //Photo photo = new Photo(Photo.IS.GENERAL);
+        Log.d(MY_LOGS,userController.getUser().getUsername());
 
+        //Photo photo = new Photo(Photo.IS.GENERAL);
         //photo.setPath("/storage/sdcard0/aa.jpg");
 
         //userController.requestUserFollowing("me", 0, UserController.MAX_LIMIT);  //  9
@@ -237,18 +238,18 @@ public class MainActivity extends Activity implements RequestListener {
         //userController.blockUserWithID("153741055000102");
         //userController.requestUser("156064667000102");   //  5
 
-        userController.requestUser("me");
+        /*userController.requestUser("me");
         userController.requestUser("159662182001102");
         userController.requestUser("133845195001102");
         userController.requestUser("157908798000102");
         userController.requestUser("152204235000102");
-        userController.requestUser("157190773001102");
+        userController.requestUser("157190773001102");*/
 
         final ArrayList<User> arrrarra=new ArrayList<>();
 
         //userController.uploadUserPhoto(photo);
 
-        userController.setListener(new RequestListener() {
+        /*userController.setListener(new RequestListener() {
             @Override
             public void onRequestReady(int requmber, String msg) {
                 if (requmber == 210) {
@@ -258,11 +259,9 @@ public class MainActivity extends Activity implements RequestListener {
                     arrrarra.add(userController.getUser());
                 }
             }
-        });
+        });*/
 
-        for (int i=0;i<5;i++){
-            Log.d(MY_LOGS,arrrarra.get(i).getName());
-        }
+
 
        /* userController.setSt_listener(new RequestListener() {
             @Override
