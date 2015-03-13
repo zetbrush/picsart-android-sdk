@@ -13,6 +13,17 @@ package pArtapibeta;
     }
 
     int indexOfListener;
+    int indexInList;
+
+    public int getIndexInList() {
+        return indexInList;
+    }
+
+    public void setIndexInList(int indexInList) {
+        this.indexInList = indexInList;
+    }
+
+
     public abstract void onRequestReady(int requmber, String message);
     public RequestListener(int idOfListener){
         this.indexOfListener=idOfListener;

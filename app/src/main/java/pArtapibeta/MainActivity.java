@@ -193,6 +193,58 @@ static LinkedList<Photo> photoList = null;
     }
 
     public void onTestCallClick(View v) {
+        final ImageView im1 = (ImageView) findViewById(R.id.img1);
+        final ImageView im2 = (ImageView) findViewById(R.id.img2);
+        final ImageView im3 = (ImageView) findViewById(R.id.img3);
+
+        counter[0]=10;
+        final ArrayList<Photo> tmpPh = new ArrayList<>();
+
+
+        RequestListener listenerOne = new RequestListener(3333) {
+            @Override
+            public void onRequestReady(int requmber, String message) {
+                if (requmber == 444) {
+                    Log.d("Commented", " comment");
+                }
+                if (requmber == 2222) {
+
+                    Log.d("Photo is updated", " is updated");
+                }
+
+                if (requmber == 0001) {    ////PhotoInfo Get Test Case
+                    Log.i("TEST|Ph.Contr|: ", message);
+                }
+
+                if (requmber == 0002) {    ////PhotoInfo  Test Case
+                    Log.i("TEST|Ph.Contr|: ", message);
+                }
+
+                if (requmber == 44444) {    ////PhotoInfo  Upload Case
+                    Log.i("Photo is uploaded: ", message);
+                }
+
+                if (requmber == 555) {
+                    for (Comment com : PhotoController.getComments()) {
+                        Log.d("Comments ", com.getCreated() + " " + com.getText());
+                    }
+                }
+
+            }
+        };
+
+        RequestListener listenerTwo = new RequestListener(3335) {
+            @Override
+            public void onRequestReady(int requmber, String message) {
+
+                Log.d("imageDNLD ", String.valueOf(requmber));
+                if (requmber == 13) {
+                    ImageLoader imLdr = new ImageLoader(getAppContext());
+                    imLdr.DisplayImage(tmpPh.get(0).getUrl(), R.drawable.ic_launcher, im1);
+                    imLdr.DisplayImage(tmpPh.get(1).getUrl(), R.drawable.ic_launcher, im2);
+                    imLdr.DisplayImage(tmpPh.get(2).getUrl(), R.drawable.ic_launcher, im3);
+            }
+        }} ;
 
 
         PARequest.PARequestListener<JSONObject> listn = null;
@@ -221,74 +273,26 @@ static LinkedList<Photo> photoList = null;
 
 
 
-        counter[0]=10;
-        final ArrayList<Photo> tmpPh = new ArrayList<>();
+
 
 
         /////////////////////////// Static Listener for Photo Stuff //////////////////////
 
-        PhotoController.setSt_listener(new RequestListener(0) {
-            @Override
-            public void onRequestReady(int requmber, String msg) {
-                if (requmber == 444) {
-                    Log.d("Commented", " comment");
-                }
-                if (requmber == 2222) {
-
-                    Log.d("Photo is updated", " is updated");
-                }
-
-                if (requmber == 0001) {    ////PhotoInfo Get Test Case
-                    Log.i("TEST|Ph.Contr|: ", msg);
-                }
-
-                if (requmber == 0002) {    ////PhotoInfo  Test Case
-                    Log.i("TEST|Ph.Contr|: ", msg);
-                }
-
-                if (requmber == 44444) {    ////PhotoInfo  Upload Case
-                    Log.i("Photo is uploaded: ", msg);
-                }
-
-                if(requmber ==555) {
-                    for (Comment com : PhotoController.getComments()) {
-                        Log.d("Comments ", com.getCreated() + " " + com.getText());
-                    }
-                }
+        PhotoController.setSt_listener(listenerOne);
+        PhotoController.setSt_listener(listenerTwo);
 
 
-        }});
-
-
-        PhotoController.setSt_listener(new RequestListener(4) {
-
-
-            @Override
-            public void onRequestReady(int requmber, String message) {
-                Log.d("imageDNLD ", String.valueOf(requmber));
-                if (requmber ==13){
-                    ImageView im1 = (ImageView)findViewById(R.id.img1);
-                    ImageView im2 = (ImageView)findViewById(R.id.img2);
-                    ImageView im3 = (ImageView)findViewById(R.id.img3);
-                    ImageLoader imLdr = new ImageLoader(getAppContext());
-                    imLdr.DisplayImage(tmpPh.get(0).getUrl(),R.drawable.ic_launcher,im1);
-                    imLdr.DisplayImage(tmpPh.get(1).getUrl(),R.drawable.ic_launcher,im2);
-                    imLdr.DisplayImage(tmpPh.get(2).getUrl(),R.drawable.ic_launcher,im3);
-
-                }
-            }
-        });
-           pc.setListener(new RequestListener(4) {
+           pc.setListener(new RequestListener(0) {
             @Override
             public void onRequestReady(int requmber, String message) {
                // Log.d("Comment resp", message);
                // pc.comment("163773067002202", message.substring(0,20));
+
                 if(requmber==102){
                     tmpPh.add(pc.getPhoto());
                     counter[0] += 1;
                     Log.d("COUNTERR: ", String.valueOf(counter[0]));
-
-                    PhotoController.getSt_listener(4).onRequestReady(counter[0], "");
+                    PhotoController.notifyListener(3335, counter[0], "");
 
                 }
 

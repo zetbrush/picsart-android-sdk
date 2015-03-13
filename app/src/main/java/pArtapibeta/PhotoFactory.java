@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -32,6 +33,49 @@ public class PhotoFactory {
             return nwPh;
 
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static ArrayList<Photo> parseFromAsArray(Object obj) {
+        ArrayList<Photo> tmpPh = new ArrayList<>();
+        Photo nwPh;
+        User nwUs;
+        Location loc;
+        try {
+            JSONObject jsonObj = (JSONObject)obj;
+            Gson gson = new Gson();
+            JSONArray jarr = new JSONArray(jsonObj.toString());
+            for(int i =0; i<jarr.length(); i++) {
+
+                 nwPh = gson.fromJson(jarr.get(i).toString(), Photo.class);
+
+               try{
+                  gson = new Gson();
+                  JSONObject jooobj = (JSONObject)jarr.get(i);
+                  nwUs = gson.fromJson(jooobj.get("user").toString(),User.class);
+                    nwPh.setOwner(nwUs);
+                  }catch (Exception e){
+               }
+
+                try{
+                    gson = new Gson();
+                    JSONObject jooobj = (JSONObject)jarr.get(i);
+                    loc = gson.fromJson(jooobj.get("location").toString(), Location.class);
+                    nwPh.setLocation(loc);
+                }catch (Exception e){
+                }
+
+                tmpPh.add(nwPh);
+
+            }
+
+            return tmpPh;
+
+        } catch (Exception e) {
+
             e.printStackTrace();
         }
 

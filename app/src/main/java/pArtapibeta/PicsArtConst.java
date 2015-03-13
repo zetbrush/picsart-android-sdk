@@ -18,6 +18,9 @@ public class PicsArtConst {
     public static final String Get_PHOTO_URL_PUB ="https://api.picsart.com/photos/show/";
     public static final String TOKEN_PREFIX = "?token=";
 
+    public static final String OFFSET ="&offset=";
+    public static final String LIMIT ="&limit=";
+
     public static final String Photo_UPLOAD_URL = "https://stage.i.picsart.com/api/photos/";
     public static final String GET_PHOTO_FILTER = "?filter=";
     public static final String APIKEY = "d97fb4fa-63e5-4a59-a84a-5124376b11ed";
@@ -36,7 +39,7 @@ public class PicsArtConst {
     public static final String PHOTO_UNLIKE_URL="https://api.picsart.com/photos/likes/remove/";
     public static final String PHOTO_UPDATE_INFO_URL="https://api.picsart.com/photos/update/";
     public static final String PHOTO_SEARCH_URL ="https://api.picsart.com/photos/search.json";
-
+    public static final String PHOTO_LIKED_USERS_URL="https://api.picsart.com/photos/likes/show/";
     public static final String API_TEST_PREF = ".json?key=";
 
     public static final String GET_USER_PHOTOS_LIST = "http://stage.i.picsart.com/api/users/";
