@@ -16,6 +16,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,10 +27,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
+import imageDLUtils.ImageLoader;
 import test.pArtapibeta.testPhoto;
 
 
-public class MainActivity extends Activity implements RequestListener {
+public class MainActivity extends Activity  {
 
 static LinkedList<Photo> photoList = null;
     private static Context context;
@@ -40,6 +42,7 @@ static LinkedList<Photo> photoList = null;
     ProgressDialog pDialog;
     Button testcallBtt;
     static String token;
+    static int[] counter =new int[1];
 
 
     public static Context getAppContext() {
@@ -128,7 +131,7 @@ static LinkedList<Photo> photoList = null;
                           // new TokenGet().execute();
 
                             String Code = pref.getString("Code", "");
-                            AccessToken.setListener(new RequestListener() {
+                            AccessToken.setListener(new RequestListener(1) {
                                 @Override
                                 public void onRequestReady(int requmber,String mmsg) {
                                     MainActivity.token = AccessToken.getAccessToken();
@@ -176,76 +179,6 @@ static LinkedList<Photo> photoList = null;
 
 
 
-    private class TokenGet extends AsyncTask<String, String, JSONObject> {
-        private ProgressDialog pDialog;
-        String Code;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pDialog = new ProgressDialog(MainActivity.this);
-            pDialog.setMessage("Contacting ...");
-            pDialog.setIndeterminate(false);
-            pDialog.setCancelable(true);
-            Code = pref.getString("Code", "");
-            pDialog.show();
-        }
-
-        @Override
-        protected JSONObject doInBackground(String... args) {
-            GetAccessToken jParser = new GetAccessToken();
-            JSONObject json = jParser.gettoken(PicsArtConst.TOKEN_URL, Code, PicsArtConst.CLIENT_ID,
-                    PicsArtConst.CLIENT_SECRET, PicsArtConst.REDIRECT_URI, PicsArtConst.GRANT_TYPE);
-            return json;
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject json) {
-
-            if (json != null) {
-
-                try {
-
-                    String tok = json.getString("access_token");
-                    // String expire = json.getString("expires_in");
-                    // String refresh = json.getString("refresh_token");
-                    Log.d("Token Access", tok);
-                    SharedPreferences prrefs = PreferenceManager.getDefaultSharedPreferences(
-                            MainActivity.this);
-                    prrefs.edit().putString("access_Token",tok).commit();
-
-                    pDialog.dismiss();
-                    Toast.makeText(getApplicationContext(), "Access Token: " + tok, Toast.LENGTH_LONG).show();
-                    token=tok;
-                    auth.setText("Authenticated");
-
-                } catch (JSONException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
-            } else {
-                Toast.makeText(getApplicationContext(), "Network Error",
-                        Toast.LENGTH_SHORT).show();
-                pDialog.dismiss();
-            }
-
-
-        }
-
-    }
-
-
-    @Override
-    public void onRequestReady(int reqnumber,String mmsg) {
-
-        if(reqnumber ==1)
-        {
-            Log.d("MainListener","reqnumber= "+reqnumber);
-        }
-
-    }
-
 
         //////listener for picking
 
@@ -265,7 +198,7 @@ static LinkedList<Photo> photoList = null;
         PARequest.PARequestListener<JSONObject> listn = null;
         TextView jj = (TextView) findViewById(R.id.Access);
 
-         PhotoController pc = new PhotoController(getAppContext(),token);
+         final PhotoController pc = new PhotoController(getAppContext(),token);
 
 
 
@@ -283,14 +216,18 @@ static LinkedList<Photo> photoList = null;
 
         //////////// Getting given comments Count//////
 
-        PhotoController.getComments("163773067002202",0,50);
+      //  PhotoController.getComments("163773067002202",0,50);
 
 
+
+
+        counter[0]=10;
+        final ArrayList<Photo> tmpPh = new ArrayList<>();
 
 
         /////////////////////////// Static Listener for Photo Stuff //////////////////////
 
-        PhotoController.setSt_Listener(new RequestListener() {
+        PhotoController.setSt_listener(new RequestListener(0) {
             @Override
             public void onRequestReady(int requmber, String msg) {
                 if (requmber == 444) {
@@ -313,26 +250,67 @@ static LinkedList<Photo> photoList = null;
                     Log.i("Photo is uploaded: ", msg);
                 }
 
-                if(requmber ==555){
-                    for(Comment com : PhotoController.getComments()) {
-                        Log.d("Comments ",com.getCreated() + " "+com.getText()  );
+                if(requmber ==555) {
+                    for (Comment com : PhotoController.getComments()) {
+                        Log.d("Comments ", com.getCreated() + " " + com.getText());
+                    }
                 }
-
-            }
 
 
         }});
 
 
-        pc.setListener(new RequestListener() {
+        PhotoController.setSt_listener(new RequestListener(4) {
+
+
             @Override
             public void onRequestReady(int requmber, String message) {
-                Log.d("Comment resp", message);
+                Log.d("imageDNLD ", String.valueOf(requmber));
+                if (requmber ==13){
+                    ImageView im1 = (ImageView)findViewById(R.id.img1);
+                    ImageView im2 = (ImageView)findViewById(R.id.img2);
+                    ImageView im3 = (ImageView)findViewById(R.id.img3);
+                    ImageLoader imLdr = new ImageLoader(getAppContext());
+                    imLdr.DisplayImage(tmpPh.get(0).getUrl(),R.drawable.ic_launcher,im1);
+                    imLdr.DisplayImage(tmpPh.get(1).getUrl(),R.drawable.ic_launcher,im2);
+                    imLdr.DisplayImage(tmpPh.get(2).getUrl(),R.drawable.ic_launcher,im3);
+
+                }
+            }
+        });
+           pc.setListener(new RequestListener(4) {
+            @Override
+            public void onRequestReady(int requmber, String message) {
+               // Log.d("Comment resp", message);
                // pc.comment("163773067002202", message.substring(0,20));
+                if(requmber==102){
+                    tmpPh.add(pc.getPhoto());
+                    counter[0] += 1;
+                    Log.d("COUNTERR: ", String.valueOf(counter[0]));
+
+                    PhotoController.getSt_listener(4).onRequestReady(counter[0], "");
+
+                }
+
             }
         });
 
-        pc.comment("163773067002202","blabla  comment 2");
+        // pc.comment("163773067002202","blabla  comment 2");
+        String[] phids = {"163086538001202","163773067002202","163858526001202"};
+
+
+        for(int i =0 ; i<3;i++){
+            pc.requestPhoto(phids[i]);
+        }
+
+
+
+
+
+
+
+
+
 
 
         Photo phh = new Photo(Photo.IS.GENERAL);
@@ -347,6 +325,10 @@ static LinkedList<Photo> photoList = null;
       //  testPhoto.testLike("163086538001202", token);
        // testPhoto.testUnLike("163086538001202",token);
        // testPhoto.testComment("163086538001202","blaaaa",token);
+
+
+
+
 
 
 

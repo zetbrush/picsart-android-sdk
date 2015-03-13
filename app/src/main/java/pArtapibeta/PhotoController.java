@@ -47,20 +47,41 @@ public  class PhotoController  {
     Context                     ctx;
     RequestListener             listener;
 
-    public static RequestListener getSt_listener() {
-        return st_listener;
+    public static RequestListener getSt_listener(int indexNumb) {
+        return st_listeners_all.get(indexNumb);
     }
 
     public static void setSt_listener(RequestListener st_listener) {
-        if(st_listener==null)
+       if(st_listener==null)
         PhotoController.st_listener = st_listener;
-    }
+
+        if(st_listeners_all.size()==0){
+            st_listeners_all.add(st_listener);
+        }
+
+       else  if(st_listeners_all.get(st_listener.getIndexOfListener())==null) {
+            st_listeners_all.add(st_listener.getIndexOfListener(), st_listener);
+        }
+
+        }
 
     static  RequestListener     st_listener;
+
+    public static ArrayList<RequestListener> getSt_listeners_all() {
+        return st_listeners_all;
+    }
+
+    public static void setSt_listeners_all(ArrayList<RequestListener> st_listeners_all) {
+        PhotoController.st_listeners_all = st_listeners_all;
+    }
+
+    static ArrayList<RequestListener> st_listeners_all = new ArrayList<>();
+
+
     String                      token;
     volatile Photo              photo;
     static volatile Comment     _comment;
-    static volatile Photo[] photos;
+    static volatile Photo[]     photos;
     static volatile Comment[][] commentList = new Comment[1][];
 
 
@@ -154,7 +175,7 @@ public  class PhotoController  {
                         tmp[j]=comment[i];
                     }
                     commentList[0]=tmp;
-                    st_listener.onRequestReady(555,"");
+                    notifyListeners(555,"getComments");
                 } catch ( Exception e) {
                     e.printStackTrace();
                 }
@@ -221,7 +242,7 @@ public  class PhotoController  {
                     @Override
                     public void onResponse(String response) {
                         Log.d("RemoveComment ", response);
-                        st_listener.onRequestReady(666,"");
+                        notifyListeners(666,"");
                     }
                 },
                 new Response.ErrorListener() {
@@ -246,7 +267,7 @@ public  class PhotoController  {
     /**
      *
      * @param photo new photo info to apply
-     *              @see   the data must be inited on photo then to start using this method
+     *
      * */
     public static synchronized void     updatePhotoData(final Photo photo){
         JSONObject jobj = new JSONObject();
@@ -291,7 +312,7 @@ public  class PhotoController  {
             @Override
             public void onResponse(Object response) {
                 Log.d("UpdatedonLisData ", response.toString());
-                st_listener.onRequestReady(2222,"");
+                notifyListeners(2222,"");
             }
         });
 
@@ -373,9 +394,15 @@ public  class PhotoController  {
     public void         setListener(RequestListener listener){
         this.listener=listener;
     }
-    public static void  setSt_Listener(RequestListener listener){
+
+
+    /*public static void  setSt_Listener(RequestListener listener){
+        if(st_listener==null)
         PhotoController.st_listener=listener;
-    }
+
+        else  st_listener =listener;
+
+    }*/
 
 
 
@@ -483,7 +510,9 @@ public  class PhotoController  {
             if (sResponse != null) {
                 try {
                     Log.d("response Upload", sResponse.toString());
-                    st_listener.onRequestReady(44444,"Image(es) is/are uploaded!!");
+
+                    notifyListeners(44444, "Image(es) is/are uploaded!!");
+
                 } catch (Exception e) {
                     Log.e(e.getClass().getName(), e.getMessage(), e);
                 }
@@ -509,6 +538,17 @@ public  class PhotoController  {
             return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
         }
 
+    }
+
+
+    public static void notifyListeners(int reqnumber, String msg){
+        for(RequestListener listeners: getSt_listeners_all()){
+            listeners.onRequestReady(reqnumber,msg);
+
+        }
+    }
+    public static void notifyListener(int listenerNumb, int reqNumb, String msg){
+        getSt_listeners_all().get(listenerNumb).onRequestReady(reqNumb,msg);
     }
 
 

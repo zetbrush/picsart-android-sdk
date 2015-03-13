@@ -4,6 +4,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.List;
  * Created by Arman on 2/23/15.
  */
 public class Photo {
+    SimpleDateFormat sdf ;
 
     @SerializedName("likes_count")
     @Expose
@@ -72,6 +75,8 @@ public class Photo {
     @SerializedName("created")
     @Expose
     private String created;
+
+    private Date createdDate;
 
     @SerializedName("mature")
     @Expose
@@ -257,8 +262,17 @@ public class Photo {
         return height;
     }
 
-    public String getCreated() {
-        return created;
+    public Date getCreated() {
+        if(createdDate==null) {
+            try {
+                sdf= new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
+                return createdDate =sdf.parse(created);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return createdDate;
     }
 
     public User getOwner() {
@@ -294,7 +308,15 @@ public class Photo {
     public Photo(String id, String url, String title, String crrated, String ownerid) {
         this.id = id;
         this.title = title;
-        this.created = crrated;
+        try {
+            this.created = crrated;
+            if(created!=null) {
+                sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'X'");
+                this.createdDate = sdf.parse(created);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         this.ownerID = ownerid;
         this.url = url;
         this.tags = null;
@@ -307,12 +329,22 @@ public class Photo {
 
     }
 
+
+
+
     private void init(String id, String url, String title, ArrayList tags, String crrated, boolean isMature, int width, int height, int likesCount, int viewsCount, int commentsCount, int repostsCount, boolean isLiked, boolean isReposted, String ownerID, Location location) {
         this.id = id;
         this.url = url;
         this.title = title;
         this.tags = tags;
-        this.created = crrated;
+
+        try {
+            this.created = crrated;
+            sdf= new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'X'");
+            this.createdDate = sdf.parse(created);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         this.mature = isMature;
         this.width = width;
         this.height = height;

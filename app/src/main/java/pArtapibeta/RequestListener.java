@@ -3,9 +3,22 @@ package pArtapibeta;
 /**
  * Created by Arman on 2/20/15.
  */
-public interface RequestListener {
+    public abstract class RequestListener {
+    public int getIndexOfListener() {
+        return indexOfListener;
+    }
 
-    void onRequestReady(int requmber, String message);
+    public void setIndexOfListener(int indexOfListener) {
+        this.indexOfListener = indexOfListener;
+    }
+
+    int indexOfListener;
+    public abstract void onRequestReady(int requmber, String message);
+    public RequestListener(int idOfListener){
+        this.indexOfListener=idOfListener;
+    }
+
+
 
 
 }

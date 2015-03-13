@@ -1,133 +1,649 @@
 package pArtapibeta;
 
 import android.content.Context;
+import android.os.AsyncTask;
+import android.os.Looper;
+import android.provider.ContactsContract;
+import android.util.Log;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
-/**
- * Created by Arman on 2/25/15.
- */
+
 public class UserController {
-    Context ctx;
-    RequestListener listener;
-    List<String> userphotosurls;
-    String token;
+
+
+    public static final String MY_LOGS = "My_Logs";
+    public static final int MAX_LIMIT = Integer.MAX_VALUE;
+
+    private Context ctx;
+    private pArtapibeta.RequestListener listener;
+
+    private User user;
+    private ArrayList<Photo> userPhotos;
+    private ArrayList<String> userFollowing;
+    private ArrayList<String> userFollowers;
+    private ArrayList<Photo> userLikedPhotos;
+    private ArrayList<String> userTags;
+    private ArrayList<String> userPlaces;
+    private ArrayList<String> blockedUsers;
+
+    private static RequestListener st_listener;
+
+    public static RequestListener getSt_listener() {
+        return st_listener;
+    }
+
+    public static void setSt_listener(RequestListener st_listener) {
+        UserController.st_listener = st_listener;
+    }
+
+
+    public UserController(Context ctx) {
+        this.ctx = ctx;
+    }
+
+    public void setListener(RequestListener listener) {
+        this.listener = listener;
+    }
+
 
     public User getUser() {
         return user;
     }
 
-    User user;
-    public List<String> getUserphotosurls() {
-        return userphotosurls;
+    public ArrayList<Photo> getPhotoUrl() {
+        return userPhotos;
+    }
+
+    public ArrayList<String> getUserFollowing() {
+        return userFollowing;
+    }
+
+    public ArrayList<String> getUserFollowers() {
+        return userFollowers;
+    }
+
+    public ArrayList<Photo> getUserLikedPhotos() {
+        return userLikedPhotos;
+    }
+
+    public ArrayList<String> getUserTags() {
+        return userTags;
+    }
+
+    public ArrayList<String> getUserPlaces() {
+        return userPlaces;
+    }
+
+    public ArrayList<String> getBlockedUsers() {
+        return blockedUsers;
     }
 
 
-    public UserController(Context ctx, String token){
-        this.ctx=ctx;
-        this.token = token;
+    public void requestUser() {
+
+        assert this.listener != null;
+        String url = PicsArtConst.SHOW_USER_URL + "me" + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+        PARequest req = new PARequest(Request.Method.GET, url, null, null);
+        SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
+        req.setRequestListener(new PARequest.PARequestListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                listener.onRequestReady(305, error.toString());
+            }
+
+            @Override
+            public void onResponse(Object response) {
+                Log.d(MY_LOGS, response.toString());
+                //user = new User();
+                user=UserFactory.parseFrom(response);
+                UserController.this.listener.onRequestReady(205, response.toString());
+            }
+        });
     }
 
-    public void setListener(RequestListener listener){
-        this.listener = listener;
-    }
+    public void requestUser(String id) {     //    3
 
-
-
-    public void requestUserPhotos(User user, int limit, int offset ){
-        requestUserPhotos(user.getId(), limit, offset);
-
-    }
-    public void requestUserPhotos(String userId , int limit, int offset){
-
-        userphotosurls = new ArrayList<>();
-        assert this.listener !=null;
-        String url = PicsArtConst.GET_USER_PHOTOS_LIST+userId+"/photos/?token="+token; //+ PicsArtConst.GET_PHOTO_FILTER
-        PARequest req = new PARequest(Request.Method.GET,url,null,null);
-
+        assert this.listener != null;
+        String url = PicsArtConst.SHOW_USER_URL + id + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+        PARequest req = new PARequest(Request.Method.GET, url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 
+                listener.onRequestReady(302, error.toString());
             }
+
             @Override
-            public void onResponse(Object response)  {
+            public void onResponse(Object response) {
+                /*Log.d(MY_LOGS, response.toString());
+                user = new User();
+                user.parseFrom(response);
+                UserController.this.listener.onRequestReady(3);*/
 
-             try {
-                    JSONArray phres = ((JSONObject)response).getJSONArray("photos");
+                user = UserFactory.parseFrom(response);
+                listener.onRequestReady(202, response.toString());
+            }
+        });
+    }
 
-                for (int i = 0; i < phres.length(); i++) {
-                    JSONObject val = phres.getJSONObject(i);
-                    String url = val.getString("url");
-                    userphotosurls.add(url);
-                }
-                 UserController.this.listener.onRequestReady(7,"");
+
+    public void requestUserFollowers(User user, final int offset, final int limit) {
+       // requestUserFollowers(user.getId(), offset, limit);
+    }
+
+    public void requestUserFollowers(String userId, final int offset, final int limit) {    //   8
+
+        /**
+         * checking argument validation
+         */
+
+        if (offset < 0 || limit < 0 || offset > limit) {
+            throw new IllegalArgumentException();
+        }
+
+        assert this.listener != null;
+        userFollowers = new ArrayList<>();
+
+        String url = PicsArtConst.SHOW_USER_FOLLOWERS + userId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+        PARequest req = new PARequest(Request.Method.GET, url, null, null);
+        SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
+        req.setRequestListener(new PARequest.PARequestListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                UserController.this.listener.onRequestReady(308, error.toString());
+            }
+
+            @Override
+            public void onResponse(Object response) {
+
+                int max_limit;
+
+                try {
+
+                    JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
+                    max_limit = limit >= jsonArray.length() ? jsonArray.length() - 1 : limit;
+
+                    for (int i = offset; i <= max_limit; i++) {
+
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        userFollowers.add(jsonObject.getString("id"));
+                        Log.d(MY_LOGS, "follower id:  " + jsonObject.getString("id"));
+
+                    }
+                    UserController.this.listener.onRequestReady(208, response.toString());
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         });
-
     }
 
 
-    public void requestUser(String id){
-        assert this.listener !=null;
-        String url = PicsArtConst.USE_PROFILE_URL+id+PicsArtConst.TOKEN_PREFIX+token;
-        PARequest req = new PARequest(Request.Method.GET,url,null,null);
+    public void requestUserFollowing(User user, final int offset, final int limit) {
+        //requestUserFollowing(user.getId(), offset, limit);
+    }
+
+    public void requestUserFollowing(String userId, final int offset, final int limit) {    //   9
+
+        /**
+         * checking argument validation
+         */
+
+        if (offset < 0 || limit < 0 || offset > limit) {
+            throw new IllegalArgumentException();
+        }
+
+        assert this.listener != null;
+        userFollowing = new ArrayList<>();
+
+        String url = PicsArtConst.SHOW_USER_FOLLOWING + userId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+        PARequest req = new PARequest(Request.Method.GET, url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
+
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                UserController.this.listener.onRequestReady(309, error.toString());
             }
+
             @Override
-            public void onResponse(Object response)  {
+            public void onResponse(Object response) {
+
+                int max_limit;
 
                 try {
-                     user = new User();
-                     user.parseFrom(response);
-                    UserController.this.listener.onRequestReady(7,"");
-                } catch ( Exception e) {
+
+                    JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
+                    max_limit = limit >= jsonArray.length() ? jsonArray.length() - 1 : limit;
+
+                    for (int i = offset; i <= max_limit; i++) {
+
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        userFollowing.add(jsonObject.getString("id"));
+                        //Log.d(MY_LOGS, "following id:  " + jsonObject.getString("id"));
+
+                    }
+                    UserController.this.listener.onRequestReady(209, response.toString());
+
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         });
     }
 
-    public void requestUser(){
-        assert this.listener !=null;
-        String url = PicsArtConst.MY_PROFILE_URL+PicsArtConst.TOKEN_PREFIX+token;
-        PARequest req = new PARequest(Request.Method.GET,url,null,null);
+
+    public void requestLikedPhotos(User user, final int offset, final int limit) {
+        //requestLikedPhotos(user.getId(), offset, limit);
+    }
+
+    public void requestLikedPhotos(String userId, final int offset, final int limit) {    //   10
+
+        /**
+         * checking argument validation
+         */
+
+        if (offset < 0 || limit < 0 || offset > limit) {
+            throw new IllegalArgumentException();
+        }
+
+        assert this.listener != null;
+        userLikedPhotos = new ArrayList<>();
+
+        String url = PicsArtConst.SHOW_USER_LIKED_PHOTOS + userId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+        PARequest req = new PARequest(Request.Method.GET, url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                UserController.this.listener.onRequestReady(310, error.toString());
 
             }
 
             @Override
-            public void onResponse(Object response)  {
+            public void onResponse(Object response) {
+
+                int max_limit;
 
                 try {
-                    user = new User();
-                    user.parseFrom(response);
-                    UserController.this.listener.onRequestReady(7,"");
-                } catch ( Exception e) {
+
+                    JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
+                    max_limit = limit >= jsonArray.length() ? jsonArray.length() - 1 : limit;
+
+                    for (int i = offset; i <= max_limit; i++) {
+
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        Photo photo=PhotoFactory.parseFrom(jsonObject);
+                        //Photo photo = new Photo(jsonObject.getString("id"), new URL(jsonObject.getString("url")), null, null, jsonObject.getJSONObject("user").getString("id"));
+                        userLikedPhotos.add(photo);
+                        Log.d(MY_LOGS, "liked photo id :  " + photo.getId());
+
+                    }
+                    UserController.this.listener.onRequestReady(210, response.toString());
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }
+
+
+    public void requestBlockedUsers(User user, final int offset, final int limit) {
+        //requestBlockedUsers(user.getId(), offset, limit);
+    }
+
+    public void requestBlockedUsers(String userId, final int offset, final int limit) {    //   4
+
+        /**
+         * checking argument validation
+         */
+
+        if (offset < 0 || limit < 0 || offset > limit) {
+            throw new IllegalArgumentException();
+        }
+
+        assert this.listener != null;
+        blockedUsers = new ArrayList<>();
+
+        String url = PicsArtConst.SHOW_BLOCKED_USERS + userId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+        PARequest req = new PARequest(Request.Method.GET, url, null, null);
+        SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
+        req.setRequestListener(new PARequest.PARequestListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                UserController.this.listener.onRequestReady(304, error.toString());
+
+            }
+
+            @Override
+            public void onResponse(Object response) {
+
+                int max_limit;
+
+                try {
+
+                    JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
+                    max_limit = limit >= jsonArray.length() ? jsonArray.length() - 1 : limit;
+
+                    for (int i = offset; i <= max_limit; i++) {
+
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        blockedUsers.add(jsonObject.getString("id"));
+                        //Log.d(MY_LOGS, "blocked user id :  " + jsonObject.getString("id"));
+
+                    }
+                    UserController.this.listener.onRequestReady(204, response.toString());
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        });
+
+    }
+
+
+    public void requestPlaces(User user, final int offset, final int limit) {
+        //requestPlaces(user.getId(), offset, limit);
+    }
+
+    public void requestPlaces(String userId, final int offset, final int limit) {    //  5
+
+        /**
+         * checking argument validation
+         */
+
+        if (offset < 0 || limit < 0 || offset > limit) {
+            throw new IllegalArgumentException();
+        }
+
+        assert this.listener != null;
+        userPlaces = new ArrayList<>();
+
+        String url = PicsArtConst.SHOW_USER_PLACES + userId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+        PARequest req = new PARequest(Request.Method.GET, url, null, null);
+        SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
+        req.setRequestListener(new PARequest.PARequestListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                UserController.this.listener.onRequestReady(305, error.toString());
+
+            }
+
+            @Override
+            public void onResponse(Object response) {
+                int max_limit;
+
+                try {
+
+                    JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
+                    max_limit = limit >= jsonArray.length() ? jsonArray.length() - 1 : limit;
+
+                    for (int i = offset; i <= max_limit; i++) {
+
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        userPlaces.add(jsonObject.getString("place"));
+                        //Log.d(MY_LOGS, jsonObject.getString("place"));
+
+                    }
+                    UserController.this.listener.onRequestReady(205, response.toString());
+
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         });
+    }
 
+
+    public void requestTags(User user, final int offset, final int limit) {
+        //requestTags(user.getId(), offset, limit);
+    }
+
+    public void requestTags(String userId, final int offset, final int limit) {    // 6
+
+        /**
+         * checking argument validation
+         */
+
+        if (offset < 0 || limit < 0 || offset > limit) {
+            throw new IllegalArgumentException();
+        }
+
+        assert this.listener != null;
+        userTags = new ArrayList<>();
+
+        String url = PicsArtConst.SHOW_USER_TAGS + userId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+        PARequest req = new PARequest(Request.Method.GET, url, null, null);
+        SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
+        req.setRequestListener(new PARequest.PARequestListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                UserController.this.listener.onRequestReady(306, error.toString());
+
+            }
+
+            @Override
+            public void onResponse(Object response) {
+
+                int max_limit;
+
+                try {
+
+                    JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
+                    max_limit = limit >= jsonArray.length() ? jsonArray.length() - 1 : limit;
+
+                    for (int i = offset; i <= max_limit; i++) {
+
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        userTags.add(jsonObject.getString("tag"));
+                        //Log.d(MY_LOGS, jsonObject.getString("tag"));
+
+                    }
+                    UserController.this.listener.onRequestReady(206, response.toString());
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }
+
+
+    public void requestUserPhotos(User user, final int offset, final int limit) {
+        //requestUserPhotos(user.getId(), offset, limit);
+    }
+
+    public void requestUserPhotos(String userId, final int offset, final int limit) {    //  7
+
+        /**
+         * checking argument validation
+         */
+
+        if (offset < 0 || limit < 0 || offset > limit) {
+            throw new IllegalArgumentException();
+        }
+
+        assert this.listener != null;
+        userPhotos = new ArrayList<>();
+
+        String url = PicsArtConst.SHOW_USER_PHOTOS_LIST + userId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+        PARequest req = new PARequest(Request.Method.GET, url, null, null);
+        SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
+        req.setRequestListener(new PARequest.PARequestListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                UserController.this.listener.onRequestReady(307, error.toString());
+
+            }
+
+            @Override
+            public void onResponse(Object response) {
+
+                int max_limit;
+
+                try {
+
+                    JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
+                    max_limit = limit >= jsonArray.length() ? jsonArray.length() - 1 : limit;
+
+                    for (int i = offset; i <= max_limit; i++) {
+
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        Photo photo=PhotoFactory.parseFrom(jsonObject);
+                        //Photo photo = new Photo(jsonObject.getString("id"), new URL(jsonObject.getString("url")), null, null, jsonObject.getJSONObject("user").getString("id"));
+                        userPhotos.add(photo);
+                        Log.d(MY_LOGS, photo.getId());
+
+                    }
+                    UserController.this.listener.onRequestReady(207, response.toString());
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+
+    public void blockUserWithID(final String blockingId) {
+
+        assert this.listener != null;
+        String url = PicsArtConst.BLOCK_USER_WITH_ID + blockingId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+
+        PARequest req = new PARequest(Request.Method.POST, url, null, null) {
+
+        };
+
+        SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
+        req.setRequestListener(new PARequest.PARequestListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                UserController.this.listener.onRequestReady(311, error.toString());
+
+            }
+
+            @Override
+            public void onResponse(Object response) {
+
+                Log.d(MY_LOGS, response.toString());
+                UserController.this.listener.onRequestReady(211, response.toString());
+            }
+        });
+
+        //153741055000102
+        //155035207000102
+
+    }
+
+    public void unblockUserWithID(final String unblockingId) {
+
+        assert this.listener != null;
+        String url = PicsArtConst.UNBLOCK_USER_WITH_ID + unblockingId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+
+        PARequest req = new PARequest(Request.Method.POST, url, null, null) {
+
+        };
+
+        SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
+        req.setRequestListener(new PARequest.PARequestListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                UserController.this.listener.onRequestReady(312, error.toString());
+
+            }
+
+            @Override
+            public void onResponse(Object response) {
+
+                Log.d(MY_LOGS, response.toString());
+                UserController.this.listener.onRequestReady(212, response.toString());
+            }
+        });
+
+    }
+
+    public void followUserWithID(final String followingId) {
+
+        assert this.listener != null;
+        String url = PicsArtConst.FOLLOW_USER_WITH_ID + followingId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+
+        PARequest req = new PARequest(Request.Method.POST, url, null, null) {
+
+            /*@Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("is_social", followingId);
+                return params;
+            }*/
+        };
+
+        SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
+        req.setRequestListener(new PARequest.PARequestListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                UserController.this.listener.onRequestReady(311, error.toString());
+
+            }
+
+            @Override
+            public void onResponse(Object response) {
+
+                Log.d(MY_LOGS, response.toString());
+                UserController.this.listener.onRequestReady(211, response.toString());
+            }
+        });
+        //new FollowUserAsyncTask().execute(id);
     }
 
 
