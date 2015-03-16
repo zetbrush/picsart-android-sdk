@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -20,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -28,12 +26,11 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 import imageDLUtils.ImageLoader;
-import test.pArtapibeta.testPhoto;
 
 
-public class MainActivity extends Activity  {
+public class MainActivity extends Activity {
 
-static LinkedList<Photo> photoList = null;
+    static LinkedList<Photo> photoList = null;
     private static Context context;
     WebView web;
     Button auth;
@@ -42,42 +39,44 @@ static LinkedList<Photo> photoList = null;
     ProgressDialog pDialog;
     Button testcallBtt;
     static String token;
-    static int[] counter =new int[1];
+    static int[] counter = new int[1];
 
 
     public static Context getAppContext() {
         return context;
     }
 
-    public static String getAccessToken(){
+    public static String getAccessToken() {
         return token;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        testcallBtt = (Button)findViewById(R.id.testCall);
+        testcallBtt = (Button) findViewById(R.id.testCall);
 
         Access = (TextView) findViewById(R.id.Access);
         auth = (Button) findViewById(R.id.auth);
         MainActivity.context = this.getApplicationContext();
-        try{
+        try {
             pref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-             token = pref.getString("access_Token","");
+            token = pref.getString("access_Token", "");
             //Toast.makeText(getApplicationContext(), "Access Token " + token, Toast.LENGTH_LONG).show();
-        } catch (Exception c){
-          Log.i("ERROR Loading Token ", ": no token is persist ");
+        } catch (Exception c) {
+            Log.i("ERROR Loading Token ", ": no token is persist ");
         }
 
         auth.setOnClickListener(new View.OnClickListener() {
             Dialog authDialog;
+
             @Override
             public void onClick(View view) {
                 authDialog = new Dialog(MainActivity.this);
                 authDialog.setContentView(R.layout.auth_dialog);
-               // alert.setContentView(R.layout.auth_dialog);
+                // alert.setContentView(R.layout.auth_dialog);
 
-                web = (WebView)authDialog.findViewById(R.id.webv);
+                web = (WebView) authDialog.findViewById(R.id.webv);
                 web.getSettings().setJavaScriptEnabled(true);
                 web.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
                 web.getSettings().setSupportMultipleWindows(true);
@@ -93,11 +92,12 @@ static LinkedList<Photo> photoList = null;
 
                         return false;
                     }
+
                     @Override
                     public void onPageStarted(WebView view, String url,
                                               Bitmap favicon) {
                         super.onPageStarted(view, url, favicon);
-                       // view.setWebChromeClient(new MyWebChromeClient());
+                        // view.setWebChromeClient(new MyWebChromeClient());
                         authComplete = false;
                         pDialog = ProgressDialog.show(view.getContext(), "",
                                 "Connecting to " + " server", false);
@@ -106,6 +106,7 @@ static LinkedList<Photo> photoList = null;
                     }
 
                     String authCode;
+
                     @Override
                     public void onPageFinished(WebView view, String url) {
                         super.onPageFinished(view, url);
@@ -128,12 +129,12 @@ static LinkedList<Photo> photoList = null;
                             edit.commit();
 
 
-                          // new TokenGet().execute();
+                            // new TokenGet().execute();
 
                             String Code = pref.getString("Code", "");
                             AccessToken.setListener(new RequestListener(1) {
                                 @Override
-                                public void onRequestReady(int requmber,String mmsg) {
+                                public void onRequestReady(int requmber, String mmsg) {
                                     MainActivity.token = AccessToken.getAccessToken();
                                     Log.d("Token is ready: ", MainActivity.token);
                                 }
@@ -155,7 +156,6 @@ static LinkedList<Photo> photoList = null;
                                     "Error Occured", Toast.LENGTH_SHORT).show();
 
 
-
                         }
 
                     }
@@ -166,7 +166,7 @@ static LinkedList<Photo> photoList = null;
                 String tokenURL = PicsArtConst.TOKEN_URL + "?client_id=" + PicsArtConst.CLIENT_ID + "&client_secret=" + PicsArtConst.CLIENT_SECRET + "&redirect_uri=" + PicsArtConst.REDIRECT_URI + "&grant_type=authorization_code";
 
                 web.loadUrl(authURL);
-               // web.loadUrl("http://stage.i.picsart.com/api/oauth2/authorize?redirect_uri=localhost&response_type=code&client_id=armantestclient1nHhXPI9ZqwQA03XI");
+                // web.loadUrl("http://stage.i.picsart.com/api/oauth2/authorize?redirect_uri=localhost&response_type=code&client_id=armantestclient1nHhXPI9ZqwQA03XI");
                 authDialog.show();
                 authDialog.setTitle("Authorize PicsArt");
                 authDialog.setCancelable(true);
@@ -175,18 +175,16 @@ static LinkedList<Photo> photoList = null;
         });
 
     }
+
     final Context myApp = this;
 
 
-
-
-        //////listener for picking
+    //////listener for picking
 
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
         if (requestCode == 88) {    //Picking path of photo
             if (resultCode == RESULT_OK) {
-
 
             }
         }
@@ -197,7 +195,7 @@ static LinkedList<Photo> photoList = null;
         final ImageView im2 = (ImageView) findViewById(R.id.img2);
         final ImageView im3 = (ImageView) findViewById(R.id.img3);
 
-        counter[0]=10;
+        counter[0] = 10;
         final ArrayList<Photo> tmpPh = new ArrayList<>();
 
 
@@ -224,11 +222,6 @@ static LinkedList<Photo> photoList = null;
                     Log.i("Photo is uploaded: ", message);
                 }
 
-                if (requmber == 555) {
-                    for (Comment com : PhotoController.getComments()) {
-                        Log.d("Comments ", com.getCreated() + " " + com.getText());
-                    }
-                }
 
             }
         };
@@ -243,37 +236,30 @@ static LinkedList<Photo> photoList = null;
                     imLdr.DisplayImage(tmpPh.get(0).getUrl(), R.drawable.ic_launcher, im1);
                     imLdr.DisplayImage(tmpPh.get(1).getUrl(), R.drawable.ic_launcher, im2);
                     imLdr.DisplayImage(tmpPh.get(2).getUrl(), R.drawable.ic_launcher, im3);
+                }
             }
-        }} ;
+        };
 
 
         PARequest.PARequestListener<JSONObject> listn = null;
         TextView jj = (TextView) findViewById(R.id.Access);
 
-         final PhotoController pc = new PhotoController(getAppContext(),token);
-
-
+        final PhotoController pc = new PhotoController(getAppContext(), token);
 
 
         ///Example  uploading photo to account/////
 
 
-       Photo toUpload = new Photo(Photo.IS.GENERAL);
-        toUpload.setLocation(new Location("poxoooc","Qaxaaaq","Plac@@@","State@@","Zipcod@@","Armenia",new ArrayList<>(Arrays.asList(45,37))));
+        Photo toUpload = new Photo(Photo.IS.GENERAL);
+        toUpload.setLocation(new Location("poxoooc", "Qaxaaaq", "Plac@@@", "State@@", "Zipcod@@", "Armenia", new ArrayList<>(Arrays.asList(45, 37))));
         toUpload.setTitle("nkariii__anun3");
         toUpload.setTags(new ArrayList<>(Arrays.asList("ntag1", "nag2", "ntag3")));
         toUpload.setPath("/storage/removable/sdcard1/DCIM/100ANDRO/DSC_0008.jpg");
-       // PhotoController.uploadPhoto(toUpload);
-
+        // PhotoController.uploadPhoto(toUpload);
 
         //////////// Getting given comments Count//////
 
-      //  PhotoController.getComments("163773067002202",0,50);
-
-
-
-
-
+        // PhotoController.getComments("163773067002202",0,50);
 
 
         /////////////////////////// Static Listener for Photo Stuff //////////////////////
@@ -281,14 +267,13 @@ static LinkedList<Photo> photoList = null;
         PhotoController.setSt_listener(listenerOne);
         PhotoController.setSt_listener(listenerTwo);
 
-
-           pc.setListener(new RequestListener(0) {
+        pc.setListener(new RequestListener(0) {
             @Override
             public void onRequestReady(int requmber, String message) {
-               // Log.d("Comment resp", message);
-               // pc.comment("163773067002202", message.substring(0,20));
+                // Log.d("Comment resp", message);
+                // pc.comment("163773067002202", message.substring(0,20));
 
-                if(requmber==102){
+                if (requmber == 102) {
                     tmpPh.add(pc.getPhoto());
                     counter[0] += 1;
                     Log.d("COUNTERR: ", String.valueOf(counter[0]));
@@ -296,57 +281,50 @@ static LinkedList<Photo> photoList = null;
 
                 }
 
+                if (requmber == 555) {
+
+                    Log.d("commEENT: ", pc.getCommentsLists().toString());
+
+                }
+                if (requmber == 666) {
+                    Log.d("removed Comment: ", message);
+                }
+
             }
         });
 
         // pc.comment("163773067002202","blabla  comment 2");
-        String[] phids = {"163086538001202","163773067002202","163858526001202"};
+        String[] phids = {"163086538001202", "163773067002202", "163858526001202"};
 
 
-        for(int i =0 ; i<3;i++){
+        for (int i = 0; i < 3; i++) {
             pc.requestPhoto(phids[i]);
         }
 
+        pc.getComments("163086538001202", 0, 4);
 
-
-
-
-
-
-
-
+        pc.removeComment("163086538001202", "54f5bc8a7854e2ed4a000067");
 
 
         Photo phh = new Photo(Photo.IS.GENERAL);
-        phh.setLocation(new Location("nor poxoc", "nor Qaxaaaq", "nor Plac@@@", "nor State@@", "nor Zipcod@@", "Armenia", new ArrayList<Integer>(Arrays.asList(40,36))));
+        phh.setLocation(new Location("nor poxoc", "nor Qaxaaaq", "nor Plac@@@", "nor State@@", "nor Zipcod@@", "Armenia", new ArrayList<Integer>(Arrays.asList(40, 36))));
         phh.setTitle("nor nkariii anun 2");
         phh.setTags(new ArrayList<>(Arrays.asList("nor tag1", "nor tag2", "nor tag3")));
         phh.setId("163086538001202");
-       // PhotoController.updatePhotoData(phh);
+        // PhotoController.updatePhotoData(phh);
 
 
-      //  testPhoto.testGetPhotoInfo("163086538001202", token);
-      //  testPhoto.testLike("163086538001202", token);
-       // testPhoto.testUnLike("163086538001202",token);
-       // testPhoto.testComment("163086538001202","blaaaa",token);
-
-
-
-
-
-
+        //  testPhoto.testGetPhotoInfo("163086538001202", token);
+        //  testPhoto.testLike("163086538001202", token);
+        // testPhoto.testUnLike("163086538001202",token);
+        // testPhoto.testComment("163086538001202","blaaaa",token);
 
 
     }
 
 
-
-
-
-
-
     @Override
-    public void onStop(){
+    public void onStop() {
 
     }
 

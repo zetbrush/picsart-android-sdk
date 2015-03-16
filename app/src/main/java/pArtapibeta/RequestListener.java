@@ -3,7 +3,8 @@ package pArtapibeta;
 /**
  * Created by Arman on 2/20/15.
  */
-    public abstract class RequestListener {
+public abstract class RequestListener {
+
     public int getIndexOfListener() {
         return indexOfListener;
     }
@@ -25,11 +26,10 @@ package pArtapibeta;
 
 
     public abstract void onRequestReady(int requmber, String message);
-    public RequestListener(int idOfListener){
-        this.indexOfListener=idOfListener;
+
+    public RequestListener(int idOfListener) {
+        this.indexOfListener = idOfListener;
     }
-
-
 
 
 }

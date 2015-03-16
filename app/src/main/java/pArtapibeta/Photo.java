@@ -3,7 +3,6 @@ package pArtapibeta;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ import java.util.List;
  * Created by Arman on 2/23/15.
  */
 public class Photo {
-    SimpleDateFormat sdf ;
+    SimpleDateFormat sdf;
 
     @SerializedName("likes_count")
     @Expose
@@ -94,6 +93,7 @@ public class Photo {
     @SerializedName("user")
     @Expose
     private User owner;
+
 
 
     private String path;
@@ -208,7 +208,7 @@ public class Photo {
         this.ownerID = ownerID;
     }
 
-    private Comment[] comments;
+    private ArrayList<Comment> comments;
 
     IS isFor;
 
@@ -263,10 +263,10 @@ public class Photo {
     }
 
     public Date getCreated() {
-        if(createdDate==null) {
+        if (createdDate == null) {
             try {
-                sdf= new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
-                return createdDate =sdf.parse(created);
+                sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
+                return createdDate = sdf.parse(created);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -291,11 +291,11 @@ public class Photo {
         return ownerID;
     }
 
-    public Comment[] getComments() {
+    public ArrayList<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(Comment[] comments) {
+    public void setComments(ArrayList<Comment> comments) {
         this.comments = comments;
     }
 
@@ -310,7 +310,7 @@ public class Photo {
         this.title = title;
         try {
             this.created = crrated;
-            if(created!=null) {
+            if (created != null) {
                 sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'X'");
                 this.createdDate = sdf.parse(created);
             }
@@ -330,8 +330,6 @@ public class Photo {
     }
 
 
-
-
     private void init(String id, String url, String title, ArrayList tags, String crrated, boolean isMature, int width, int height, int likesCount, int viewsCount, int commentsCount, int repostsCount, boolean isLiked, boolean isReposted, String ownerID, Location location) {
         this.id = id;
         this.url = url;
@@ -340,7 +338,7 @@ public class Photo {
 
         try {
             this.created = crrated;
-            sdf= new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'X'");
+            sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'X'");
             this.createdDate = sdf.parse(created);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -357,7 +355,6 @@ public class Photo {
         this.ownerID = ownerID;
         this.location = location;
     }
-
 
 
 }

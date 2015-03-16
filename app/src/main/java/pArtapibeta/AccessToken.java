@@ -1,21 +1,15 @@
 package pArtapibeta;
 
-import android.app.ProgressDialog;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Base64;
-import android.util.JsonReader;
 import android.util.Log;
 
-import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +18,6 @@ import java.util.Map;
  */
 public class AccessToken {
 
-    private ProgressDialog pDialog;
     static String Code;
     static SharedPreferences pref;
 
@@ -37,43 +30,42 @@ public class AccessToken {
     }
 
     private static String accessToken;
-    private static RequestListener listener=null;
-    private AccessToken(){}
+    private static RequestListener listener = null;
 
-
-
-    public static void setListener(RequestListener listener){
-        AccessToken.listener = listener;
+    private AccessToken() {
     }
 
 
-    public static void requestAccessToken(String address, final String token, final String client_id, final String client_secret, final String redirect_uri, final String grant_type){
+    public static void setListener(RequestListener listener) {
+        AccessToken.listener = listener;
+    }
 
-        String userCredentials = client_id+":"+client_secret;
+    public static void requestAccessToken(String address, final String token, final String client_id, final String client_secret, final String redirect_uri, final String grant_type) {
+
+        String userCredentials = client_id + ":" + client_secret;
         final String base64EncodedCredentials = Base64.encodeToString(userCredentials.getBytes(), Base64.NO_WRAP);
 
-        StringRequest req = new StringRequest(PARequest.Method.POST,address,new Response.Listener<String>() {
+        StringRequest req = new StringRequest(PARequest.Method.POST, address, new Response.Listener<String>() {
             @Override
             public void onResponse(final String response) {
 
                 JSONObject jsOOb = null;
                 try {
                     jsOOb = new JSONObject(response);
-                     String tok = null;
-                     tok = jsOOb.getString("access_token");
-                     AccessToken.accessToken = tok;
+                    String tok = null;
+                    tok = jsOOb.getString("access_token");
+                    AccessToken.accessToken = tok;
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-               Log.d("accessTokenResp: ", response);
-                AccessToken.listener.onRequestReady(7777,"");
+                Log.d("accessTokenResp: ", response);
+                AccessToken.listener.onRequestReady(7777, "");
 
             }
         }
-                ,null )
-        {
+                , null) {
 
             @Override
             protected Map<String, String> getParams() {
@@ -101,7 +93,6 @@ public class AccessToken {
         SingletoneRequestQue.getInstance(MainActivity.getAppContext()).addToRequestQueue(req);
 
     }
-
 
 
 }

@@ -10,7 +10,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 
-
 /**
  * Created by Arman on 3/9/15.
  */
@@ -21,10 +20,10 @@ public class PhotoFactory {
         try {
             Gson gson = new Gson();
 
-            Photo nwPh = gson.fromJson(jobj.toString(),Photo.class);
+            Photo nwPh = gson.fromJson(jobj.toString(), Photo.class);
             Log.d("User gson: ", nwPh.getTitle() + " " + nwPh.getCreated() + " " + nwPh.getId() + " " + nwPh.getUrl());
             gson = new Gson();
-            User nwUs = gson.fromJson(jobj.get("user").toString(),User.class);
+            User nwUs = gson.fromJson(jobj.get("user").toString(), User.class);
             Log.d("User gson: ", nwUs.getName() + " " + nwUs.getUsername() + " " + nwUs.getId() + " " + nwUs.getPhoto());
             Location lccc = gson.fromJson(jobj.get("location").toString(), Location.class);
             nwPh.setLocation(lccc);
@@ -39,33 +38,38 @@ public class PhotoFactory {
         return null;
     }
 
-    public static ArrayList<Photo> parseFromAsArray(Object obj) {
+
+    public static ArrayList<Photo> parseFromAsArray(Object obj, int offset, int limit) {
         ArrayList<Photo> tmpPh = new ArrayList<>();
         Photo nwPh;
         User nwUs;
         Location loc;
+        if (offset < 0) offset = 0;
+        if (limit < 1) limit = 1;
+
+
         try {
-            JSONObject jsonObj = (JSONObject)obj;
+            JSONObject jsonObj = (JSONObject) obj;
             Gson gson = new Gson();
             JSONArray jarr = new JSONArray(jsonObj.toString());
-            for(int i =0; i<jarr.length(); i++) {
+            for (int i = offset; i < jarr.length() && limit > 0; i++, limit--) {
 
-                 nwPh = gson.fromJson(jarr.get(i).toString(), Photo.class);
+                nwPh = gson.fromJson(jarr.get(i).toString(), Photo.class);
 
-               try{
-                  gson = new Gson();
-                  JSONObject jooobj = (JSONObject)jarr.get(i);
-                  nwUs = gson.fromJson(jooobj.get("user").toString(),User.class);
-                    nwPh.setOwner(nwUs);
-                  }catch (Exception e){
-               }
-
-                try{
+                try {
                     gson = new Gson();
-                    JSONObject jooobj = (JSONObject)jarr.get(i);
+                    JSONObject jooobj = (JSONObject) jarr.get(i);
+                    nwUs = gson.fromJson(jooobj.get("user").toString(), User.class);
+                    nwPh.setOwner(nwUs);
+                } catch (Exception e) {
+                }
+
+                try {
+                    gson = new Gson();
+                    JSONObject jooobj = (JSONObject) jarr.get(i);
                     loc = gson.fromJson(jooobj.get("location").toString(), Location.class);
                     nwPh.setLocation(loc);
-                }catch (Exception e){
+                } catch (Exception e) {
                 }
 
                 tmpPh.add(nwPh);
@@ -86,7 +90,6 @@ public class PhotoFactory {
         JSONObject oo = (JSONObject) o;
         return parseFrom(oo);
     }
-
 
 
 }

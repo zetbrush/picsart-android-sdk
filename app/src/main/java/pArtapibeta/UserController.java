@@ -1,52 +1,16 @@
 package pArtapibeta;
 
 import android.content.Context;
-import android.os.AsyncTask;
-import android.os.Looper;
-import android.provider.ContactsContract;
 import android.util.Log;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
 
 public class UserController {
@@ -136,7 +100,7 @@ public class UserController {
             public void onResponse(Object response) {
                 Log.d(MY_LOGS, response.toString());
                 //user = new User();
-                user=UserFactory.parseFrom(response);
+                user = UserFactory.parseFrom(response);
                 UserController.this.listener.onRequestReady(205, response.toString());
             }
         });
@@ -170,7 +134,7 @@ public class UserController {
 
 
     public void requestUserFollowers(User user, final int offset, final int limit) {
-       // requestUserFollowers(user.getId(), offset, limit);
+        // requestUserFollowers(user.getId(), offset, limit);
     }
 
     public void requestUserFollowers(String userId, final int offset, final int limit) {    //   8
@@ -281,7 +245,8 @@ public class UserController {
         //requestLikedPhotos(user.getId(), offset, limit);
     }
 
-    public void requestLikedPhotos(String userId, final int offset, final int limit) {    //   10
+
+    public void requestLikedPhotos(String userId, final int offset, final int limit) {  //10
 
         /**
          * checking argument validation
@@ -317,7 +282,7 @@ public class UserController {
                     for (int i = offset; i <= max_limit; i++) {
 
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        Photo photo=PhotoFactory.parseFrom(jsonObject);
+                        Photo photo = PhotoFactory.parseFrom(jsonObject);
                         //Photo photo = new Photo(jsonObject.getString("id"), new URL(jsonObject.getString("url")), null, null, jsonObject.getJSONObject("user").getString("id"));
                         userLikedPhotos.add(photo);
                         Log.d(MY_LOGS, "liked photo id :  " + photo.getId());
@@ -540,7 +505,7 @@ public class UserController {
                     for (int i = offset; i <= max_limit; i++) {
 
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        Photo photo=PhotoFactory.parseFrom(jsonObject);
+                        Photo photo = PhotoFactory.parseFrom(jsonObject);
                         //Photo photo = new Photo(jsonObject.getString("id"), new URL(jsonObject.getString("url")), null, null, jsonObject.getJSONObject("user").getString("id"));
                         userPhotos.add(photo);
                         Log.d(MY_LOGS, photo.getId());
@@ -645,10 +610,6 @@ public class UserController {
         });
         //new FollowUserAsyncTask().execute(id);
     }
-
-
-
-
 
 
 }

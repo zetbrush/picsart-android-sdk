@@ -16,7 +16,9 @@ import java.util.List;
 
 public class Location {
     private final String[] keywords = {"location_place", "location_street", "location_city",
-                                        "location_state", "location_zip", "location_country", "location_lat", "location_lon"};
+            "location_state", "location_zip", "location_country",
+            "location_lat", "location_lon"};
+
     public BasicNameValuePair[] getLocationPair() {
         return locationPair;
     }
@@ -81,7 +83,7 @@ public class Location {
 
     @Override
     public String toString() {
-        return " "+street + " " + city + " " + state + " " + zip + " " + country + " " + coordinates;
+        return " " + street + " " + city + " " + state + " " + zip + " " + country + " " + coordinates;
 
     }
 

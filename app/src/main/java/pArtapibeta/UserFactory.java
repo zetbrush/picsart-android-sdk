@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 
 public class UserFactory {
 
@@ -24,6 +26,10 @@ public class UserFactory {
     }
 
 
+    public static ArrayList<User> parseFromAsArray(Object obj) {
+
+        return new ArrayList<>();
+    }
 
 
 }

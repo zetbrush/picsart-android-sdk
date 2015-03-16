@@ -4,11 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.LruCache;
 
-import com.android.volley.Cache;
-import com.android.volley.Network;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.ResponseDelivery;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
@@ -21,6 +18,11 @@ public class SingletoneRequestQue {
     private static Context mCtx;
     static SingletoneRequestQue mInstance = null;
 
+
+    /**
+     *  Singleton Que to hold all requests in one place.
+     *
+     * */
 
     private SingletoneRequestQue(Context context) {
         mCtx = context;
@@ -44,6 +46,12 @@ public class SingletoneRequestQue {
 
     }
 
+
+    /**
+     *  @return SingletoneRequestQue instance
+     *
+     *
+     * */
     public static synchronized SingletoneRequestQue getInstance(Context context) {
         if (mInstance == null) {
             mInstance = new SingletoneRequestQue(context);

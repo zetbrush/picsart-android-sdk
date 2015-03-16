@@ -51,16 +51,28 @@ public class PhotoController {
     volatile Photo photo;
     static volatile Comment _comment;
     static volatile Photo[] photos;
-    static volatile Comment[][] commentList = new Comment[1][];
-    ArrayList<User> photoLikedUsers = new ArrayList<>();
+    ArrayList<Comment> commentsLists;
+    ArrayList<User> photoLikedUsers;
 
 
+    public ArrayList<Comment> getCommentsLists() {
+        return commentsLists;
+    }
+
+    public void setCommentsLists(ArrayList<Comment> commentList) {
+        if (commentsLists == null) commentsLists = new ArrayList<>(commentList);
+
+        else this.commentsLists = commentList;
+    }
 
     public ArrayList<User> getPhotoLikedUsers() {
         return photoLikedUsers;
     }
-    public void setPhotoLikedUsers(ArrayList<User> photoLikedUsers) {
-        this.photoLikedUsers = photoLikedUsers;
+
+    public void setPhotoLikedUsers(ArrayList<User> phLikeddUsers) {
+        if (photoLikedUsers == null) phLikeddUsers = new ArrayList<>(phLikeddUsers);
+
+        else this.photoLikedUsers = phLikeddUsers;
     }
 
     public static RequestListener getSt_listener(int indexNumb) {
@@ -72,6 +84,7 @@ public class PhotoController {
             }
         return null;
     }
+
     public static void setSt_listener(RequestListener st_listener) {
         if (PhotoController.st_listener == null)
             PhotoController.st_listener = st_listener;
@@ -99,21 +112,17 @@ public class PhotoController {
 
 
     }
+
     public static ArrayList<RequestListener> getSt_listeners_all() {
         return st_listeners_all;
     }
+
     public static void setSt_listeners_all(ArrayList<RequestListener> st_listeners_all) {
         PhotoController.st_listeners_all = st_listeners_all;
     }
+
     static ArrayList<RequestListener> st_listeners_all = new ArrayList<>();
 
-
-
-
-
-    public static Comment[] getComments() {
-        return commentList[0];
-    }
 
     public Photo getPhoto() {
         return photo;
@@ -165,7 +174,7 @@ public class PhotoController {
      * @param limit   max limit to show
      * @param offset  starting index to count
      */
-    public static synchronized void getComments(String photoId, final int offset, final int limit) {
+    public synchronized void getComments(String photoId, final int offset, final int limit) {
 
         String url = PicsArtConst.PHOTO_COMMENTS_URL + photoId + ".json" + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
         PARequest req = new PARequest(Request.Method.GET, url, null, null);
@@ -182,35 +191,35 @@ public class PhotoController {
 
                 try {
                     JSONArray _comArr = ((JSONObject) response).getJSONArray("response");
-                    Comment[] comment = new Comment[_comArr.length()];
+                    ArrayList<Comment> comment = new ArrayList<Comment>();
                     for (int i = 0; i < _comArr.length(); i++) {
                         JSONObject val = _comArr.getJSONObject(i);
                         Gson gson = new Gson();
-                        comment[i] = (gson.fromJson(val.toString(), Comment.class));
+                        comment.add(i, gson.fromJson(val.toString(), Comment.class));
                     }
                     int nwOffset = 0;
                     int nwlimit = 0;
-                    if (offset > comment.length) {
-                        nwOffset = comment.length;
+                    if (offset > comment.size()) {
+                        nwOffset = comment.size();
                     } else if (offset < 0) {
                         nwOffset = 0;
                     } else {
                         nwOffset = offset;
                     }
-                    if (limit > comment.length) {
-                        nwlimit = comment.length;
+                    if (limit > comment.size()) {
+                        nwlimit = comment.size();
                     } else if (limit < 0) {
                         nwlimit = 0;
                     } else {
                         nwlimit = limit;
                     }
                     if (nwlimit - nwOffset < 0) nwlimit = nwOffset;
-                    Comment[] tmp = new Comment[nwlimit - nwOffset];
+                    ArrayList<Comment> tmp = new ArrayList<Comment>();
                     for (int i = nwOffset, j = 0; i < nwlimit; i++, j++) {
-                        tmp[j] = comment[i];
+                        tmp.add(j, comment.get(i));
                     }
-                    commentList[0] = tmp;
-                    notifyListeners(555, "getComments");
+                    commentsLists = new ArrayList<Comment>(tmp);
+                    listener.onRequestReady(555, "Comments is HERE");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -218,6 +227,43 @@ public class PhotoController {
         });
 
     }
+
+    public synchronized void getCommentsOffLim(String photoId, final int offset, final int limit) {
+
+        String url = PicsArtConst.PHOTO_COMMENTS_URL + photoId + ".json" + PicsArtConst.API_PREFX + PicsArtConst.APIKEY + PicsArtConst.OFFSET + offset + PicsArtConst.LIMIT + limit;
+        PARequest req = new PARequest(Request.Method.GET, url, null, null);
+        SingletoneRequestQue.getInstance(MainActivity.getAppContext()).addToRequestQueue(req);
+        req.setRequestListener(new PARequest.PARequestListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+
+            }
+
+            @Override
+            public void onResponse(Object response) {
+
+                try {
+                    JSONArray _comArr = ((JSONObject) response).getJSONArray("response");
+                    ArrayList<Comment> comment = new ArrayList<Comment>();
+                    for (int i = 0; i < _comArr.length(); i++) {
+                        JSONObject val = _comArr.getJSONObject(i);
+                        Gson gson = new Gson();
+                        comment.add(i, (gson.fromJson(val.toString(), Comment.class)));
+
+
+                    }
+                    commentsLists = new ArrayList<Comment>(comment);
+                    listener.onRequestReady(555, "Comments ready");
+                    //notifyListeners(555, "getComments");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
+
 
     public synchronized void comment(String photoID, final String comment) {
 
@@ -252,15 +298,16 @@ public class PhotoController {
 
     }
 
-    public static synchronized void removeComment(String photoId, final String commentId) {
+    public synchronized void removeComment(String photoId, final String commentId) {
         String url = PicsArtConst.PHOTO_REMOVE_COMMENT_URL + photoId + ".json" + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
         StringRequest req = new StringRequest(Request.Method.POST, url,
 
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("RemoveComment ", response);
-                        notifyListeners(666, "");
+                        // Log.d("RemoveComment ", response);
+                        listener.onRequestReady(666, response);
+                        //notifyListeners(666, "");
                     }
                 },
                 new Response.ErrorListener() {
@@ -283,9 +330,10 @@ public class PhotoController {
     }
 
 
-
     /**
      * @param photo new photo info to apply
+     *              Initialize new photo with updated fields to apply,
+     *              then call this method to update data
      */
     public static synchronized void updatePhotoData(final Photo photo) {
         JSONObject jobj = new JSONObject();
@@ -337,6 +385,7 @@ public class PhotoController {
         SingletoneRequestQue.getInstance(MainActivity.getAppContext()).addToRequestQueue(req);
 
     }
+
 
     public synchronized void like(String photoId) {
         String url = PicsArtConst.PHOTO_LIKE_URL + photoId + ".json" + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
@@ -415,25 +464,10 @@ public class PhotoController {
     }
 
 
-    /*public static void  setSt_Listener(RequestListener listener){
-        if(st_listener==null)
-        PhotoController.st_listener=listener;
+    public synchronized void getCommentByid(String id) {
 
-        else  st_listener =listener;
+        String url = PicsArtConst.PHOTO_LIKED_USERS_URL + id + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
 
-    }*/
-
-
-    public Comment getCommentByid(String id) {
-        //TODO
-        return new Comment(null, null, null);
-    }
-
-
-    public void getLikedUsers(String photoId, int offset, int limit){
-
-        String url = PicsArtConst.PHOTO_LIKED_USERS_URL + photoId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY+PicsArtConst.OFFSET+offset+PicsArtConst.LIMIT+limit;
-       // url = PicsArtConst.Get_PHOTO_URL_PUB + id + ".json" + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
         PARequest request = new PARequest(Request.Method.GET, url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(request);
         request.setRequestListener(new PARequest.PARequestListener() {
@@ -448,14 +482,37 @@ public class PhotoController {
             public void onResponse(Object response) {
                 Log.d("Response 9", response.toString());
                 //photo = new Photo(Photo.IS.GENERAL);
-               // photoLikedUsers = UserFactory.parseFrom(response);
+                Gson gson = new Gson();
+                _comment = gson.fromJson(response.toString(), Comment.class);
                 listener.onRequestReady(102, response.toString());
             }
         });
 
+
     }
 
-    public synchronized void searchPhotos() {
+
+    public synchronized void getLikedUsers(String photoId, int offset, int limit) {
+
+        String url = PicsArtConst.PHOTO_LIKED_USERS_URL + photoId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY + PicsArtConst.OFFSET + offset + PicsArtConst.LIMIT + limit;
+        // url = PicsArtConst.Get_PHOTO_URL_PUB + id + ".json" + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
+        PARequest request = new PARequest(Request.Method.GET, url, null, null);
+        SingletoneRequestQue.getInstance(ctx).addToRequestQueue(request);
+        request.setRequestListener(new PARequest.PARequestListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("Error", error.toString());
+                listener.onRequestReady(101, error.toString());
+
+            }
+
+            @Override
+            public void onResponse(Object response) {
+                Log.d("Response 9", response.toString());
+                photoLikedUsers = UserFactory.parseFromAsArray(response);
+                listener.onRequestReady(102, response.toString());
+            }
+        });
 
     }
 
@@ -574,7 +631,6 @@ public class PhotoController {
         }
 
     }
-
 
     public static void notifyListeners(int reqnumber, String msg) {
         for (RequestListener listeners : getSt_listeners_all()) {
