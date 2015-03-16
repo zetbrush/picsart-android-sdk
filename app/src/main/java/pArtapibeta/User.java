@@ -11,61 +11,6 @@ import java.util.List;
 
 public class User {
 
-   /* private String id;
-    private String name;
-    private String username;
-    private String photo;
-    private String cover;
-    private Tag[] tags;
-    private int followingCount;
-    private int followersCount;
-    private int likesCount;
-    private int photosCount;
-    private Location location;
-    private String[] followers;*/
-
-
-
-
-    /*public void parseFrom(Object o) {
-
-        try {
-
-            JSONObject jobj = (JSONObject) o;
-
-            id = String.valueOf(jobj.getString(PicsArtConst.paramsUserProfile[2]));
-            name = jobj.getString(PicsArtConst.paramsUserProfile[1]);
-            username = jobj.getString(PicsArtConst.paramsUserProfile[0]);
-            photo = jobj.getString(PicsArtConst.paramsUserProfile[7]);
-            //  cover = (String)jobj.get(PicsArtConst.paramsUserProfile[19]);
-            followingCount = jobj.getInt(PicsArtConst.paramsUserProfile[12]);
-            followersCount = jobj.getInt(PicsArtConst.paramsUserProfile[20]);
-            likesCount = jobj.getInt(PicsArtConst.paramsUserProfile[8]);
-            photosCount = jobj.getInt(PicsArtConst.paramsUserProfile[6]);
-            //location = (Location)jobj.get(PicsArtConst.paramsUserProfile[9]);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void parseFrom(String id, String name, String username, String photo, String cover, Tag[] tags, int followingCount, int followersCownt, int likesCount, int photosCount, Location location, String[] followers) {
-
-        this.id = id;
-        this.name = name;
-        this.username = username;
-        this.photo = photo;
-        this.cover = cover;
-        this.tags = tags;
-        this.followingCount = followingCount;
-        this.followersCount = followersCownt;
-        this.likesCount = likesCount;
-        this.photosCount = photosCount;
-        this.location = location;
-        this.followers = followers;
-
-    }
-*/
 
     @SerializedName("likes_count")
     @Expose
@@ -75,8 +20,10 @@ public class User {
     @SerializedName("is_verified")
     @Expose
     private Boolean isVerified;
+    @SerializedName("location")
     @Expose
     private Location location;
+    @SerializedName("status")
     @Expose
     private String status;
     @SerializedName("locations_count")
@@ -85,36 +32,45 @@ public class User {
     @SerializedName("status_message")
     @Expose
     private String statusMessage;
+    @SerializedName("provider")
     @Expose
     private String provider;
     @SerializedName("following_count")
     @Expose
     private Integer followingCount;
+    @SerializedName("photo")
     @Expose
     private String photo;
     @SerializedName("streams_count")
     @Expose
     private Integer streamsCount;
 
+    @SerializedName("id")
     @Expose
     private Long id;
 
+    @SerializedName("balance")
     @Expose
     private Integer balance;
 
+    @SerializedName("cover")
     @Expose
     private String cover;
 
+    @SerializedName("username")
     @Expose
     private String username;
+    @SerializedName("email")
     @Expose
     private String email;
 
+    @SerializedName("mature")
     @Expose
     private Boolean mature;
     @SerializedName("photos_count")
     @Expose
     private Integer photosCount;
+    @SerializedName("name")
     @Expose
     private String name;
     @SerializedName("followers_count")
@@ -126,6 +82,7 @@ public class User {
     @SerializedName("designs_count")
     @Expose
     private Integer designsCount;
+    @SerializedName("key")
     @Expose
     private String key;
     @SerializedName("tags_count")
@@ -135,8 +92,23 @@ public class User {
     public User(){
     }
 
-    public User(Long id){
-        this.id=id;
+    public User(String id){
+        this.id=Long.parseLong(id);
+    }
+
+    public User(String id, String name, String username, String photo, String cover, int followingCount, int followersCownt, int likesCount, int photosCount, Location location) {
+
+        this.id = Long.parseLong(id);
+        this.name = name;
+        this.username = username;
+        this.photo = photo;
+        this.cover = cover;
+        this.followingCount = followingCount;
+        this.followersCount = followersCownt;
+        this.likesCount = likesCount;
+        this.photosCount = photosCount;
+        this.location = location;
+
     }
 
     /**
@@ -199,6 +171,9 @@ public class User {
      * The location
      */
     public Location getLocation() {
+        if(location==null)
+            location=new Location();
+
         return location;
     }
 
@@ -351,8 +326,8 @@ public class User {
      * @param id
      * The id
      */
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(String id) {
+        this.id = Long.parseLong(id);
     }
 
     /**
@@ -573,8 +548,14 @@ public class User {
 
     @Override
     public String toString() {
-        return "id: "+id+"\tname:  "+name+"\tusername:  "+username+"\tstatus:  "+status+"\tphoto:  "+
-                photo+"\tfollowing count:  "+followersCount+"\tfollowers count:  "+followersCount+
-                "\tuser likes count:  "+likesCount+"\temail:  "+email+"\tkey:  "+key;
+        if(getLocation()==null) {
+            return "id: " + id + "\tname:  " + name + "\tusername:  " + username + "\tstatus:  " + status + "\tphoto:  " +
+                    photo + "\tfollowing count:  " + followersCount + "\tfollowers count:  " + followersCount +
+                    "\tuser likes count:  " + likesCount + "\temail:  " + email + "\tkey:  " + key;
+        }else{
+            return "id: " + id + "\tname:  " + name + "\tusername:  " + username + "\tstatus:  " + status + "\tphoto:  " +
+                    photo + "\tfollowing count:  " + followersCount + "\tfollowers count:  " + followersCount +
+                    "\tuser likes count:  " + likesCount + "\temail:  " + email + "\tkey:  " + key+"\tlocation: "+location.toString();
+        }
     }
 }

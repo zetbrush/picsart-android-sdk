@@ -11,9 +11,7 @@ import java.util.ArrayList;
 
 
 
-/**
- * Created by Arman on 3/9/15.
- */
+
 public class PhotoFactory {
 
 

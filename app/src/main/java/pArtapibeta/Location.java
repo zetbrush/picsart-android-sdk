@@ -9,11 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-/**
- * Created by Arman on 2/19/15.
- */
-
-
 public class Location {
     private final String[] keywords = {"location_place", "location_street", "location_city",
                                         "location_state", "location_zip", "location_country", "location_lat", "location_lon"};
@@ -42,12 +37,17 @@ public class Location {
     @Expose
     String country;
 
-
     @SerializedName("coordinates")
     @Expose
-    List<Integer> coordinates = new ArrayList<Integer>();
+    List<Integer> coordinates;
+
+    public  Location(){
+
+    }
 
     public Location(String str, String cit, String place, String stat, String zip, String country, ArrayList<Integer> coord) {
+
+        coordinates = new ArrayList<Integer>();
 
         this.street = str;
         this.city = cit;
@@ -133,4 +133,5 @@ public class Location {
     public void setCity(String city) {
         this.city = city;
     }
+
 }
