@@ -41,37 +41,50 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Arman on 2/23/15.
- */
+     * This class consists exclusively of void methods, that operate on making
+     * requests and initializing specific field.
+     *
+     * <p>Some Getters of this class  throw a <tt>NullPointerException</tt>
+     * if the collections or class objects provided to them are null.
+     *
+     * <p>This class is a member of the
+     * <a href="www.picsart.com">
+     * </a>.
+     *
+     * @author  Arman Andreasyan
+     */
+
+
+
 public class PhotoController {
-    Context ctx;
-    RequestListener listener;
-    static RequestListener st_listener;
-    String token;
-    volatile Photo photo;
-    static volatile Comment _comment;
-    static volatile Photo[] photos;
-    ArrayList<Comment> commentsLists;
-    ArrayList<User> photoLikedUsers;
+    private Context ctx;
+    private RequestListener listener;
+    private String token;
+    private volatile Photo photo;
+    private static volatile Comment _comment;
+    private ArrayList<Comment> commentsLists;
+    private ArrayList<User> photoLikedUsers;
+    private static ArrayList<RequestListener> st_listeners_all = new ArrayList<>();
 
 
-    public ArrayList<Comment> getCommentsLists() {
+    // Getters and Setters for all fields //
+
+    public ArrayList<Comment> getCommentsLists() throws NullPointerException {
+
         return commentsLists;
     }
 
     public void setCommentsLists(ArrayList<Comment> commentList) {
         if (commentsLists == null) commentsLists = new ArrayList<>(commentList);
-
         else this.commentsLists = commentList;
     }
 
-    public ArrayList<User> getPhotoLikedUsers() {
+    public ArrayList<User> getPhotoLikedUsers() throws NullPointerException{
         return photoLikedUsers;
     }
 
     public void setPhotoLikedUsers(ArrayList<User> phLikeddUsers) {
         if (photoLikedUsers == null) phLikeddUsers = new ArrayList<>(phLikeddUsers);
-
         else this.photoLikedUsers = phLikeddUsers;
     }
 
@@ -86,8 +99,7 @@ public class PhotoController {
     }
 
     public static void setSt_listener(RequestListener st_listener) {
-        if (PhotoController.st_listener == null)
-            PhotoController.st_listener = st_listener;
+
 
         if (st_listeners_all.size() == 0) {
             st_listener.setIndexInList(0);
@@ -121,28 +133,30 @@ public class PhotoController {
         PhotoController.st_listeners_all = st_listeners_all;
     }
 
-    static ArrayList<RequestListener> st_listeners_all = new ArrayList<>();
-
-
     public Photo getPhoto() {
         return photo;
     }
 
-    public Photo[] getPhotos() {
-        return photos;
-    }
-
-    public void setPhotos(Photo[] photos) {
-        this.photos = photos;
-    }
+    // End of Getters and Setters //
 
 
+
+    /**
+ * @param photo  photo objects to be uploaded
+ *               if Success 101 code will be called in static listener
+ * */
     public static synchronized void uploadPhoto(Photo... photo) {
 
         new ImageUploadTask().execute(photo);
 
     }
 
+    /**
+ * @param id ID of Photo to request
+ *
+ *           onResponse       201 code will be called in listener
+ *           onErrorResponse  203 code will be called in listener
+ * */
     public synchronized void requestPhoto(String id) {
         assert this.listener != null;
         String url = PicsArtConst.Get_PHOTO_URL + id + PicsArtConst.TOKEN_PREFIX + token;
@@ -153,7 +167,7 @@ public class PhotoController {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("Error", error.toString());
-                listener.onRequestReady(101, error.toString());
+                listener.onRequestReady(203, error.toString());
 
             }
 
@@ -162,7 +176,7 @@ public class PhotoController {
                 Log.d("Response 9", response.toString());
                 //photo = new Photo(Photo.IS.GENERAL);
                 photo = PhotoFactory.parseFrom(response);
-                listener.onRequestReady(102, response.toString());
+                listener.onRequestReady(201, response.toString());
             }
         });
 
@@ -173,8 +187,12 @@ public class PhotoController {
      * @param photoId id of photo
      * @param limit   max limit to show
      * @param offset  starting index to count
+     *
+     *  The comments will be ordered first-to-last.
+     *                 onResponse       301 code will be called in listener
+     *                 onErrorResponse  303 code will be called in listener
      */
-    public synchronized void getComments(String photoId, final int offset, final int limit) {
+    public synchronized void requestComments(String photoId, final int offset, final int limit) {
 
         String url = PicsArtConst.PHOTO_COMMENTS_URL + photoId + ".json" + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
         PARequest req = new PARequest(Request.Method.GET, url, null, null);
@@ -182,10 +200,8 @@ public class PhotoController {
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
-
+                listener.onRequestReady(303, error.toString());
             }
-
             @Override
             public void onResponse(Object response) {
 
@@ -219,7 +235,7 @@ public class PhotoController {
                         tmp.add(j, comment.get(i));
                     }
                     commentsLists = new ArrayList<Comment>(tmp);
-                    listener.onRequestReady(555, "Comments is HERE");
+                    listener.onRequestReady(301, "Comments is HERE");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -228,16 +244,24 @@ public class PhotoController {
 
     }
 
-    public synchronized void getCommentsOffLim(String photoId, final int offset, final int limit) {
 
+    /**
+     * @param photoId id of photo
+     * @param limit   max limit to show
+     * @param offset  starting index to count
+     *
+     *  The comments will be ordered last-to-first.
+     *                 onResponse       301 code will be called in listener
+     *                 onErrorResponse  303 code will be called in listener
+     */
+    public synchronized void requestCommentsOffLim(String photoId, final int offset, final int limit) {
         String url = PicsArtConst.PHOTO_COMMENTS_URL + photoId + ".json" + PicsArtConst.API_PREFX + PicsArtConst.APIKEY + PicsArtConst.OFFSET + offset + PicsArtConst.LIMIT + limit;
         PARequest req = new PARequest(Request.Method.GET, url, null, null);
         SingletoneRequestQue.getInstance(MainActivity.getAppContext()).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
-
+                listener.onRequestReady(303, error.toString());
             }
 
             @Override
@@ -251,10 +275,9 @@ public class PhotoController {
                         Gson gson = new Gson();
                         comment.add(i, (gson.fromJson(val.toString(), Comment.class)));
 
-
                     }
                     commentsLists = new ArrayList<Comment>(comment);
-                    listener.onRequestReady(555, "Comments ready");
+                    listener.onRequestReady(301, "Comments ready");
                     //notifyListeners(555, "getComments");
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -263,9 +286,17 @@ public class PhotoController {
         });
 
     }
-
-
-    public synchronized void comment(String photoID, final String comment) {
+    /**
+ * @param photoID ID of photo
+ * @param comment text of comment
+ *
+ *       Adds Comment to the Photo
+ *          onResponse          401 code will be called in listener
+ *          onErrorResponse     403 code will be called in listener
+ *
+ *
+ * */
+    public synchronized void addComment(String photoID, final String comment) {
 
         String url = PicsArtConst.PHOTO_ADD_COMMENT_URL + photoID + ".json" + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
         StringRequest req = new StringRequest(Request.Method.POST, url,
@@ -298,6 +329,12 @@ public class PhotoController {
 
     }
 
+    /**
+     * @param photoId ID of photo
+     * @param commentId ID of comment
+     *          onResponse          501 code will be called in  listener
+     *          onErrorResponse     503 code will be called in  listener
+     * */
     public synchronized void removeComment(String photoId, final String commentId) {
         String url = PicsArtConst.PHOTO_REMOVE_COMMENT_URL + photoId + ".json" + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
         StringRequest req = new StringRequest(Request.Method.POST, url,
@@ -306,15 +343,16 @@ public class PhotoController {
                     @Override
                     public void onResponse(String response) {
                         // Log.d("RemoveComment ", response);
-                        listener.onRequestReady(666, response);
+                        listener.onRequestReady(501, response);
                         //notifyListeners(666, "");
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        listener.onRequestReady(503, error.toString());
                     }
+
                 }) {
             @Override
             protected Map<String, String> getParams() {
@@ -334,6 +372,8 @@ public class PhotoController {
      * @param photo new photo info to apply
      *              Initialize new photo with updated fields to apply,
      *              then call this method to update data
+     *          onResponse          601 code will be called in static listeners
+     *          onErrorResponse     603 code will be called in static listeners
      */
     public static synchronized void updatePhotoData(final Photo photo) {
         JSONObject jobj = new JSONObject();
@@ -366,19 +406,19 @@ public class PhotoController {
         }
 
 
-        String url = PicsArtConst.PHOTO_UPDATE_INFO_URL + photo.getId() + ".json" + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
+        String url = PicsArtConst.PHOTO_UPDATE_INFO_URL + photo.getId() +  PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
         PARequest req = new PARequest(Request.Method.POST, url, jobj, null);
 
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                notifyListeners(603, error.toString());
             }
 
             @Override
             public void onResponse(Object response) {
                 Log.d("UpdatedonLisData ", response.toString());
-                notifyListeners(2222, response.toString());
+                notifyListeners(601, response.toString());
             }
         });
 
@@ -387,6 +427,14 @@ public class PhotoController {
     }
 
 
+    /**
+     * @param photoId ID of the Photo
+     *
+     *                Likes the Photo with given ID
+     *
+     *          onResponse          701 code will be called in listener
+     *          onErrorResponse     703 code will be called in listener
+     */
     public synchronized void like(String photoId) {
         String url = PicsArtConst.PHOTO_LIKE_URL + photoId + ".json" + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
         StringRequest req = new StringRequest(Request.Method.POST, url,
@@ -395,7 +443,7 @@ public class PhotoController {
                     @Override
                     public void onResponse(String response) {
                         Log.d("PhotoLike ", response);
-                        listener.onRequestReady(202, response);
+                        listener.onRequestReady(701, response);
                         // st_listener.onRequestReady(999,response);
                     }
                 },
@@ -403,7 +451,7 @@ public class PhotoController {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d("PhotoLikeError ", error.toString());
-                        listener.onRequestReady(203, error.toString());
+                        listener.onRequestReady(703, error.toString());
                         // st_listener.onRequestReady(999,"");
                     }
                 }) {
@@ -421,6 +469,14 @@ public class PhotoController {
 
     }
 
+
+    /**
+     * @param photoId ID of Photo
+     *                UnLikes Photo with given ID
+     *
+     *          onResponse          801 code will be called in listener
+     *          onErrorResponse     803 code will be called in listener
+     */
     public synchronized void unLike(String photoId) {
         String url = PicsArtConst.PHOTO_UNLIKE_URL + photoId + ".json" + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
         StringRequest req = new StringRequest(Request.Method.POST, url,
@@ -429,7 +485,7 @@ public class PhotoController {
                     @Override
                     public void onResponse(String response) {
                         Log.d("PhotoUnlike ", response);
-                        listener.onRequestReady(301, response);
+                        listener.onRequestReady(801, response);
                         //st_listener.onRequestReady(1111,"");
                     }
                 },
@@ -437,7 +493,7 @@ public class PhotoController {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d("PhotoUnlike ", error.toString());
-                        listener.onRequestReady(302, error.toString());
+                        listener.onRequestReady(803, error.toString());
                         //st_listener.onRequestReady(1111,"");
                     }
                 }) {
@@ -454,16 +510,35 @@ public class PhotoController {
     }
 
 
+    /**
+     *     @param ctx       Context of application
+     *     @param token     OAuth 2.0 token to make calls
+     *
+     *
+     */
     public PhotoController(Context ctx, String token) {
         this.ctx = ctx;
         this.token = token;
     }
 
+
+    /**
+     *     @param listener     Listener objec
+     *
+     */
     public void setListener(RequestListener listener) {
         this.listener = listener;
     }
 
 
+    /**
+     *     @param id     ID of particular Comment
+     *
+     *          Requests for particular Comment with given ID
+     *
+     *          onResponse          901 code will be called in listener
+     *          onErrorResponse     903 code will be called in listener
+     */
     public synchronized void getCommentByid(String id) {
 
         String url = PicsArtConst.PHOTO_LIKED_USERS_URL + id + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
@@ -474,7 +549,7 @@ public class PhotoController {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("Error", error.toString());
-                listener.onRequestReady(101, error.toString());
+                listener.onRequestReady(903, error.toString());
 
             }
 
@@ -484,14 +559,24 @@ public class PhotoController {
                 //photo = new Photo(Photo.IS.GENERAL);
                 Gson gson = new Gson();
                 _comment = gson.fromJson(response.toString(), Comment.class);
-                listener.onRequestReady(102, response.toString());
+                listener.onRequestReady(901, response.toString());
             }
         });
 
 
     }
 
-
+    /**
+     *     @param photoId     ID of the Photo
+     *     @param offset      start point (from)
+     *     @param limit       limit of outcome
+     *
+     *          Requests for Users who liked the Photo with given ID
+     *
+     *          onResponse          1001 code will be called in listener
+     *          onErrorResponse     1003 code will be called in listener
+     *
+     */
     public synchronized void getLikedUsers(String photoId, int offset, int limit) {
 
         String url = PicsArtConst.PHOTO_LIKED_USERS_URL + photoId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY + PicsArtConst.OFFSET + offset + PicsArtConst.LIMIT + limit;
@@ -502,7 +587,7 @@ public class PhotoController {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("Error", error.toString());
-                listener.onRequestReady(101, error.toString());
+                listener.onRequestReady(1003, error.toString());
 
             }
 
@@ -510,13 +595,46 @@ public class PhotoController {
             public void onResponse(Object response) {
                 Log.d("Response 9", response.toString());
                 photoLikedUsers = UserFactory.parseFromAsArray(response);
-                listener.onRequestReady(102, response.toString());
+                listener.onRequestReady(1001, response.toString());
             }
         });
 
     }
 
 
+    /**
+     *     @param reqnumber   code to send
+     *     @param msg          message
+     *
+     *         Notifies all static listeners with given code and message
+     */
+    public static void notifyListeners(int reqnumber, String msg) {
+        for (RequestListener listeners : getSt_listeners_all()) {
+            listeners.onRequestReady(reqnumber, msg);
+
+        }
+    }
+
+    /**
+     *     @param listenerNumb listener nuber(ID) to notify
+     *     @param reqNumb       code to send
+     *     @param msg          message
+     *
+     *         Notifies specified static listener with given code and message
+     */
+    public static void notifyListener(int listenerNumb, int reqNumb, String msg) {
+        try {
+            getSt_listener(listenerNumb).onRequestReady(reqNumb, msg);
+        } catch (NullPointerException e) {
+            Log.e("Listener Error: ", "Non Existing Listener with index " + listenerNumb);
+        }
+    }
+
+
+
+    /**
+     *  Uploads images
+     * */
     private static class ImageUploadTask extends AsyncTask<Photo, Integer, JSONObject> {
 
         InputStream is = null;
@@ -605,7 +723,7 @@ public class PhotoController {
                 try {
                     Log.d("response Upload", sResponse.toString());
 
-                    notifyListeners(44444, "Image(es) is/are uploaded!!");
+                    notifyListeners(101, "Image(es) is/are uploaded!!");
 
                 } catch (Exception e) {
                     Log.e(e.getClass().getName(), e.getMessage(), e);
@@ -631,21 +749,5 @@ public class PhotoController {
         }
 
     }
-
-    public static void notifyListeners(int reqnumber, String msg) {
-        for (RequestListener listeners : getSt_listeners_all()) {
-            listeners.onRequestReady(reqnumber, msg);
-
-        }
-    }
-
-    public static void notifyListener(int listenerNumb, int reqNumb, String msg) {
-        try {
-            getSt_listener(listenerNumb).onRequestReady(reqNumb, msg);
-        } catch (NullPointerException e) {
-            Log.e("Listener Error: ", "Non Existing Listener with index " + listenerNumb);
-        }
-    }
-
 
 }

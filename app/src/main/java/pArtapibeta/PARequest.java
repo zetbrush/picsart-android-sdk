@@ -27,11 +27,9 @@ public class PARequest extends JsonObjectRequest {
         super(method, url, jsonRequest, listener, listener);
     }
 
-
     public void setRequestListener(PARequestListener listener) {
         this.requestListener = listener;
     }
-
 
     @Override
     protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
@@ -55,7 +53,6 @@ public class PARequest extends JsonObjectRequest {
 
 
     public static abstract class PARequestListener<T> implements Response.Listener, Response.ErrorListener {
-
 
     }
 }

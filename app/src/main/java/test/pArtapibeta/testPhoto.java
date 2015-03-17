@@ -12,7 +12,7 @@ import pArtapibeta.RequestListener;
 /**
  * Created by Arman on 3/9/15.
  */
-public class testPhoto {
+public class TestPhoto {
 
 
     public static void testGetPhotoInfo(String usid, String token) {
@@ -89,7 +89,7 @@ public class testPhoto {
                     PhotoController.notifyListeners(0004,"PhotoTest unLike --- PASSED");
             }
         });
-        pc.comment(phid,comment);
+        pc.addComment(phid,comment);
     }
 
 

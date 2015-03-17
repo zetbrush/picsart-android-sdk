@@ -44,10 +44,11 @@ public class Location {
     @Expose
     String country;
 
-
     @SerializedName("coordinates")
     @Expose
     List<Integer> coordinates = new ArrayList<Integer>();
+
+
 
     public Location(String str, String cit, String place, String stat, String zip, String country, ArrayList<Integer> coord) {
 

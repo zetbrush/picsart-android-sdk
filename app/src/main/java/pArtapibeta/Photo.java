@@ -15,7 +15,6 @@ import java.util.List;
  */
 public class Photo {
     SimpleDateFormat sdf;
-
     @SerializedName("likes_count")
     @Expose
     private Integer likesCount;
@@ -81,7 +80,6 @@ public class Photo {
     @Expose
     private Boolean mature;
 
-
     @SerializedName("reposts_count")
     @Expose
     private Integer repostsCount;
@@ -93,8 +91,6 @@ public class Photo {
     @SerializedName("user")
     @Expose
     private User owner;
-
-
 
     private String path;
 

@@ -131,7 +131,7 @@ public class MainActivity extends Activity {
 
                             // new TokenGet().execute();
 
-                            String Code = pref.getString("Code", "");
+                            String authCode = pref.getString("Code", "");
                             AccessToken.setListener(new RequestListener(1) {
                                 @Override
                                 public void onRequestReady(int requmber, String mmsg) {
@@ -139,7 +139,7 @@ public class MainActivity extends Activity {
                                     Log.d("Token is ready: ", MainActivity.token);
                                 }
                             });
-                            AccessToken.requestAccessToken(PicsArtConst.TOKEN_URL, Code, PicsArtConst.CLIENT_ID,
+                            AccessToken.requestAccessToken(PicsArtConst.TOKEN_URL, authCode, PicsArtConst.CLIENT_ID,
                                     PicsArtConst.CLIENT_SECRET, PicsArtConst.REDIRECT_URI, PicsArtConst.GRANT_TYPE);
 
 
@@ -175,9 +175,6 @@ public class MainActivity extends Activity {
         });
 
     }
-
-    final Context myApp = this;
-
 
     //////listener for picking
 
@@ -271,7 +268,7 @@ public class MainActivity extends Activity {
             @Override
             public void onRequestReady(int requmber, String message) {
                 // Log.d("Comment resp", message);
-                // pc.comment("163773067002202", message.substring(0,20));
+                // pc.addComment("163773067002202", message.substring(0,20));
 
                 if (requmber == 102) {
                     tmpPh.add(pc.getPhoto());
@@ -301,7 +298,7 @@ public class MainActivity extends Activity {
             pc.requestPhoto(phids[i]);
         }
 
-        pc.getComments("163086538001202", 0, 4);
+        pc.requestComments("163086538001202", 0, 4);
 
         pc.removeComment("163086538001202", "54f5bc8a7854e2ed4a000067");
 

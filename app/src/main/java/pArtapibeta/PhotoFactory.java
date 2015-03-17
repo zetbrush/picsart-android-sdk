@@ -12,10 +12,16 @@ import java.util.ArrayList;
 
 /**
  * Created by Arman on 3/9/15.
+ *
  */
 public class PhotoFactory {
 
-
+    /**
+     * @param jobj  JSONObject
+     * @return Photo
+     *
+     *  Tries to Parse JSONObject to Photo
+     * */
     public static Photo parseFrom(JSONObject jobj) {
         try {
             Gson gson = new Gson();
@@ -38,7 +44,14 @@ public class PhotoFactory {
         return null;
     }
 
-
+    /**
+     * @param obj  Object
+     * @param offset starting point (from)
+     * @param limit  limit of outcome
+     * @return ArrayList<Photo>
+     *
+     *  Tries to Parse Object to ArrayList of Photo instances
+     * */
     public static ArrayList<Photo> parseFromAsArray(Object obj, int offset, int limit) {
         ArrayList<Photo> tmpPh = new ArrayList<>();
         Photo nwPh;
@@ -86,6 +99,13 @@ public class PhotoFactory {
         return null;
     }
 
+
+    /**
+     * @param o  Object
+     * @return Photo
+     *
+     *  Tries to Parse Object to Photo
+     * */
     public static Photo parseFrom(Object o) throws ClassCastException {
         JSONObject oo = (JSONObject) o;
         return parseFrom(oo);
