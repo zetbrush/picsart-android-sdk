@@ -11,9 +11,16 @@ import java.util.ArrayList;
 
 
 /**
- * Created by Arman on 3/9/15.
+ * This class consists exclusively of parsing methods, that trying make Photo/ collection of Photo
+ * using gson reflection on class.
  *
+ * <p>This class is a member of the
+ * <a href="www.picsart.com">
+ * </a>.
+ *
+ * @author  Arman Andreasyan 3/9/15
  */
+
 public class PhotoFactory {
 
     /**

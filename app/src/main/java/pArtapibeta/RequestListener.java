@@ -1,11 +1,19 @@
 package pArtapibeta;
 
 /**
- * Created by Arman on 2/20/15.
+ * This abstract class serves as Listener for notifycation of responses,
+ * It uses indexing for identification and accessibility.
+ *
+ * <p>This class is a member of the
+ * <a href="www.picsart.com">
+ * </a>.
+ *
+ * @author  Arman Andreasyan
  */
+
 public abstract class RequestListener {
-    int indexOfListener;
-    int indexInList;
+    private int indexOfListener;
+    private int indexInList;
 
 
     public int getIndexOfListener() {

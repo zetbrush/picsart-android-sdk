@@ -2,6 +2,7 @@ package pArtapibeta;
 
 /**
  * Created by Arman on 2/9/15.
+ *
  */
 public class PicsArtConst {
 
@@ -58,8 +59,9 @@ public class PicsArtConst {
     public static final String SHOW_BLOCKED_USERS = "https://api.picsart.com/blocks/show/";
     public static final String SHOW_USER_PHOTOS_LIST = "https://api.picsart.com/users/photos/show/";
 
+    public static final String DATE_FORMAT="yyyy-MM-dd'T'hh:mm:ss.SSS'X'";
 
-    public static final String[] paramsUserProfile =
+    public static final  String[] paramsUserProfile =
             new String[]{
                     "username",         //0
                     "name",             //1

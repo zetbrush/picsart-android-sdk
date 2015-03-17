@@ -170,9 +170,7 @@ public class User {
      * @return
      * The location
      */
-    public Location getLocation() {
-        if(location==null)
-            location=new Location();
+    public Location getLocation() throws NullPointerException{
 
         return location;
     }

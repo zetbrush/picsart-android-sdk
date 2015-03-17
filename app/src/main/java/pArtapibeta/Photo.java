@@ -11,9 +11,23 @@ import java.util.List;
 
 
 /**
- * Created by Arman on 2/23/15.
+ * This class serves as POJO
+ *
+ * <p>Some Getters of this class  throw a <tt>NullPointerException</tt>
+ * if the collections or class objects provided to them are null.
+ *
+ * It uses enum type IS to differentiate cover/profile/general types of pictures.
+ *
+ * <p>This class is a member of the
+ * <a href="www.picsart.com">
+ * </a>.
+ *
+ * @author  Arman Andreasyan 2/23/15
  */
+
+
 public class Photo {
+
     SimpleDateFormat sdf;
     @SerializedName("likes_count")
     @Expose
@@ -92,9 +106,11 @@ public class Photo {
     @Expose
     private User owner;
 
+    IS isFor;
     private String path;
-
     private String ownerID;
+    public enum IS {AVATAR, COVER, GENERAL}
+
 
     public Integer getLikesCount() {
         return likesCount;
@@ -206,10 +222,6 @@ public class Photo {
 
     private ArrayList<Comment> comments;
 
-    IS isFor;
-
-    public enum IS {AVATAR, COVER, GENERAL}
-
     public IS getIsFor() {
         return isFor;
     }
@@ -287,27 +299,28 @@ public class Photo {
         return ownerID;
     }
 
-    public ArrayList<Comment> getComments() {
+    public ArrayList<Comment> getComments() throws NullPointerException {
         return comments;
     }
 
     public void setComments(ArrayList<Comment> comments) {
-        this.comments = comments;
+        this.comments = new ArrayList<>(comments);
     }
 
-    public Photo(String id, String url, String title, ArrayList tags, String crrated, boolean isMature, int width, int height, int likesCount, int viewsCount, int commentsCount, int repostsCount, boolean isLiked, boolean isReposted, String ownerID, Location location) {
+
+
+    public Photo(String id, String url, String title, ArrayList tags, String crrated, boolean isMature, int width, int height, int likesCount, int viewsCount, int commentsCount,
+                 int repostsCount, boolean isLiked, boolean isReposted, String ownerID, Location location) {
         init(id, url, title, tags, crrated,
                 isMature, width, height, likesCount, viewsCount, commentsCount, repostsCount, isLiked, isReposted, ownerID, location);
     }
-
-
     public Photo(String id, String url, String title, String crrated, String ownerid) {
         this.id = id;
         this.title = title;
         try {
             this.created = crrated;
             if (created != null) {
-                sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'X'");
+                sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
                 this.createdDate = sdf.parse(created);
             }
         } catch (ParseException e) {
@@ -318,7 +331,6 @@ public class Photo {
         this.tags = null;
 
     }
-
     public Photo(IS isFor) {
         this(null, null, null, null, null);
         this.isFor = isFor;
@@ -326,7 +338,8 @@ public class Photo {
     }
 
 
-    private void init(String id, String url, String title, ArrayList tags, String crrated, boolean isMature, int width, int height, int likesCount, int viewsCount, int commentsCount, int repostsCount, boolean isLiked, boolean isReposted, String ownerID, Location location) {
+    private void init(String id, String url, String title, ArrayList tags, String crrated, boolean isMature, int width, int height, int likesCount, int viewsCount,
+                      int commentsCount, int repostsCount, boolean isLiked, boolean isReposted, String ownerID, Location location) {
         this.id = id;
         this.url = url;
         this.title = title;
@@ -334,7 +347,7 @@ public class Photo {
 
         try {
             this.created = crrated;
-            sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'X'");
+            sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
             this.createdDate = sdf.parse(created);
         } catch (ParseException e) {
             e.printStackTrace();

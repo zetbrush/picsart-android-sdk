@@ -7,9 +7,19 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+
 /**
- * Created by Arman on 2/23/15.
+ * This class serves as POJO for Comments
+ * Also it serves as class type for instantiating
+ * Comment objects from Json.
+ *
+ * <p>This class is a member of the
+ * <a href="www.picsart.com">
+ * </a>.
+ *
+ * @author  Arman Andreasyan 2/23/15
  */
+
 public class Comment {
 
     SimpleDateFormat sdf;

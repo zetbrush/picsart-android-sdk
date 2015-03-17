@@ -594,7 +594,7 @@ public class PhotoController {
             @Override
             public void onResponse(Object response) {
                 Log.d("Response 9", response.toString());
-                photoLikedUsers = UserFactory.parseFromAsArray(response);
+                photoLikedUsers = UserFactory.parseFromAsArray(response,0,Integer.MAX_VALUE);
                 listener.onRequestReady(1001, response.toString());
             }
         });

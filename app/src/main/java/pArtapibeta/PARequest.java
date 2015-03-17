@@ -12,8 +12,20 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 
 /**
- * Created by Arman on 2/24/15.
+ * This class is main request provider for PicsArt api calls. It extends Volley
+ * JsonObjectRequest, and encapsulates it's listeners.
+ *
+ * <p>Some Getters of this class  throw a <tt>NullPointerException</tt>
+ * if the collections or class objects provided to them are null.
+ *
+ * <p>This class is a member of the
+ * <a href="www.picsart.com">
+ * </a>.
+ *
+ * @author  Arman Andreasyan 2/24/15
  */
+
+
 
 
 public class PARequest extends JsonObjectRequest {

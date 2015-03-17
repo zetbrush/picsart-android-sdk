@@ -10,6 +10,15 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
 /**
+ * This  class serves as Singltone instance provider
+ *
+ * <p>This class is a member of the
+ * <a href="www.picsart.com">
+ * </a>.
+ *
+ * @author  Arman Andreasyan
+ */
+/**
  * Created by Arman on 2/20/15.
  */
 public class SingletoneRequestQue {
@@ -48,8 +57,7 @@ public class SingletoneRequestQue {
 
 
     /**
-     *  @return SingletoneRequestQue instance
-     *
+     *  @return Single instance of requests que
      *
      * */
     public static synchronized SingletoneRequestQue getInstance(Context context) {

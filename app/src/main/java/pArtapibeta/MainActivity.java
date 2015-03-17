@@ -238,8 +238,7 @@ public class MainActivity extends Activity {
         };
 
 
-        PARequest.PARequestListener<JSONObject> listn = null;
-        TextView jj = (TextView) findViewById(R.id.Access);
+
 
         final PhotoController pc = new PhotoController(getAppContext(), token);
 
@@ -270,7 +269,7 @@ public class MainActivity extends Activity {
                 // Log.d("Comment resp", message);
                 // pc.addComment("163773067002202", message.substring(0,20));
 
-                if (requmber == 102) {
+                if (requmber == 201) {
                     tmpPh.add(pc.getPhoto());
                     counter[0] += 1;
                     Log.d("COUNTERR: ", String.valueOf(counter[0]));
@@ -278,12 +277,12 @@ public class MainActivity extends Activity {
 
                 }
 
-                if (requmber == 555) {
+                if (requmber == 301) {
 
                     Log.d("commEENT: ", pc.getCommentsLists().toString());
 
                 }
-                if (requmber == 666) {
+                if (requmber == 501) {
                     Log.d("removed Comment: ", message);
                 }
 
@@ -299,15 +298,16 @@ public class MainActivity extends Activity {
         }
 
         pc.requestComments("163086538001202", 0, 4);
-
         pc.removeComment("163086538001202", "54f5bc8a7854e2ed4a000067");
-
 
         Photo phh = new Photo(Photo.IS.GENERAL);
         phh.setLocation(new Location("nor poxoc", "nor Qaxaaaq", "nor Plac@@@", "nor State@@", "nor Zipcod@@", "Armenia", new ArrayList<Integer>(Arrays.asList(40, 36))));
         phh.setTitle("nor nkariii anun 2");
         phh.setTags(new ArrayList<>(Arrays.asList("nor tag1", "nor tag2", "nor tag3")));
         phh.setId("163086538001202");
+
+
+
         // PhotoController.updatePhotoData(phh);
 
 
