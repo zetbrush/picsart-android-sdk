@@ -1,16 +1,52 @@
 package pArtapibeta;
 
 import android.content.Context;
+import android.os.AsyncTask;
+import android.os.Looper;
+import android.provider.ContactsContract;
 import android.util.Log;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 
 public class UserController {
@@ -24,22 +60,57 @@ public class UserController {
 
     private User user;
     private ArrayList<Photo> userPhotos;
-    private ArrayList<String> userFollowing;
-    private ArrayList<String> userFollowers;
+    private ArrayList<User> userFollowing;
+    private ArrayList<User> userFollowers;
     private ArrayList<Photo> userLikedPhotos;
     private ArrayList<String> userTags;
     private ArrayList<String> userPlaces;
-    private ArrayList<String> blockedUsers;
+    private ArrayList<User> blockedUsers;
 
     private static RequestListener st_listener;
 
-    public static RequestListener getSt_listener() {
-        return st_listener;
+    public static RequestListener getSt_listener(int indexNumb) {
+        int indx;
+        for (RequestListener listener : st_listeners_all)
+            if (listener.getIndexOfListener() == indexNumb) {
+                indx = st_listeners_all.indexOf(listener);
+                return st_listeners_all.get(indx);
+            }
+        return null;
     }
 
     public static void setSt_listener(RequestListener st_listener) {
-        UserController.st_listener = st_listener;
+        if (UserController.st_listener == null)
+            UserController.st_listener = st_listener;
+
+        if (st_listeners_all.size() == 0) {
+            st_listener.setIndexInList(0);
+            st_listeners_all.add(st_listener);
+
+        } else {
+            int index = st_listener.getIndexOfListener();
+            if (st_listeners_all.contains(st_listener) && st_listener.getIndexOfListener() == index) {
+                int indToChange = (st_listeners_all.indexOf(st_listener));
+                st_listener.setIndexInList(indToChange);
+                st_listeners_all.set(indToChange, st_listener);
+            } else if (!((st_listeners_all.contains(st_listener)))) {
+                int indxToput = st_listeners_all.size();
+                st_listener.setIndexInList(indxToput);
+                st_listeners_all.add(st_listener);
+            }
+        }
     }
+
+    public static ArrayList<RequestListener> getSt_listeners_all() {
+        return st_listeners_all;
+    }
+
+    public static void setSt_listeners_all(ArrayList<RequestListener> st_listeners_all) {
+        UserController.st_listeners_all = st_listeners_all;
+    }
+
+
+    static ArrayList<RequestListener> st_listeners_all = new ArrayList<>();
 
 
     public UserController(Context ctx) {
@@ -59,11 +130,11 @@ public class UserController {
         return userPhotos;
     }
 
-    public ArrayList<String> getUserFollowing() {
+    public ArrayList<User> getUserFollowing() {
         return userFollowing;
     }
 
-    public ArrayList<String> getUserFollowers() {
+    public ArrayList<User> getUserFollowers() {
         return userFollowers;
     }
 
@@ -79,12 +150,12 @@ public class UserController {
         return userPlaces;
     }
 
-    public ArrayList<String> getBlockedUsers() {
+    public ArrayList<User> getBlockedUsers() {
         return blockedUsers;
     }
 
 
-    public void requestUser() {
+    public synchronized void requestUser() {
 
         assert this.listener != null;
         String url = PicsArtConst.SHOW_USER_URL + "me" + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
@@ -106,7 +177,7 @@ public class UserController {
         });
     }
 
-    public void requestUser(String id) {     //    3
+    public synchronized void requestUser(String id) {     //    3
 
         assert this.listener != null;
         String url = PicsArtConst.SHOW_USER_URL + id + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
@@ -133,11 +204,11 @@ public class UserController {
     }
 
 
-    public void requestUserFollowers(User user, final int offset, final int limit) {
-        // requestUserFollowers(user.getId(), offset, limit);
+    public synchronized void requestUserFollowers(User user, final int offset, final int limit) {
+         requestUserFollowers(user.getId().toString(), offset, limit);
     }
 
-    public void requestUserFollowers(String userId, final int offset, final int limit) {    //   8
+    public synchronized void requestUserFollowers(String userId, final int offset, final int limit) {    //   8
 
         /**
          * checking argument validation
@@ -163,35 +234,50 @@ public class UserController {
             @Override
             public void onResponse(Object response) {
 
-                int max_limit;
+                /*int max_limit;
 
+
+                JSONArray jsonArray = null;
                 try {
-
-                    JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
-                    max_limit = limit >= jsonArray.length() ? jsonArray.length() - 1 : limit;
-
-                    for (int i = offset; i <= max_limit; i++) {
-
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        userFollowers.add(jsonObject.getString("id"));
-                        Log.d(MY_LOGS, "follower id:  " + jsonObject.getString("id"));
-
-                    }
-                    UserController.this.listener.onRequestReady(208, response.toString());
-
+                    jsonArray = ((JSONObject) response).getJSONArray("response");
+                    Log.d(MY_LOGS,response.toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                max_limit = limit >= jsonArray.length() ? jsonArray.length() - 1 : limit;
+
+                    //userFollowers=UserFactory.parseFromAsArray(response);
+                    for (int i = offset; i <= max_limit; i++) {
+
+                        JSONObject jsonObject = null;
+                        try {
+                            jsonObject = jsonArray.getJSONObject(i);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Gson gson=new Gson();
+
+                        userFollowers.add(gson.fromJson(jsonObject.toString(),User.class));
+                        try {
+                            Log.d(MY_LOGS, "follower id:  " + jsonObject.getString("id"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }*/
+                userFollowers = UserFactory.parseFromAsArray(response, offset, limit);
+                UserController.this.listener.onRequestReady(208, response.toString());
+
             }
         });
     }
 
 
-    public void requestUserFollowing(User user, final int offset, final int limit) {
-        //requestUserFollowing(user.getId(), offset, limit);
+    public synchronized void requestUserFollowing(User user, final int offset, final int limit) {
+        requestUserFollowing(user.getId().toString(), offset, limit);
     }
 
-    public void requestUserFollowing(String userId, final int offset, final int limit) {    //   9
+    public synchronized void requestUserFollowing(String userId, final int offset, final int limit) {    //   9
 
         /**
          * checking argument validation
@@ -217,7 +303,7 @@ public class UserController {
             @Override
             public void onResponse(Object response) {
 
-                int max_limit;
+                /*int max_limit;
 
                 try {
 
@@ -235,18 +321,19 @@ public class UserController {
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                }
+                }*/
+                userFollowing = UserFactory.parseFromAsArray(response, offset, limit);
+                listener.onRequestReady(209, response.toString());
             }
         });
     }
 
 
-    public void requestLikedPhotos(User user, final int offset, final int limit) {
-        //requestLikedPhotos(user.getId(), offset, limit);
+    public synchronized void requestLikedPhotos(User user, final int offset, final int limit) {
+        requestLikedPhotos(user.getId().toString(), offset, limit);
     }
 
-
-    public void requestLikedPhotos(String userId, final int offset, final int limit) {  //10
+    public synchronized void requestLikedPhotos(String userId, final int offset, final int limit) {    //   10
 
         /**
          * checking argument validation
@@ -299,11 +386,11 @@ public class UserController {
     }
 
 
-    public void requestBlockedUsers(User user, final int offset, final int limit) {
-        //requestBlockedUsers(user.getId(), offset, limit);
+    public synchronized void requestBlockedUsers(User user, final int offset, final int limit) {
+        requestBlockedUsers(user.getId().toString(), offset, limit);
     }
 
-    public void requestBlockedUsers(String userId, final int offset, final int limit) {    //   4
+    public synchronized void requestBlockedUsers(String userId, final int offset, final int limit) {    //   4
 
         /**
          * checking argument validation
@@ -329,7 +416,10 @@ public class UserController {
             @Override
             public void onResponse(Object response) {
 
-                int max_limit;
+                blockedUsers=UserFactory.parseFromAsArray(response,offset,limit);
+                UserController.this.listener.onRequestReady(204, response.toString());
+
+                /*int max_limit;
 
                 try {
 
@@ -348,7 +438,7 @@ public class UserController {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
+*/
 
             }
         });
@@ -356,11 +446,11 @@ public class UserController {
     }
 
 
-    public void requestPlaces(User user, final int offset, final int limit) {
-        //requestPlaces(user.getId(), offset, limit);
+    public synchronized void requestPlaces(User user, final int offset, final int limit) {
+        requestPlaces(user.getId().toString(), offset, limit);
     }
 
-    public void requestPlaces(String userId, final int offset, final int limit) {    //  5
+    public synchronized void requestPlaces(String userId, final int offset, final int limit) {    //  5
 
         /**
          * checking argument validation
@@ -409,11 +499,11 @@ public class UserController {
     }
 
 
-    public void requestTags(User user, final int offset, final int limit) {
-        //requestTags(user.getId(), offset, limit);
+    public synchronized void requestTags(User user, final int offset, final int limit) {
+        requestTags(user.getId().toString(), offset, limit);
     }
 
-    public void requestTags(String userId, final int offset, final int limit) {    // 6
+    public synchronized void requestTags(String userId, final int offset, final int limit) {    // 6
 
         /**
          * checking argument validation
@@ -464,11 +554,11 @@ public class UserController {
     }
 
 
-    public void requestUserPhotos(User user, final int offset, final int limit) {
-        //requestUserPhotos(user.getId(), offset, limit);
+    public synchronized void requestUserPhotos(User user, final int offset, final int limit) {
+        requestUserPhotos(user.getId().toString(), offset, limit);
     }
 
-    public void requestUserPhotos(String userId, final int offset, final int limit) {    //  7
+    public synchronized void requestUserPhotos(String userId, final int offset, final int limit) {    //  7
 
         /**
          * checking argument validation

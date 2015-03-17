@@ -3,11 +3,14 @@ package pArtapibeta;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class User {
+
 
     @SerializedName("likes_count")
     @Expose
@@ -17,9 +20,10 @@ public class User {
     @SerializedName("is_verified")
     @Expose
     private Boolean isVerified;
-
+    @SerializedName("location")
     @Expose
     private Location location;
+    @SerializedName("status")
     @Expose
     private String status;
     @SerializedName("locations_count")
@@ -28,36 +32,45 @@ public class User {
     @SerializedName("status_message")
     @Expose
     private String statusMessage;
+    @SerializedName("provider")
     @Expose
     private String provider;
     @SerializedName("following_count")
     @Expose
     private Integer followingCount;
+    @SerializedName("photo")
     @Expose
     private String photo;
     @SerializedName("streams_count")
     @Expose
     private Integer streamsCount;
 
+    @SerializedName("id")
     @Expose
     private Long id;
 
+    @SerializedName("balance")
     @Expose
     private Integer balance;
 
+    @SerializedName("cover")
     @Expose
     private String cover;
 
+    @SerializedName("username")
     @Expose
     private String username;
+    @SerializedName("email")
     @Expose
     private String email;
 
+    @SerializedName("mature")
     @Expose
     private Boolean mature;
     @SerializedName("photos_count")
     @Expose
     private Integer photosCount;
+    @SerializedName("name")
     @Expose
     private String name;
     @SerializedName("followers_count")
@@ -69,350 +82,465 @@ public class User {
     @SerializedName("designs_count")
     @Expose
     private Integer designsCount;
+    @SerializedName("key")
     @Expose
     private String key;
     @SerializedName("tags_count")
     @Expose
     private Integer tagsCount;
 
-    public User() {
+    public User(){
     }
 
-    public User(Long id) {
-        this.id = id;
+    public User(String id){
+        this.id=Long.parseLong(id);
+    }
+
+    public User(String id, String name, String username, String photo, String cover, int followingCount, int followersCownt, int likesCount, int photosCount, Location location) {
+
+        this.id = Long.parseLong(id);
+        this.name = name;
+        this.username = username;
+        this.photo = photo;
+        this.cover = cover;
+        this.followingCount = followingCount;
+        this.followersCount = followersCownt;
+        this.likesCount = likesCount;
+        this.photosCount = photosCount;
+        this.location = location;
+
     }
 
     /**
-     * @return The likesCount
+     *
+     * @return
+     * The likesCount
      */
     public Integer getLikesCount() {
         return likesCount;
     }
 
     /**
-     * @param likesCount The likes_count
+     *
+     * @param likesCount
+     * The likes_count
      */
     public void setLikesCount(Integer likesCount) {
         this.likesCount = likesCount;
     }
 
     /**
-     * @return The tags
+     *
+     * @return
+     * The tags
      */
     public List<String> getTags() {
         return tags;
     }
 
     /**
-     * @param tags The tags
+     *
+     * @param tags
+     * The tags
      */
     public void setTags(List<String> tags) {
         this.tags = tags;
     }
 
     /**
-     * @return The isVerified
+     *
+     * @return
+     * The isVerified
      */
     public Boolean getIsVerified() {
         return isVerified;
     }
 
     /**
-     * @param isVerified The is_verified
+     *
+     * @param isVerified
+     * The is_verified
      */
     public void setIsVerified(Boolean isVerified) {
         this.isVerified = isVerified;
     }
 
     /**
-     * @return The location
+     *
+     * @return
+     * The location
      */
     public Location getLocation() {
+        if(location==null)
+            location=new Location();
+
         return location;
     }
 
     /**
-     * @param location The location
+     *
+     * @param location
+     * The location
      */
     public void setLocation(Location location) {
         this.location = location;
     }
 
     /**
-     * @return The status
+     *
+     * @return
+     * The status
      */
     public String getStatus() {
         return status;
     }
 
     /**
-     * @param status The status
+     *
+     * @param status
+     * The status
      */
     public void setStatus(String status) {
         this.status = status;
     }
 
     /**
-     * @return The locationsCount
+     *
+     * @return
+     * The locationsCount
      */
     public Integer getLocationsCount() {
         return locationsCount;
     }
 
     /**
-     * @param locationsCount The locations_count
+     *
+     * @param locationsCount
+     * The locations_count
      */
     public void setLocationsCount(Integer locationsCount) {
         this.locationsCount = locationsCount;
     }
 
     /**
-     * @return The statusMessage
+     *
+     * @return
+     * The statusMessage
      */
     public String getStatusMessage() {
         return statusMessage;
     }
 
     /**
-     * @param statusMessage The status_message
+     *
+     * @param statusMessage
+     * The status_message
      */
     public void setStatusMessage(String statusMessage) {
         this.statusMessage = statusMessage;
     }
 
     /**
-     * @return The provider
+     *
+     * @return
+     * The provider
      */
     public String getProvider() {
         return provider;
     }
 
     /**
-     * @param provider The provider
+     *
+     * @param provider
+     * The provider
      */
     public void setProvider(String provider) {
         this.provider = provider;
     }
 
     /**
-     * @return The followingCount
+     *
+     * @return
+     * The followingCount
      */
     public Integer getFollowingCount() {
         return followingCount;
     }
 
     /**
-     * @param followingCount The following_count
+     *
+     * @param followingCount
+     * The following_count
      */
     public void setFollowingCount(Integer followingCount) {
         this.followingCount = followingCount;
     }
 
     /**
-     * @return The photo
+     *
+     * @return
+     * The photo
      */
     public String getPhoto() {
         return photo;
     }
 
     /**
-     * @param photo The photo
+     *
+     * @param photo
+     * The photo
      */
     public void setPhoto(String photo) {
         this.photo = photo;
     }
 
     /**
-     * @return The streamsCount
+     *
+     * @return
+     * The streamsCount
      */
     public Integer getStreamsCount() {
         return streamsCount;
     }
 
     /**
-     * @param streamsCount The streams_count
+     *
+     * @param streamsCount
+     * The streams_count
      */
     public void setStreamsCount(Integer streamsCount) {
         this.streamsCount = streamsCount;
     }
 
     /**
-     * @return The id
+     *
+     * @return
+     * The id
      */
     public Long getId() {
         return id;
     }
 
     /**
-     * @param id The id
+     *
+     * @param id
+     * The id
      */
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(String id) {
+        this.id = Long.parseLong(id);
     }
 
     /**
-     * @return The balance
+     *
+     * @return
+     * The balance
      */
     public Integer getBalance() {
         return balance;
     }
 
     /**
-     * @param balance The balance
+     *
+     * @param balance
+     * The balance
      */
     public void setBalance(Integer balance) {
         this.balance = balance;
     }
 
     /**
-     * @return The cover
+     *
+     * @return
+     * The cover
      */
     public String getCover() {
         return cover;
     }
 
     /**
-     * @param cover The cover
+     *
+     * @param cover
+     * The cover
      */
     public void setCover(String cover) {
         this.cover = cover;
     }
 
     /**
-     * @return The username
+     *
+     * @return
+     * The username
      */
     public String getUsername() {
         return username;
     }
 
     /**
-     * @param username The username
+     *
+     * @param username
+     * The username
      */
     public void setUsername(String username) {
         this.username = username;
     }
 
     /**
-     * @return The email
+     *
+     * @return
+     * The email
      */
     public String getEmail() {
         return email;
     }
 
     /**
-     * @param email The email
+     *
+     * @param email
+     * The email
      */
     public void setEmail(String email) {
         this.email = email;
     }
 
     /**
-     * @return The mature
+     *
+     * @return
+     * The mature
      */
     public Boolean getMature() {
         return mature;
     }
 
     /**
-     * @param mature The mature
+     *
+     * @param mature
+     * The mature
      */
     public void setMature(Boolean mature) {
         this.mature = mature;
     }
 
     /**
-     * @return The photosCount
+     *
+     * @return
+     * The photosCount
      */
     public Integer getPhotosCount() {
         return photosCount;
     }
 
     /**
-     * @param photosCount The photos_count
+     *
+     * @param photosCount
+     * The photos_count
      */
     public void setPhotosCount(Integer photosCount) {
         this.photosCount = photosCount;
     }
 
     /**
-     * @return The name
+     *
+     * @return
+     * The name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * @param name The name
+     *
+     * @param name
+     * The name
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * @return The followersCount
+     *
+     * @return
+     * The followersCount
      */
     public Integer getFollowersCount() {
         return followersCount;
     }
 
     /**
-     * @param followersCount The followers_count
+     *
+     * @param followersCount
+     * The followers_count
      */
     public void setFollowersCount(Integer followersCount) {
         this.followersCount = followersCount;
     }
 
     /**
-     * @return The usernameChanged
+     *
+     * @return
+     * The usernameChanged
      */
     public Boolean getUsernameChanged() {
         return usernameChanged;
     }
 
     /**
-     * @param usernameChanged The username_changed
+     *
+     * @param usernameChanged
+     * The username_changed
      */
     public void setUsernameChanged(Boolean usernameChanged) {
         this.usernameChanged = usernameChanged;
     }
 
     /**
-     * @return The designsCount
+     *
+     * @return
+     * The designsCount
      */
     public Integer getDesignsCount() {
         return designsCount;
     }
 
     /**
-     * @param designsCount The designs_count
+     *
+     * @param designsCount
+     * The designs_count
      */
     public void setDesignsCount(Integer designsCount) {
         this.designsCount = designsCount;
     }
 
     /**
-     * @return The key
+     *
+     * @return
+     * The key
      */
     public String getKey() {
         return key;
     }
 
     /**
-     * @param key The key
+     *
+     * @param key
+     * The key
      */
     public void setKey(String key) {
         this.key = key;
     }
 
     /**
-     * @return The tagsCount
+     *
+     * @return
+     * The tagsCount
      */
     public Integer getTagsCount() {
         return tagsCount;
     }
 
     /**
-     * @param tagsCount The tags_count
+     *
+     * @param tagsCount
+     * The tags_count
      */
     public void setTagsCount(Integer tagsCount) {
         this.tagsCount = tagsCount;
@@ -420,8 +548,14 @@ public class User {
 
     @Override
     public String toString() {
-        return "id: " + id + "\tname:  " + name + "\tusername:  " + username + "\tstatus:  " + status + "\tphoto:  " +
-                photo + "\tfollowing count:  " + followersCount + "\tfollowers count:  " + followersCount +
-                "\tuser likes count:  " + likesCount + "\temail:  " + email + "\tkey:  " + key;
+        if(getLocation()==null) {
+            return "id: " + id + "\tname:  " + name + "\tusername:  " + username + "\tstatus:  " + status + "\tphoto:  " +
+                    photo + "\tfollowing count:  " + followersCount + "\tfollowers count:  " + followersCount +
+                    "\tuser likes count:  " + likesCount + "\temail:  " + email + "\tkey:  " + key;
+        }else{
+            return "id: " + id + "\tname:  " + name + "\tusername:  " + username + "\tstatus:  " + status + "\tphoto:  " +
+                    photo + "\tfollowing count:  " + followersCount + "\tfollowers count:  " + followersCount +
+                    "\tuser likes count:  " + likesCount + "\temail:  " + email + "\tkey:  " + key+"\tlocation: "+location.toString();
+        }
     }
 }

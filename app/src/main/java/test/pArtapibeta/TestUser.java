@@ -1,4 +1,4 @@
-/*
+
 package test.pArtapibeta;
 
 
@@ -20,17 +20,17 @@ public class TestUser {
 
     public static void testUserProfile(boolean printLogs) {
         final UserController userController = new UserController(MainActivity.getAppContext());
-        userController.setListener(new RequestListener() {
+        userController.setListener(new RequestListener(0) {
             @Override
             public void onRequestReady(int requmber, String msg) {
 
                 User user = userController.getUser();
                 if (requmber == 305)
-                    UserController.getSt_listener().onRequestReady(111, "UserTest get Info --- FAILD || CONNECTION ERROR");
+                    UserController.getSt_listener(0).onRequestReady(111, "UserTest get Info --- FAILD || CONNECTION ERROR");
                 else if (msg.contains("error"))
-                    UserController.getSt_listener().onRequestReady(111, "UserTest get Info --- FAILD");
+                    UserController.getSt_listener(0).onRequestReady(111, "UserTest get Info --- FAILD");
                 else if (user != null && requmber == 205)
-                    UserController.getSt_listener().onRequestReady(111, "UserTest get Info --- PASSED");
+                    UserController.getSt_listener(0).onRequestReady(111, "UserTest get Info --- PASSED");
 
             }
         });
@@ -39,17 +39,17 @@ public class TestUser {
 
     public static void testUserProfile(String userId, boolean printLogs) {
         final UserController userController = new UserController(MainActivity.getAppContext());
-        userController.setListener(new RequestListener() {
+        userController.setListener(new RequestListener(11) {
             @Override
             public void onRequestReady(int requmber, String msg) {
 
                 User user = userController.getUser();
                 if (requmber == 302)
-                    UserController.getSt_listener().onRequestReady(112, "UserTest get Info --- FAILD || CONNECTION ERROR");
+                    UserController.getSt_listener(11).onRequestReady(117, "UserTest get Info --- FAILD || CONNECTION ERROR");
                 else if (msg.contains("error"))
-                    UserController.getSt_listener().onRequestReady(112, "UserTest get Info --- FAILD");
+                    UserController.getSt_listener(11).onRequestReady(117, "UserTest get Info --- FAILD");
                 else if (user != null && requmber == 202)
-                    UserController.getSt_listener().onRequestReady(112, "UserTest get Info --- PASSED");
+                    UserController.getSt_listener(11).onRequestReady(117, "UserTest get Info --- PASSED");
 
             }
         });
@@ -58,22 +58,22 @@ public class TestUser {
 
     public static void testUserFollowers(String userId, final boolean printLogs) {
         final UserController userController = new UserController(MainActivity.getAppContext());
-        userController.setListener(new RequestListener() {
+        userController.setListener(new RequestListener(0) {
             @Override
             public void onRequestReady(int requmber, String msg) {
 
-                ArrayList<String> userFollowers = userController.getUserFollowers();
+                ArrayList<User> userFollowers = userController.getUserFollowers();
                 if (requmber == 308)
-                    UserController.getSt_listener().onRequestReady(113, "UserTest get Info --- FAILD || CONNECTION ERROR");
+                    UserController.getSt_listener(0).onRequestReady(113, "UserTest get Info --- FAILD || CONNECTION ERROR");
                 else if (msg.contains("error"))
-                    UserController.getSt_listener().onRequestReady(113, "UserTest get Info --- FAILD");
+                    UserController.getSt_listener(0).onRequestReady(113, "UserTest get Info --- FAILD");
                 else if (userFollowers != null && requmber == 208) {
                     if (printLogs == true) {
                         for (int i = 0; i < userFollowers.size(); i++) {
                             Log.d(MY_LOGS, "userFollowers:  " + userFollowers.get(i));
                         }
                     }
-                    UserController.getSt_listener().onRequestReady(113, "UserTest get Info --- PASSED");
+                    UserController.getSt_listener(0).onRequestReady(113, "UserTest get Info --- PASSED");
                 }
 
             }
@@ -83,15 +83,15 @@ public class TestUser {
 
     public static void testUserFollowing(final String userId, final boolean printLogs) {
         final UserController userController = new UserController(MainActivity.getAppContext());
-        userController.setListener(new RequestListener() {
+        userController.setListener(new RequestListener(0) {
             @Override
             public void onRequestReady(int requmber, String msg) {
 
-                ArrayList<String> userFollowing = userController.getUserFollowing();
+                ArrayList<User> userFollowing = userController.getUserFollowing();
                 if (requmber == 309)
-                    UserController.getSt_listener().onRequestReady(114, "UserTest get Info --- FAILD || CONNECTION ERROR");
+                    UserController.getSt_listener(0).onRequestReady(114, "UserTest get Info --- FAILD || CONNECTION ERROR");
                 else if (msg.contains("error"))
-                    UserController.getSt_listener().onRequestReady(114, "UserTest get Info --- FAILD");
+                    UserController.getSt_listener(0).onRequestReady(114, "UserTest get Info --- FAILD");
                 else if (userFollowing != null && requmber == 209) {
 
                     if (printLogs == true) {
@@ -99,7 +99,7 @@ public class TestUser {
                             Log.d(MY_LOGS, "userFollowing:  " + userFollowing.get(i));
                         }
                     }
-                    UserController.getSt_listener().onRequestReady(114, "UserTest get Info --- PASSED");
+                    UserController.getSt_listener(0).onRequestReady(114, "UserTest get Info --- PASSED");
                 }
 
 
@@ -110,15 +110,15 @@ public class TestUser {
 
     public static void testUserLikedPhotos(final String userId, final boolean printLogs) {
         final UserController userController = new UserController(MainActivity.getAppContext());
-        userController.setListener(new RequestListener() {
+        userController.setListener(new RequestListener(0) {
             @Override
             public void onRequestReady(int requmber, String msg) {
 
                 ArrayList<Photo> userLikedPhotos = userController.getUserLikedPhotos();
                 if (requmber == 310)
-                    UserController.getSt_listener().onRequestReady(115, "UserTest get Info --- FAILD || CONNECTION ERROR");
+                    UserController.getSt_listener(0).onRequestReady(115, "UserTest get Info --- FAILD || CONNECTION ERROR");
                 else if (msg.contains("error"))
-                    UserController.getSt_listener().onRequestReady(115, "UserTest get Info --- FAILD");
+                    UserController.getSt_listener(0).onRequestReady(115, "UserTest get Info --- FAILD");
                 else if (userLikedPhotos != null && requmber == 210) {
 
                     if (printLogs == true) {
@@ -126,7 +126,7 @@ public class TestUser {
                             Log.d(MY_LOGS, "userLikedPhotos:  " + userLikedPhotos.get(i).getId());
                         }
                     }
-                    UserController.getSt_listener().onRequestReady(115, "UserTest get Info --- PASSED");
+                    UserController.getSt_listener(0).onRequestReady(115, "UserTest get Info --- PASSED");
                 }
             }
         });
@@ -135,15 +135,15 @@ public class TestUser {
 
     public static void testUserBlockedUsers(String userId, final boolean printLogs) {
         final UserController userController = new UserController(MainActivity.getAppContext());
-        userController.setListener(new RequestListener() {
+        userController.setListener(new RequestListener(0) {
             @Override
             public void onRequestReady(int requmber, String msg) {
 
-                ArrayList<String> userBlockedUsers = userController.getBlockedUsers();
+                ArrayList<User> userBlockedUsers = userController.getBlockedUsers();
                 if (requmber == 304)
-                    UserController.getSt_listener().onRequestReady(116, "UserTest get Info --- FAILD || CONNECTION ERROR");
+                    UserController.getSt_listener(0).onRequestReady(116, "UserTest get Info --- FAILD || CONNECTION ERROR");
                 else if (msg.contains("error"))
-                    UserController.getSt_listener().onRequestReady(116, "UserTest get Info --- FAILD");
+                    UserController.getSt_listener(0).onRequestReady(116, "UserTest get Info --- FAILD");
                 else if (userBlockedUsers != null && requmber == 204) {
 
                     if (printLogs == true) {
@@ -151,7 +151,7 @@ public class TestUser {
                             Log.d(MY_LOGS, "userBlockedUsers:  " + userBlockedUsers.get(i));
                         }
                     }
-                    UserController.getSt_listener().onRequestReady(116, "UserTest get Info --- PASSED");
+                    UserController.getSt_listener(0).onRequestReady(116, "UserTest get Info --- PASSED");
                 }
             }
         });
@@ -160,15 +160,15 @@ public class TestUser {
 
     public static void testUserPlaces(String userId, final boolean printLogs) {
         final UserController userController = new UserController(MainActivity.getAppContext());
-        userController.setListener(new RequestListener() {
+        userController.setListener(new RequestListener(0) {
             @Override
             public void onRequestReady(int requmber, String msg) {
 
                 ArrayList<String> userPlaces = userController.getUserPlaces();
                 if (requmber == 305)
-                    UserController.getSt_listener().onRequestReady(117, "UserTest get Info --- FAILD || CONNECTION ERROR");
+                    UserController.getSt_listener(0).onRequestReady(117, "UserTest get Info --- FAILD || CONNECTION ERROR");
                 else if (msg.contains("error"))
-                    UserController.getSt_listener().onRequestReady(117, "UserTest get Info --- FAILD");
+                    UserController.getSt_listener(0).onRequestReady(117, "UserTest get Info --- FAILD");
                 else if (userPlaces != null && requmber == 205) {
 
                     if (printLogs == true) {
@@ -176,7 +176,7 @@ public class TestUser {
                             Log.d(MY_LOGS, "userPlaces:  " + userPlaces.get(i));
                         }
                     }
-                    UserController.getSt_listener().onRequestReady(117, "UserTest get Info --- PASSED");
+                    UserController.getSt_listener(0).onRequestReady(117, "UserTest get Info --- PASSED");
                 }
             }
         });
@@ -185,15 +185,15 @@ public class TestUser {
 
     public static void testUserTags(String userId, final boolean printLogs) {
         final UserController userController = new UserController(MainActivity.getAppContext());
-        userController.setListener(new RequestListener() {
+        userController.setListener(new RequestListener(0) {
                                        @Override
                                        public void onRequestReady(int requmber, String msg) {
 
                                            ArrayList<String> userTags = userController.getUserTags();
                                            if (requmber == 306)
-                                               UserController.getSt_listener().onRequestReady(118, "UserTest get Info --- FAILD || CONNECTION ERROR");
+                                               UserController.getSt_listener(0).onRequestReady(118, "UserTest get Info --- FAILD || CONNECTION ERROR");
                                            else if (msg.contains("error"))
-                                               UserController.getSt_listener().onRequestReady(118, "UserTest get Info --- FAILD");
+                                               UserController.getSt_listener(0).onRequestReady(118, "UserTest get Info --- FAILD");
                                            else if (userTags != null && requmber == 206) {
 
                                                if (printLogs == true) {
@@ -201,7 +201,7 @@ public class TestUser {
                                                        Log.d(MY_LOGS, "userTags:  " + userTags.get(i));
                                                    }
                                                }
-                                               UserController.getSt_listener().onRequestReady(118, "UserTest get Info --- PASSED");
+                                               UserController.getSt_listener(0).onRequestReady(118, "UserTest get Info --- PASSED");
                                            }
                                        }
                                    }
@@ -210,4 +210,4 @@ public class TestUser {
     }
 
 }
-*/
+
