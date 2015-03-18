@@ -2,10 +2,16 @@
 package test.pArtapibeta;
 
 
+import android.content.Context;
+import android.test.ActivityUnitTestCase;
+import android.test.InstrumentationTestCase;
 import android.util.Log;
+
+import junit.framework.TestCase;
 
 import java.util.ArrayList;
 
+import pArtapibeta.Main;
 import pArtapibeta.MainActivity;
 import pArtapibeta.Photo;
 
@@ -14,9 +20,10 @@ import pArtapibeta.RequestListener;
 import pArtapibeta.User;
 import pArtapibeta.UserController;
 
-public class TestUser {
+public class UserControllerTests extends InstrumentationTestCase {
 
     public static final String MY_LOGS = "My_Logs";
+
 
     public static void testUserProfile(boolean printLogs) {
         final UserController userController = new UserController(MainActivity.getAppContext());
@@ -37,19 +44,19 @@ public class TestUser {
         userController.requestUser();
     }
 
-    public static void testUserProfile(String userId, boolean printLogs) {
-        final UserController userController = new UserController(MainActivity.getAppContext());
-        userController.setListener(new RequestListener(11) {
+    public static void testUserProfile(String userId, boolean printLogs, Context context) {
+        final UserController userController = new UserController(context);
+        userController.setListener(new RequestListener(5) {
             @Override
             public void onRequestReady(int requmber, String msg) {
 
                 User user = userController.getUser();
                 if (requmber == 302)
-                    UserController.getSt_listener(11).onRequestReady(117, "UserTest get Info --- FAILD || CONNECTION ERROR");
+                    UserController.notifyListeners(117, "UserTest get Info --- FAILD || CONNECTION ERROR");
                 else if (msg.contains("error"))
-                    UserController.getSt_listener(11).onRequestReady(117, "UserTest get Info --- FAILD");
+                    UserController.notifyListeners(117, "UserTest get Info --- FAILD");
                 else if (user != null && requmber == 202)
-                    UserController.getSt_listener(11).onRequestReady(117, "UserTest get Info --- PASSED");
+                    UserController.notifyListeners(117, "UserTest get Info --- PASSED");
 
             }
         });

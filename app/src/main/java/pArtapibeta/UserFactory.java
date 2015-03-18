@@ -1,10 +1,6 @@
 package pArtapibeta;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,6 +12,12 @@ import java.util.ArrayList;
 public class UserFactory {
 
 
+    /**
+     * @param object Object
+     * @return User
+     *
+     * Tries to Parse Object to User
+     */
     public static User parseFrom(Object object) {
 
         // try {
@@ -41,9 +43,17 @@ public class UserFactory {
 
         return phh;
 
-}
+    }
 
-    public static ArrayList<User> parseFromAsArray(Object o, int offset, int limit) {
+    /**
+     * @param object Object
+     * @param offset starting point
+     * @param limit  limit of users
+     * @return ArrayList<User>
+     *
+     * Tries to Parse Object to ArrayList of User instances
+     */
+    public static ArrayList<User> parseFromAsArray(Object object, int offset, int limit) {
 
         ArrayList<User> userArrayList = new ArrayList<>();
         User nwUs = null;
@@ -53,7 +63,7 @@ public class UserFactory {
 
         try {
 
-            JSONArray jsonArray = ((JSONObject) o).getJSONArray("response");
+            JSONArray jsonArray = ((JSONObject) object).getJSONArray("response");
             max_limit = limit >= jsonArray.length() ? jsonArray.length() - 1 : limit;
 
             for (int i = offset; i <= max_limit; i++) {
@@ -72,4 +82,5 @@ public class UserFactory {
         }
         return null;
     }
+
 }

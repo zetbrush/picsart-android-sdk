@@ -171,9 +171,6 @@ public class User {
      * The location
      */
     public Location getLocation() {
-        if(location==null)
-            location=new Location();
-
         return location;
     }
 
