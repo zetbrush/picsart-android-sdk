@@ -14,6 +14,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 
+import junit.framework.Assert;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -65,7 +67,6 @@ public class PhotoController {
     private ArrayList<Comment> commentsLists;
     private ArrayList<User> photoLikedUsers;
     private static ArrayList<RequestListener> st_listeners_all = new ArrayList<>();
-
 
     // Getters and Setters for all fields //
 
@@ -137,6 +138,9 @@ public class PhotoController {
         return photo;
     }
 
+    public Comment getComment(){
+        return _comment;};
+
     // End of Getters and Setters //
 
 
@@ -174,7 +178,7 @@ public class PhotoController {
             @Override
             public void onResponse(Object response) {
                 Log.d("Response 9", response.toString());
-                //photo = new Photo(Photo.IS.GENERAL);
+                Assert.assertTrue("Error response",!response.toString().contains("error"));
                 photo = PhotoFactory.parseFrom(response);
                 listener.onRequestReady(201, response.toString());
             }
@@ -235,15 +239,16 @@ public class PhotoController {
                         tmp.add(j, comment.get(i));
                     }
                     commentsLists = new ArrayList<Comment>(tmp);
-                    listener.onRequestReady(301, "Comments is HERE");
+
+                    listener.onRequestReady(301, response.toString());
                 } catch (Exception e) {
+
                     e.printStackTrace();
                 }
             }
         });
 
     }
-
 
     /**
      * @param photoId id of photo
@@ -335,7 +340,7 @@ public class PhotoController {
      *          onResponse          501 code will be called in  listener
      *          onErrorResponse     503 code will be called in  listener
      * */
-    public synchronized void removeComment(String photoId, final String commentId) {
+    public synchronized void deleteComment(String photoId, final String commentId) {
         String url = PicsArtConst.PHOTO_REMOVE_COMMENT_URL + photoId + ".json" + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
         StringRequest req = new StringRequest(Request.Method.POST, url,
 
@@ -344,7 +349,7 @@ public class PhotoController {
                     public void onResponse(String response) {
                         // Log.d("RemoveComment ", response);
                         listener.onRequestReady(501, response);
-                        //notifyListeners(666, "");
+
                     }
                 },
                 new Response.ErrorListener() {
@@ -378,32 +383,41 @@ public class PhotoController {
     public static synchronized void updatePhotoData(final Photo photo) {
         JSONObject jobj = new JSONObject();
         final ArrayList<String> tgss = new ArrayList<>();
-        for (String tgs : photo.getTags()) {
-            tgss.add(tgs);
 
-        }
-        JSONArray tgarr;
-        tgarr = new JSONArray();
-        tgarr.put(tgss);
+        if(photo.getTags()!=null) {
+            for (String tgs : photo.getTags()) {
+                tgss.add(tgs);
 
-        try {
-            jobj.put("tags", tgarr);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        BasicNameValuePair[] tmp = photo.getLocation().getLocationPair();
-        for (BasicNameValuePair pair : tmp) {
+            }
+            JSONArray tgarr;
+            tgarr = new JSONArray();
+            tgarr.put(tgss);
+
             try {
-                jobj.put(pair.getName(), pair.getValue());
+                jobj.put("tags", tgarr);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        try {
-            jobj.put("title", photo.getTitle());
-        } catch (JSONException e) {
-            e.printStackTrace();
+
+        if(photo.getLocation()!=null && photo.getLocation().getLocationPair()!=null) {
+            BasicNameValuePair[] tmp = photo.getLocation().getLocationPair();
+            for (BasicNameValuePair pair : tmp) {
+                try {
+                    jobj.put(pair.getName(), pair.getValue());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+
+        if(photo.getTitle()!=null) {
+            try {
+                jobj.put("title", photo.getTitle());
+            } catch (JSONException e) { }
+        }
+
+
 
 
         String url = PicsArtConst.PHOTO_UPDATE_INFO_URL + photo.getId() +  PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
@@ -539,7 +553,7 @@ public class PhotoController {
      *          onResponse          901 code will be called in listener
      *          onErrorResponse     903 code will be called in listener
      */
-    public synchronized void getCommentByid(String id) {
+    public synchronized void requestCommentByid(String id) {
 
         String url = PicsArtConst.PHOTO_LIKED_USERS_URL + id + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
 
@@ -577,7 +591,7 @@ public class PhotoController {
      *          onErrorResponse     1003 code will be called in listener
      *
      */
-    public synchronized void getLikedUsers(String photoId, int offset, int limit) {
+    public synchronized void requestLikedUsers(String photoId, int offset, int limit) {
 
         String url = PicsArtConst.PHOTO_LIKED_USERS_URL + photoId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY + PicsArtConst.OFFSET + offset + PicsArtConst.LIMIT + limit;
         // url = PicsArtConst.Get_PHOTO_URL_PUB + id + ".json" + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
@@ -601,9 +615,8 @@ public class PhotoController {
 
     }
 
-
     /**
-     *     @param reqnumber   code to send
+     *     @param reqnumber    code to send
      *     @param msg          message
      *
      *         Notifies all static listeners with given code and message
@@ -644,10 +657,9 @@ public class PhotoController {
         @Override
         protected JSONObject doInBackground(Photo... phot) {
             int iter = 0;
+            Looper.prepare();
             for (Photo ph : phot) {
                 try {
-                    Looper.getMainLooper();
-                    Looper.prepare();
                     File file = new File(ph.getPath());
                     HttpClient httpClient = new DefaultHttpClient();
                     String url = "";
@@ -659,14 +671,24 @@ public class PhotoController {
                         url = PicsArtConst.PHOTO_COVER_URL + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
                     } else {
                         url = PicsArtConst.PHOTO_UPLOAD_URL + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
-                        BasicNameValuePair[] tmp = ph.getLocation().getLocationPair();
-                        for (int i = 0; i < tmp.length; i++) {
-                            entity.addPart(tmp[i].getName(), new StringBody(tmp[i].getValue()));
+                        BasicNameValuePair[] tmp=null;
+                        if(ph.getLocation()!=null && ph.getLocation().getLocationPair()!=null) {
+                            tmp = ph.getLocation().getLocationPair();
+
+                            for (int i = 0; i < tmp.length; i++) {
+                                entity.addPart(tmp[i].getName(), new StringBody(tmp[i].getValue()));
+
+                            }
                         }
-                        for (String str : ph.getTags()) {
-                            entity.addPart("tags[]", new StringBody(str));
+                        if(ph.getTags()!=null) {
+                            for (String str : ph.getTags()) {
+                                entity.addPart("tags[]", new StringBody(str));
+                            }
                         }
+                        if(ph.getTitle()!=null)
                         entity.addPart("title", new StringBody(ph.getTitle()));
+                        if(ph.get_public())
+                        entity.addPart("is_public", new StringBody("true") );
                     }
                     HttpPost httpPost = new HttpPost(url);
                     httpPost.setEntity(entity);
@@ -674,13 +696,21 @@ public class PhotoController {
                     HttpEntity httpEntity = response.getEntity();
                     is = httpEntity.getContent();
 
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                } catch (ClientProtocolException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
+                 catch (UnsupportedEncodingException e) {
+                    notifyListeners(103,"error uploading photo");
+                   // e.printStackTrace();
+                } catch (ClientProtocolException e) {
+                    notifyListeners(103,"error uploading photo");
+                   // e.printStackTrace();
+                } catch (IOException e) {
+                    notifyListeners(103,"error IO");
+                   // e.printStackTrace();
+                } catch (Exception e){
+                    e.printStackTrace();
+                    notifyListeners(103,"error ");
+                }
+
                 try {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(
                             is, "iso-8859-1"), 8);
@@ -699,7 +729,7 @@ public class PhotoController {
                 }
                 try {
                     jObj = new JSONObject(json);
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     Log.e("JSON Parser", "Error parsing data " + e.toString());
                 }
                 iter++;
@@ -713,7 +743,7 @@ public class PhotoController {
 
         @Override
         protected void onProgressUpdate(Integer... progress) {
-            Log.d("Uploaded", "photo #" + progress);
+            Log.d("Uploaded", "photo #" + progress[0]);
         }
 
         @Override
@@ -723,13 +753,15 @@ public class PhotoController {
                 try {
                     Log.d("response Upload", sResponse.toString());
 
-                    notifyListeners(101, "Image(es) is/are uploaded!!");
+                    notifyListeners(101, sResponse.toString());
 
                 } catch (Exception e) {
                     Log.e(e.getClass().getName(), e.getMessage(), e);
                 }
             }
         }
+
+
 
 
         public String encodeTobase64(Bitmap image) {

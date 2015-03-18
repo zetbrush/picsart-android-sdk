@@ -28,6 +28,4 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:21.0.2'
     compile project(':vol1.0.11')
-
-
 }

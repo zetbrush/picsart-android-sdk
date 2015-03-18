@@ -10,17 +10,17 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
 /**
- * This  class serves as Singltone instance provider
+ * This  class serves as Singleton instance provider
+ *
+ * It hold all requests in one place.
  *
  * <p>This class is a member of the
  * <a href="www.picsart.com">
  * </a>.
  *
- * @author  Arman Andreasyan
+ * @author  Arman Andreasyan 2/20/15
  */
-/**
- * Created by Arman on 2/20/15.
- */
+
 public class SingletoneRequestQue {
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
@@ -28,10 +28,6 @@ public class SingletoneRequestQue {
     static SingletoneRequestQue mInstance = null;
 
 
-    /**
-     *  Singleton Que to hold all requests in one place.
-     *
-     * */
 
     private SingletoneRequestQue(Context context) {
         mCtx = context;

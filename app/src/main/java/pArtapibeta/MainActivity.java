@@ -19,8 +19,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -207,13 +205,7 @@ public class MainActivity extends Activity {
                     Log.d("Photo is updated", " is updated");
                 }
 
-                if (requmber == 0001) {    ////PhotoInfo Get Test Case
-                    Log.i("TEST|Ph.Contr|: ", message);
-                }
 
-                if (requmber == 0002) {    ////PhotoInfo  Test Case
-                    Log.i("TEST|Ph.Contr|: ", message);
-                }
 
                 if (requmber == 44444) {    ////PhotoInfo  Upload Case
                     Log.i("Photo is uploaded: ", message);
@@ -289,6 +281,7 @@ public class MainActivity extends Activity {
             }
         });
 
+
         // pc.comment("163773067002202","blabla  comment 2");
         String[] phids = {"163086538001202", "163773067002202", "163858526001202"};
 
@@ -298,23 +291,42 @@ public class MainActivity extends Activity {
         }
 
         pc.requestComments("163086538001202", 0, 4);
-        pc.removeComment("163086538001202", "54f5bc8a7854e2ed4a000067");
+        pc.deleteComment("163086538001202", "54f5bc8a7854e2ed4a000067");
 
         Photo phh = new Photo(Photo.IS.GENERAL);
         phh.setLocation(new Location("nor poxoc", "nor Qaxaaaq", "nor Plac@@@", "nor State@@", "nor Zipcod@@", "Armenia", new ArrayList<Integer>(Arrays.asList(40, 36))));
         phh.setTitle("nor nkariii anun 2");
         phh.setTags(new ArrayList<>(Arrays.asList("nor tag1", "nor tag2", "nor tag3")));
         phh.setId("163086538001202");
+        phh.setPath("/storage/removable/sdcard1/DCIM/100ANDRO/DSC_0014.jpg");
 
-
+        Photo ph2 = new Photo(Photo.IS.GENERAL);
+        //ph2.setTitle("blaTitle");
+        ph2.set_public(Boolean.TRUE);
+        ph2.setPath("/storage/removable/sdcard1/DCIM/100ANDRO/DSC_0015.jpg");
 
         // PhotoController.updatePhotoData(phh);
 
-
-        //  testPhoto.testGetPhotoInfo("163086538001202", token);
+         // PhotoControllerTests.testUploadImage(token,ph2);
+         // PhotoControllerTests.testRequestPhoto("163086538001202", token);
         //  testPhoto.testLike("163086538001202", token);
         // testPhoto.testUnLike("163086538001202",token);
         // testPhoto.testComment("163086538001202","blaaaa",token);
+
+
+        final PhotoController pc3 = new PhotoController(getAppContext(),token);
+        pc3.requestLikedUsers("163086538001202",0,50);
+        pc3.setListener(new RequestListener(0) {
+            @Override
+            public void onRequestReady(int requmber, String message) {
+                if(requmber ==1001){
+                    Log.d("liked Users", pc3.getPhotoLikedUsers().toString() );
+                }
+            }
+        });
+
+
+
 
 
     }

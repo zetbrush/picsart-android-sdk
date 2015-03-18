@@ -1,7 +1,7 @@
 package pArtapibeta;
 
 /**
- * This abstract class serves as Listener for notifycation of responses,
+ * This abstract class serves as Listener for notification of responses,
  * It uses indexing for identification and accessibility.
  *
  * <p>This class is a member of the

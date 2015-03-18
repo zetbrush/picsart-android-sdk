@@ -35,7 +35,7 @@ public class Photo {
 
     @SerializedName("tags")
     @Expose
-    private List<String> tags = new ArrayList<String>();
+    private List<String> tags;
 
     @SerializedName("views_count")
     @Expose
@@ -121,7 +121,7 @@ public class Photo {
     }
 
     public void setTags(List<String> tags) {
-        this.tags = tags;
+        this.tags = new ArrayList<>(tags);
     }
 
     public Integer getViewsCount() {
