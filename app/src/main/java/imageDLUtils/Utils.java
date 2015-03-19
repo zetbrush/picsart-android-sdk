@@ -1,7 +1,11 @@
 package imageDLUtils;
 
 /**
- * Created by Arman on 3/12/15.
+ * This class is helper for ImageLoader class
+ *
+ * @autor Arman Andreasyan
+ *
+ *      3/12/15.
  */
 
 import java.io.InputStream;

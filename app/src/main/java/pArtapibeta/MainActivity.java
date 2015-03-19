@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -20,15 +19,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
 import imageDLUtils.ImageLoader;
-import test.pArtapibeta.testPhoto;
 
 
 public class MainActivity extends Activity {
@@ -134,7 +129,7 @@ public class MainActivity extends Activity {
 
                             // new TokenGet().execute();
 
-                            String Code = pref.getString("Code", "");
+                            String authCode = pref.getString("Code", "");
                             AccessToken.setListener(new RequestListener(1) {
                                 @Override
                                 public void onRequestReady(int requmber, String mmsg) {
@@ -142,7 +137,7 @@ public class MainActivity extends Activity {
                                     Log.d("Token is ready: ", MainActivity.token);
                                 }
                             });
-                            AccessToken.requestAccessToken(PicsArtConst.TOKEN_URL, Code, PicsArtConst.CLIENT_ID,
+                            AccessToken.requestAccessToken(PicsArtConst.TOKEN_URL, authCode, PicsArtConst.CLIENT_ID,
                                     PicsArtConst.CLIENT_SECRET, PicsArtConst.REDIRECT_URI, PicsArtConst.GRANT_TYPE);
 
 
@@ -186,45 +181,22 @@ public class MainActivity extends Activity {
         if (requestCode == 88) {    //Picking path of photo
             if (resultCode == RESULT_OK) {
 
-
             }
         }
     }
 
     public void onTestCallClick(View v) {
-
-        PARequest.PARequestListener<JSONObject> listn = null;
-        TextView jj = (TextView) findViewById(R.id.Access);
-        final PhotoController pc = new PhotoController(getAppContext(), token);
-
-        ///Example  uploading photo to account/////
-
-        Photo toUpload = new Photo(Photo.IS.GENERAL);
-        toUpload.setLocation(new Location("poxoooc", "Qaxaaaq", "Plac@@@", "State@@", "Zipcod@@", "Armenia", new ArrayList<>(Arrays.asList(45, 37))));
-        toUpload.setTitle("nkariii__anun3");
-        toUpload.setTags(new ArrayList<>(Arrays.asList("ntag1", "nag2", "ntag3")));
-        toUpload.setPath("/storage/removable/sdcard1/DCIM/100ANDRO/DSC_0008.jpg");
-
-        // PhotoController.uploadPhoto(toUpload);
-        //////////// Getting given comments Count//////
-        //  PhotoController.getComments("163773067002202",0,50);
-
-
-
-        /////////////////////////// Static Listener for Photo Stuff //////////////////////
-
-        String[] phids = {"163086538001202", "163773067002202", "163858526001202"};
-
-        for (int i = 0; i < 3; i++) {
-            pc.requestPhoto(phids[i]);
-        }
+        final ImageView im1 = (ImageView) findViewById(R.id.img1);
+        final ImageView im2 = (ImageView) findViewById(R.id.img2);
+        final ImageView im3 = (ImageView) findViewById(R.id.img3);
 
         counter[0] = 10;
         final ArrayList<Photo> tmpPh = new ArrayList<>();
 
-        PhotoController.setSt_listener(new RequestListener(0) {
+
+        RequestListener listenerOne = new RequestListener(3333) {
             @Override
-            public void onRequestReady(int requmber, String msg) {
+            public void onRequestReady(int requmber, String message) {
                 if (requmber == 444) {
                     Log.d("Commented", " comment");
                 }
@@ -233,75 +205,128 @@ public class MainActivity extends Activity {
                     Log.d("Photo is updated", " is updated");
                 }
 
-                if (requmber == 0001) {    ////PhotoInfo Get Test Case
-                    Log.i("TEST|Ph.Contr|: ", msg);
-                }
 
-                if (requmber == 0002) {    ////PhotoInfo  Test Case
-                    Log.i("TEST|Ph.Contr|: ", msg);
-                }
 
                 if (requmber == 44444) {    ////PhotoInfo  Upload Case
-                    Log.i("Photo is uploaded: ", msg);
-                }
-
-                if (requmber == 555) {
-                    for (Comment com : PhotoController.getComments()) {
-                        Log.d("Comments ", com.getCreated() + " " + com.getText());
-                    }
+                    Log.i("Photo is uploaded: ", message);
                 }
 
 
             }
-        });
+        };
 
-        pc.setListener(new RequestListener(4) {
+        RequestListener listenerTwo = new RequestListener(3335) {
             @Override
             public void onRequestReady(int requmber, String message) {
-                // Log.d("Comment resp", message);
-                // pc.comment("163773067002202", message.substring(0,20));
-                if (requmber == 102) {
-                    tmpPh.add(pc.getPhoto());
-                    counter[0] += 1;
-                    Log.d("COUNTERR: ", String.valueOf(counter[0]));
 
-                    PhotoController.getSt_listener(4).onRequestReady(counter[0], "");
-
-                }
-            }
-        });
-
-        PhotoController.setSt_listener(new RequestListener(4) {
-
-            @Override
-            public void onRequestReady(int requmber, String message) {
                 Log.d("imageDNLD ", String.valueOf(requmber));
                 if (requmber == 13) {
-                    ImageView im1 = (ImageView) findViewById(R.id.img1);
-                    ImageView im2 = (ImageView) findViewById(R.id.img2);
-                    ImageView im3 = (ImageView) findViewById(R.id.img3);
                     ImageLoader imLdr = new ImageLoader(getAppContext());
                     imLdr.DisplayImage(tmpPh.get(0).getUrl(), R.drawable.ic_launcher, im1);
                     imLdr.DisplayImage(tmpPh.get(1).getUrl(), R.drawable.ic_launcher, im2);
                     imLdr.DisplayImage(tmpPh.get(2).getUrl(), R.drawable.ic_launcher, im3);
+                }
+            }
+        };
+
+
+
+
+        final PhotoController pc = new PhotoController(getAppContext(), token);
+
+
+        ///Example  uploading photo to account/////
+
+
+        Photo toUpload = new Photo(Photo.IS.GENERAL);
+        toUpload.setLocation(new Location("poxoooc", "Qaxaaaq", "Plac@@@", "State@@", "Zipcod@@", "Armenia", new ArrayList<>(Arrays.asList(45, 37))));
+        toUpload.setTitle("nkariii__anun3");
+        toUpload.setTags(new ArrayList<>(Arrays.asList("ntag1", "nag2", "ntag3")));
+        toUpload.setPath("/storage/removable/sdcard1/DCIM/100ANDRO/DSC_0008.jpg");
+        // PhotoController.uploadPhoto(toUpload);
+
+        //////////// Getting given comments Count//////
+
+        // PhotoController.getComments("163773067002202",0,50);
+
+
+        /////////////////////////// Static Listener for Photo Stuff //////////////////////
+
+        PhotoController.setSt_listener(listenerOne);
+        PhotoController.setSt_listener(listenerTwo);
+
+        pc.setListener(new RequestListener(0) {
+            @Override
+            public void onRequestReady(int requmber, String message) {
+                // Log.d("Comment resp", message);
+                // pc.addComment("163773067002202", message.substring(0,20));
+
+                if (requmber == 201) {
+                    tmpPh.add(pc.getPhoto());
+                    counter[0] += 1;
+                    Log.d("COUNTERR: ", String.valueOf(counter[0]));
+                    PhotoController.notifyListener(3335, counter[0], "");
 
                 }
+
+                if (requmber == 301) {
+
+                    Log.d("commEENT: ", pc.getCommentsLists().toString());
+
+                }
+                if (requmber == 501) {
+                    Log.d("removed Comment: ", message);
+                }
+
             }
         });
 
+
+        // pc.comment("163773067002202","blabla  comment 2");
+        String[] phids = {"163086538001202", "163773067002202", "163858526001202"};
+
+
+        for (int i = 0; i < 3; i++) {
+            pc.requestPhoto(phids[i]);
+        }
+
+        pc.requestComments("163086538001202", 0, 4);
+        pc.deleteComment("163086538001202", "54f5bc8a7854e2ed4a000067");
 
         Photo phh = new Photo(Photo.IS.GENERAL);
         phh.setLocation(new Location("nor poxoc", "nor Qaxaaaq", "nor Plac@@@", "nor State@@", "nor Zipcod@@", "Armenia", new ArrayList<Integer>(Arrays.asList(40, 36))));
         phh.setTitle("nor nkariii anun 2");
         phh.setTags(new ArrayList<>(Arrays.asList("nor tag1", "nor tag2", "nor tag3")));
         phh.setId("163086538001202");
+        phh.setPath("/storage/removable/sdcard1/DCIM/100ANDRO/DSC_0014.jpg");
+
+        Photo ph2 = new Photo(Photo.IS.GENERAL);
+        //ph2.setTitle("blaTitle");
+        ph2.set_public(Boolean.TRUE);
+        ph2.setPath("/storage/removable/sdcard1/DCIM/100ANDRO/DSC_0015.jpg");
+
         // PhotoController.updatePhotoData(phh);
 
-
-        //  testPhoto.testGetPhotoInfo("163086538001202", token);
+         // PhotoControllerTests.testUploadImage(token,ph2);
+         // PhotoControllerTests.testRequestPhoto("163086538001202", token);
         //  testPhoto.testLike("163086538001202", token);
         // testPhoto.testUnLike("163086538001202",token);
         // testPhoto.testComment("163086538001202","blaaaa",token);
+
+
+        final PhotoController pc3 = new PhotoController(getAppContext(),token);
+        pc3.requestLikedUsers("163086538001202",0,50);
+        pc3.setListener(new RequestListener(0) {
+            @Override
+            public void onRequestReady(int requmber, String message) {
+                if(requmber ==1001){
+                    Log.d("liked Users", pc3.getPhotoLikedUsers().toString() );
+                }
+            }
+        });
+
+
+
 
 
     }

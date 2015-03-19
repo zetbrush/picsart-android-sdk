@@ -2,6 +2,7 @@ package pArtapibeta;
 
 /**
  * Created by Arman on 2/9/15.
+ *
  */
 public class PicsArtConst {
 
@@ -14,33 +15,33 @@ public class PicsArtConst {
     public static final String TOKEN_URL_PREFIX = ".json?token=";
     public static final String MY_PROFILE_URL = "http://stage.i.picsart.com/api/users/me";
     public static final String USE_PROFILE_URL = "http://stage.i.picsart.com/api/users/";
-    public static final String Get_PHOTO_URL ="http://stage.i.picsart.com/api/photos/";
-    public static final String Get_PHOTO_URL_PUB ="https://api.picsart.com/photos/show/";
+    public static final String Get_PHOTO_URL = "http://stage.i.picsart.com/api/photos/";
+    public static final String Get_PHOTO_URL_PUB = "https://api.picsart.com/photos/show/";
     public static final String TOKEN_PREFIX = "?token=";
 
-    public static final String OFFSET ="&offset=";
-    public static final String LIMIT ="&limit=";
 
+    public static final String OFFSET = "&offset=";
+    public static final String LIMIT = "&limit=";
     public static final String Photo_UPLOAD_URL = "https://stage.i.picsart.com/api/photos/";
     public static final String GET_PHOTO_FILTER = "?filter=";
-    public static final String APIKEY = "cd371244-3887-405b-82d1-7aadcb2617b9";
-    // public static final String APIKEY = "d97fb4fa-63e5-4a59-a84a-5124376b11ed";
+   // public static final String APIKEY = "cd371244-3887-405b-82d1-7aadcb2617b9";
+    public static final String APIKEY = "d97fb4fa-63e5-4a59-a84a-5124376b11ed";
     public static final String API_PREFX = "?key=";
     public static final String PHOTO_UPLOAD_URL = "https://api.picsart.com/photos/add.json";
-    public static final String PHOTO_COMMENT_URL ="https://api.picsart.com/photos/show/";
-    public static final String PHOTO_COVER_URL="https://api.picsart.com/users/cover/add.json";
-    public static final String PHOTO_AVATAR_URL ="https://api.picsart.com/users/photo/add.json";
+    public static final String PHOTO_COMMENT_URL = "https://api.picsart.com/photos/show/";
+    public static final String PHOTO_COVER_URL = "https://api.picsart.com/users/cover/add.json";
+    public static final String PHOTO_AVATAR_URL = "https://api.picsart.com/users/photo/add.json";
 
     public static final String PHOTO_COMMENTS_URL = "https://api.picsart.com/photos/comments/show/";
-    public static final String PHOTO_ADD_COMMENT_URL ="https://api.picsart.com/photos/comments/add/";
-    public static final String PHOTO_REMOVE_COMMENT_URL ="https://api.picsart.com/photos/comments/remove/";
+    public static final String PHOTO_ADD_COMMENT_URL = "https://api.picsart.com/photos/comments/add/";
+    public static final String PHOTO_REMOVE_COMMENT_URL = "https://api.picsart.com/photos/comments/remove/";
 
 
-    public static final String PHOTO_LIKE_URL="https://api.picsart.com/photos/likes/add/";
-    public static final String PHOTO_UNLIKE_URL="https://api.picsart.com/photos/likes/remove/";
-    public static final String PHOTO_UPDATE_INFO_URL="https://api.picsart.com/photos/update/";
-    public static final String PHOTO_SEARCH_URL ="https://api.picsart.com/photos/search.json";
-    public static final String PHOTO_LIKED_USERS_URL="https://api.picsart.com/photos/likes/show/";
+    public static final String PHOTO_LIKE_URL = "https://api.picsart.com/photos/likes/add/";
+    public static final String PHOTO_UNLIKE_URL = "https://api.picsart.com/photos/likes/remove/";
+    public static final String PHOTO_UPDATE_INFO_URL = "https://api.picsart.com/photos/update/";
+    public static final String PHOTO_SEARCH_URL = "https://api.picsart.com/photos/search.json";
+    public static final String PHOTO_LIKED_USERS_URL = "https://api.picsart.com/photos/likes/show/";
     public static final String API_TEST_PREF = ".json?key=";
 
     public static final String GET_USER_PHOTOS_LIST = "http://stage.i.picsart.com/api/users/";
@@ -58,8 +59,9 @@ public class PicsArtConst {
     public static final String SHOW_BLOCKED_USERS = "https://api.picsart.com/blocks/show/";
     public static final String SHOW_USER_PHOTOS_LIST = "https://api.picsart.com/users/photos/show/";
 
+    public static final String DATE_FORMAT="yyyy-MM-dd'T'hh:mm:ss.SSS'X'";
 
-    public static final String[] paramsUserProfile =
+    public static final  String[] paramsUserProfile =
             new String[]{
                     "username",         //0
                     "name",             //1

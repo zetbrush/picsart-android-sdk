@@ -1,22 +1,28 @@
 package pArtapibeta;
 
-import android.util.Log;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
+
 
 /**
- * Created by Arman on 2/23/15.
+ * This class serves as POJO for Comments
+ * Also it serves as class type for instantiating
+ * Comment objects from Json.
+ *
+ * <p>This class is a member of the
+ * <a href="www.picsart.com">
+ * </a>.
+ *
+ * @author  Arman Andreasyan 2/23/15
  */
+
 public class Comment {
 
-    SimpleDateFormat sdf ;
+    SimpleDateFormat sdf;
     @SerializedName("text")
     @Expose
     private String text;
@@ -25,20 +31,24 @@ public class Comment {
     @Expose
     private String created;
 
-    private Date creat ;
+    private Date creat;
     @SerializedName("_id")
     @Expose
     private String id;
+    @SerializedName("is_social")
+    @Expose
+    private boolean isSocial;
+
 
     public String getId() {
         return id;
     }
 
     public Date getCreated() {
-        if(creat==null) {
+        if (creat == null) {
             try {
-                sdf= new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
-                return creat =sdf.parse(created);
+                sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
+                return creat = sdf.parse(created);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -50,24 +60,26 @@ public class Comment {
         return text;
     }
 
+    public Boolean getIsSocial() {
+        return isSocial;
+    }
 
-
-    public Comment(String text, String created, String id) {
-
+    public Comment(String text, boolean isSocial) {
 
         this.text = text;
-        try {
-            this.created = created;
-            sdf= new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'X'");
-            this.creat = sdf.parse(created);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        this.id = id;
+        this.created=null;
+        this.id=null;
+        this.isSocial = isSocial;
 
     }
 
 
+
+    @Override
+    public String toString() {
+
+        return this.getText() + " " + this.getCreated() + " " + this.getId();
+    }
 
 
 }

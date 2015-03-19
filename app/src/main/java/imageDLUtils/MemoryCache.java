@@ -1,26 +1,31 @@
 package imageDLUtils;
 
 /**
- * Created by Arman on 3/12/15.
+ * This class is for supporting ImageLoader class
+ *
+ * @autor Arman Andreasyan
+ *
+ * 3/12/15.
  */
+
+import android.graphics.Bitmap;
 
 import java.lang.ref.SoftReference;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import android.graphics.Bitmap;
 
 public class MemoryCache {
-    private Map<String, SoftReference<Bitmap>> cache=Collections.synchronizedMap(new HashMap<String, SoftReference<Bitmap>>());
+    private Map<String, SoftReference<Bitmap>> cache = Collections.synchronizedMap(new HashMap<String, SoftReference<Bitmap>>());
 
-    public Bitmap get(String id){
-        if(!cache.containsKey(id))
+    public Bitmap get(String id) {
+        if (!cache.containsKey(id))
             return null;
-        SoftReference<Bitmap> ref=cache.get(id);
+        SoftReference<Bitmap> ref = cache.get(id);
         return ref.get();
     }
 
-    public void put(String id, Bitmap bitmap){
+    public void put(String id, Bitmap bitmap) {
         cache.put(id, new SoftReference<Bitmap>(bitmap));
     }
 

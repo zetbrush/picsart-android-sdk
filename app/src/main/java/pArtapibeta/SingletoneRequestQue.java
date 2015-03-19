@@ -4,22 +4,29 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.LruCache;
 
-import com.android.volley.Cache;
-import com.android.volley.Network;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.ResponseDelivery;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
 /**
- * Created by Arman on 2/20/15.
+ * This  class serves as Singleton instance provider
+ *
+ * It hold all requests in one place.
+ *
+ * <p>This class is a member of the
+ * <a href="www.picsart.com">
+ * </a>.
+ *
+ * @author  Arman Andreasyan 2/20/15
  */
+
 public class SingletoneRequestQue {
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
     private static Context mCtx;
     static SingletoneRequestQue mInstance = null;
+
 
 
     private SingletoneRequestQue(Context context) {
@@ -44,6 +51,11 @@ public class SingletoneRequestQue {
 
     }
 
+
+    /**
+     *  @return Single instance of requests que
+     *
+     * */
     public static synchronized SingletoneRequestQue getInstance(Context context) {
         if (mInstance == null) {
             mInstance = new SingletoneRequestQue(context);
