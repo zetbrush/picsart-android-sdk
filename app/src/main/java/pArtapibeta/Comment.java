@@ -35,6 +35,9 @@ public class Comment {
     @SerializedName("_id")
     @Expose
     private String id;
+    @SerializedName("is_social")
+    @Expose
+    private boolean isSocial;
 
 
     public String getId() {
@@ -57,21 +60,20 @@ public class Comment {
         return text;
     }
 
+    public Boolean getIsSocial() {
+        return isSocial;
+    }
 
-    public Comment(String text, String created, String id) {
-
+    public Comment(String text, boolean isSocial) {
 
         this.text = text;
-        try {
-            this.created = created;
-            sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'X'");
-            this.creat = sdf.parse(created);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        this.id = id;
+        this.created=null;
+        this.id=null;
+        this.isSocial = isSocial;
 
     }
+
+
 
     @Override
     public String toString() {

@@ -14,8 +14,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 
-import junit.framework.Assert;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -61,7 +59,7 @@ import java.util.Map;
 public class PhotoController {
     private Context ctx;
     private RequestListener listener;
-    private String token;
+    private static String token;
     private volatile Photo photo;
     private static volatile Comment _comment;
     private ArrayList<Comment> commentsLists;
@@ -70,6 +68,9 @@ public class PhotoController {
 
     // Getters and Setters for all fields //
 
+    public static void setAccessToken(String token){
+        PhotoController.token =token;
+    }
     public ArrayList<Comment> getCommentsLists() throws NullPointerException {
 
         return commentsLists;
@@ -164,7 +165,6 @@ public class PhotoController {
     public synchronized void requestPhoto(String id) {
         assert this.listener != null;
         String url = PicsArtConst.Get_PHOTO_URL + id + PicsArtConst.TOKEN_PREFIX + token;
-        url = PicsArtConst.Get_PHOTO_URL_PUB + id + ".json" + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
         PARequest request = new PARequest(Request.Method.GET, url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(request);
         request.setRequestListener(new PARequest.PARequestListener() {
@@ -178,7 +178,6 @@ public class PhotoController {
             @Override
             public void onResponse(Object response) {
                 Log.d("Response 9", response.toString());
-                Assert.assertTrue("Error response",!response.toString().contains("error"));
                 photo = PhotoFactory.parseFrom(response);
                 listener.onRequestReady(201, response.toString());
             }
@@ -301,9 +300,9 @@ public class PhotoController {
  *
  *
  * */
-    public synchronized void addComment(String photoID, final String comment) {
+    public synchronized void addComment(String photoID, final Comment comment) {
 
-        String url = PicsArtConst.PHOTO_ADD_COMMENT_URL + photoID + ".json" + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
+        String url = PicsArtConst.PHOTO_GENERAL_PREFIX + photoID  + PicsArtConst.PHOTO_ADD_COMMENT_URL + PicsArtConst.TOKEN_PREFIX+token;
         StringRequest req = new StringRequest(Request.Method.POST, url,
 
                 new Response.Listener<String>() {
@@ -322,8 +321,8 @@ public class PhotoController {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("is_social", "1");
-                params.put("text", comment);
+                params.put("is_social", comment.getIsSocial().toString());
+                params.put("text", comment.getText());
                 return params;
 
             }
@@ -384,6 +383,11 @@ public class PhotoController {
         JSONObject jobj = new JSONObject();
         final ArrayList<String> tgss = new ArrayList<>();
 
+        if(photo.getId()==null){
+            notifyListeners(603,"error : Photo specified has no ID");
+            return;
+        }
+
         if(photo.getTags()!=null) {
             for (String tgs : photo.getTags()) {
                 tgss.add(tgs);
@@ -419,7 +423,6 @@ public class PhotoController {
 
 
 
-
         String url = PicsArtConst.PHOTO_UPDATE_INFO_URL + photo.getId() +  PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
         PARequest req = new PARequest(Request.Method.POST, url, jobj, null);
 
@@ -450,7 +453,7 @@ public class PhotoController {
      *          onErrorResponse     703 code will be called in listener
      */
     public synchronized void like(String photoId) {
-        String url = PicsArtConst.PHOTO_LIKE_URL + photoId + ".json" + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
+        String url = PicsArtConst.PHOTO_PRE_URL + photoId + PicsArtConst.PHOTO_LIKE_URL+ PicsArtConst.TOKEN_PREFIX + token;
         StringRequest req = new StringRequest(Request.Method.POST, url,
 
                 new Response.Listener<String>() {
@@ -492,7 +495,8 @@ public class PhotoController {
      *          onErrorResponse     803 code will be called in listener
      */
     public synchronized void unLike(String photoId) {
-        String url = PicsArtConst.PHOTO_UNLIKE_URL + photoId + ".json" + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
+        String url = PicsArtConst.PHOTO_PRE_URL + photoId + PicsArtConst.PHOTO_LIKE_URL+ PicsArtConst.TOKEN_PREFIX + token+"&method=delete";
+
         StringRequest req = new StringRequest(Request.Method.POST, url,
 
                 new Response.Listener<String>() {
@@ -532,7 +536,7 @@ public class PhotoController {
      */
     public PhotoController(Context ctx, String token) {
         this.ctx = ctx;
-        this.token = token;
+        PhotoController.token = token;
     }
 
 
@@ -666,11 +670,13 @@ public class PhotoController {
                     MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
                     entity.addPart("file", new FileBody(file));
                     if (ph.isFor == Photo.IS.AVATAR) {
-                        url = PicsArtConst.PHOTO_AVATAR_URL + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
+                        url = PicsArtConst.USER_URL_PATH + "me"+ PicsArtConst.PHOTO_AVATAR_ENDX+PicsArtConst.TOKEN_PREFIX + PhotoController.token;
                     } else if (ph.isFor == Photo.IS.COVER) {
-                        url = PicsArtConst.PHOTO_COVER_URL + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
+                        url = PicsArtConst.USER_URL_PATH +"me"+ PicsArtConst.PHOTO_COVER_ENDX +PicsArtConst.TOKEN_PREFIX + PhotoController.token;
                     } else {
-                        url = PicsArtConst.PHOTO_UPLOAD_URL + PicsArtConst.API_PREFX + PicsArtConst.APIKEY;
+                        url = PicsArtConst.PHOTO_UPLOAD_URL + PicsArtConst.TOKEN_PREFIX + PhotoController.token ;
+
+                        Log.d("TOKEN Upload method ", token +"\nURLLL "+url);
                         BasicNameValuePair[] tmp=null;
                         if(ph.getLocation()!=null && ph.getLocation().getLocationPair()!=null) {
                             tmp = ph.getLocation().getLocationPair();
@@ -687,9 +693,13 @@ public class PhotoController {
                         }
                         if(ph.getTitle()!=null)
                         entity.addPart("title", new StringBody(ph.getTitle()));
-                        if(ph.get_public())
-                        entity.addPart("is_public", new StringBody("true") );
+                        if(ph.get_public()!=null)
+                        entity.addPart("is_public", new StringBody(ph.get_public().toString()) );
+                        if(ph.getMature()!=null)
+                            entity.addPart("mature", new StringBody(ph.getMature().toString()) );
                     }
+
+
                     HttpPost httpPost = new HttpPost(url);
                     httpPost.setEntity(entity);
                     HttpResponse response = httpClient.execute(httpPost);

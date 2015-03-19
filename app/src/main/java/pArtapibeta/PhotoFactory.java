@@ -27,25 +27,37 @@ public class PhotoFactory {
      *  Tries to Parse JSONObject to Photo
      * */
     public static Photo parseFrom(JSONObject jobj) {
+        Photo nwPh=null;
         try {
             Gson gson = new Gson();
 
-            Photo nwPh = gson.fromJson(jobj.toString(), Photo.class);
+            nwPh = gson.fromJson(jobj.toString(), Photo.class);
             Log.d("User gson: ", nwPh.getTitle() + " " + nwPh.getCreated() + " " + nwPh.getId() + " " + nwPh.getUrl());
-            gson = new Gson();
+        }catch (Exception e){
+            //e.printStackTrace();
+
+        }
+
+        try {
+            Gson gson = new Gson();
             User nwUs = gson.fromJson(jobj.get("user").toString(), User.class);
             Log.d("User gson: ", nwUs.getName() + " " + nwUs.getUsername() + " " + nwUs.getId() + " " + nwUs.getPhoto());
+            nwPh.setOwner(nwUs);
+        }catch (Exception e){
+            //e.printStackTrace();
+            }
+
+        try {
+            Gson gson = new Gson();
             Location lccc = gson.fromJson(jobj.get("location").toString(), Location.class);
             nwPh.setLocation(lccc);
-            nwPh.setOwner(nwUs);
+        }catch (Exception e) {
+
+        }
 
             return nwPh;
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        return null;
     }
 
     /**
@@ -56,7 +68,7 @@ public class PhotoFactory {
      *
      *  Tries to Parse Object to ArrayList of Photo instances
      * */
-    public static ArrayList<Photo> parseFromAsArray(Object obj, int offset, int limit) {
+    public static ArrayList<Photo> parseFromAsArray(Object obj, int offset, int limit, String keyword) {
         ArrayList<Photo> tmpPh = new ArrayList<>();
         Photo nwPh;
         User nwUs;
@@ -68,7 +80,14 @@ public class PhotoFactory {
         try {
             JSONObject jsonObj = (JSONObject) obj;
             Gson gson = new Gson();
-            JSONArray jarr = new JSONArray(jsonObj.toString());
+            JSONArray jarr=null;
+            if(keyword!=null|| keyword!=""){
+                try{
+
+                    jarr = new JSONArray(jsonObj.get(keyword).toString());
+                } catch (Exception e){ };
+            }
+            else  jarr = new JSONArray(jsonObj.toString());
             for (int i = offset; i < jarr.length() && limit > 0; i++, limit--) {
 
                 nwPh = gson.fromJson(jarr.get(i).toString(), Photo.class);

@@ -106,9 +106,13 @@ public class Photo {
     @Expose
     private User owner;
 
+    @SerializedName("user_id")
+    @Expose
+    private String ownerID;
+
     IS isFor;
     private String path;
-    private String ownerID;
+
     public enum IS {AVATAR, COVER, GENERAL}
 
 

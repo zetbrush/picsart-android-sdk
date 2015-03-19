@@ -63,13 +63,14 @@ public class AccessToken {
                     String tok = null;
                     tok = jsOOb.getString("access_token");
                     AccessToken.accessToken = tok;
+                    AccessToken.listener.onRequestReady(7777, tok);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
                 Log.d("accessTokenResp: ", response);
-                AccessToken.listener.onRequestReady(7777, "");
+
 
             }
         }
