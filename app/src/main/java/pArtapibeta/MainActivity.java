@@ -59,7 +59,7 @@ public class MainActivity extends Activity {
         MainActivity.context = this.getApplicationContext();
         try {
             pref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-            token = pref.getString("access_Token", "");
+            token = pref.getString("access_token", "");
             //Toast.makeText(getApplicationContext(), "Access Token " + token, Toast.LENGTH_LONG).show();
         } catch (Exception c) {
             Log.i("ERROR Loading Token ", ": no token is persist ");
@@ -87,7 +87,6 @@ public class MainActivity extends Activity {
                     public boolean shouldOverrideUrlLoading(WebView view, String url) {
                         Log.i("ShouldOvver", " rideUrlLoading" + url);
 
-
                         return false;
                     }
 
@@ -110,7 +109,7 @@ public class MainActivity extends Activity {
                         super.onPageFinished(view, url);
                         pDialog.dismiss();
 
-                        Log.i("COOODEE", "LINE 82 : " + authCode);
+
                         if (url.contains("?code=") && authComplete != true) {
 
                             Uri uri = Uri.parse(url);
@@ -134,7 +133,13 @@ public class MainActivity extends Activity {
                                 @Override
                                 public void onRequestReady(int requmber, String mmsg) {
                                     MainActivity.token = AccessToken.getAccessToken();
-                                    Log.d("Token is ready: ", MainActivity.token);
+                                    MainActivity.token = mmsg;
+                                    PhotoController.setAccessToken(mmsg);
+
+                                    Log.d("Token is ready: ", MainActivity.token +"::::: as message "+mmsg);
+                                    SharedPreferences.Editor edit = pref.edit();
+                                    edit.putString("access_token", mmsg);
+                                    edit.commit();
                                 }
                             });
                             AccessToken.requestAccessToken(PicsArtConst.TOKEN_URL, authCode, PicsArtConst.CLIENT_ID,
@@ -186,6 +191,9 @@ public class MainActivity extends Activity {
     }
 
     public void onTestCallClick(View v) {
+
+
+
         final ImageView im1 = (ImageView) findViewById(R.id.img1);
         final ImageView im2 = (ImageView) findViewById(R.id.img2);
         final ImageView im3 = (ImageView) findViewById(R.id.img3);
@@ -205,8 +213,6 @@ public class MainActivity extends Activity {
                     Log.d("Photo is updated", " is updated");
                 }
 
-
-
                 if (requmber == 44444) {    ////PhotoInfo  Upload Case
                     Log.i("Photo is uploaded: ", message);
                 }
@@ -222,28 +228,36 @@ public class MainActivity extends Activity {
                 Log.d("imageDNLD ", String.valueOf(requmber));
                 if (requmber == 13) {
                     ImageLoader imLdr = new ImageLoader(getAppContext());
-                    imLdr.DisplayImage(tmpPh.get(0).getUrl(), R.drawable.ic_launcher, im1);
-                    imLdr.DisplayImage(tmpPh.get(1).getUrl(), R.drawable.ic_launcher, im2);
-                    imLdr.DisplayImage(tmpPh.get(2).getUrl(), R.drawable.ic_launcher, im3);
+                    imLdr.DisplayImage(tmpPh.get(0).getUrl(), R.drawable.preloader, im1);
+                    imLdr.DisplayImage(tmpPh.get(1).getUrl(), R.drawable.preloader, im2);
+                    imLdr.DisplayImage(tmpPh.get(2).getUrl(), R.drawable.preloader, im3);
                 }
             }
         };
 
 
 
-
-        final PhotoController pc = new PhotoController(getAppContext(), token);
+        Log.d("Access token", getAccessToken());
+        final PhotoController pc = new PhotoController(getAppContext(), getAccessToken());
 
 
         ///Example  uploading photo to account/////
 
-
-        Photo toUpload = new Photo(Photo.IS.GENERAL);
-        toUpload.setLocation(new Location("poxoooc", "Qaxaaaq", "Plac@@@", "State@@", "Zipcod@@", "Armenia", new ArrayList<>(Arrays.asList(45, 37))));
-        toUpload.setTitle("nkariii__anun3");
+        PhotoController pccc = new PhotoController(getAppContext(),token);
+        Photo toUpload = new Photo(Photo.IS.AVATAR);
+        toUpload.setLocation(new Location("poxoooc", "Qaxaaaq", "Plac@@@", "State@@", "Zipcod@@", "Armenia", new ArrayList<>(Arrays.asList(45.0, 37.0))));
+        toUpload.setTitle("picsarttt");
         toUpload.setTags(new ArrayList<>(Arrays.asList("ntag1", "nag2", "ntag3")));
-        toUpload.setPath("/storage/removable/sdcard1/DCIM/100ANDRO/DSC_0008.jpg");
-        // PhotoController.uploadPhoto(toUpload);
+        toUpload.setPath("/storage/removable/sdcard1/DCIM/100ANDRO/DSC_0025.jpg");
+        toUpload.setMature(false);
+        toUpload.set_public(true);
+       // PhotoController.uploadPhoto(toUpload);
+       // toUpload.setIsFor(Photo.IS.COVER);
+       // PhotoController.uploadPhoto(toUpload);
+
+
+
+
 
         //////////// Getting given comments Count//////
 
@@ -260,12 +274,23 @@ public class MainActivity extends Activity {
             public void onRequestReady(int requmber, String message) {
                 // Log.d("Comment resp", message);
                 // pc.addComment("163773067002202", message.substring(0,20));
+                if (requmber == 601) {
+
+                    Log.d("Data updated: ", message);
+
+                }
+
+                if (requmber == 603) {
+
+                    Log.d("Data not updated: ", message);
+
+                }
 
                 if (requmber == 201) {
                     tmpPh.add(pc.getPhoto());
                     counter[0] += 1;
-                    Log.d("COUNTERR: ", String.valueOf(counter[0]));
-                    PhotoController.notifyListener(3335, counter[0], "");
+                    Log.d("COUNTERR: ", "   :::: " + pc.getPhoto().getUrl() + " "+pc.getPhoto().getTitle() );
+                   PhotoController.notifyListener(3335, counter[0], "");
 
                 }
 
@@ -278,44 +303,91 @@ public class MainActivity extends Activity {
                     Log.d("removed Comment: ", message);
                 }
 
+                if (requmber == 701) {
+                    Log.d("Liked Photo: ", message);
+                }
+
+                if(requmber == 401){
+                    Log.d("Comment photo: ", message);
+                }
+
+                if(requmber == 1001){
+                    Log.d("Liked Users is here ", message + "  :::USERS::: "+pc.getPhotoLikedUsers().toString());
+
+
+                }
             }
         });
 
 
-        // pc.comment("163773067002202","blabla  comment 2");
-        String[] phids = {"163086538001202", "163773067002202", "163858526001202"};
+
+        // pc.addComment("163773067002202","blabla  comment 2");
+        String[] phids = {"164548899000202", "164294945000202", "147971743000201"};
 
 
-        for (int i = 0; i < 3; i++) {
+      //-- pc.like("164458028001202");
+      //--  pc.unLike("164458028001202");
+      //--  pc.addComment("164458028001202",new Comment("blaaaFinalP",true));
+      //--  pc.updatePhotoData(phh);
+      //-- pc.deleteComment("163086538001202", "54f5bc8a7854e2ed4a000067");
+      //--  pc.requestCommentByid("164458028001202","550abcd81fa703694b0000e5");
+
+      //+// pc.requestPhoto("164458028001202");
+      //+// pc.requestComments("164458028001202",1,1);
+      //+// pc.requestComments("163086538001202", 0, 4);
+      //+/  pc.requestLikedUsers("164458028001202",0,Integer.MAX_VALUE);
+      //+-/ pc.uploadPhoto(toUpload,ph2);
+
+
+       /* for (int i = 0; i < 3; i++) {
             pc.requestPhoto(phids[i]);
-        }
+        }*/
 
-        pc.requestComments("163086538001202", 0, 4);
-        pc.deleteComment("163086538001202", "54f5bc8a7854e2ed4a000067");
 
-        Photo phh = new Photo(Photo.IS.GENERAL);
-        phh.setLocation(new Location("nor poxoc", "nor Qaxaaaq", "nor Plac@@@", "nor State@@", "nor Zipcod@@", "Armenia", new ArrayList<Integer>(Arrays.asList(40, 36))));
+
+
+        Photo phh = new Photo(Photo.IS.AVATAR);
+        phh.setLocation(new Location("nor poxoc", "nor Qaxaaaq", "nor Plac@@@", "nor State@@", "nor Zipcod@@", "Armenia", new ArrayList<>(Arrays.asList(40.0, 36.0))));
         phh.setTitle("nor nkariii anun 2");
         phh.setTags(new ArrayList<>(Arrays.asList("nor tag1", "nor tag2", "nor tag3")));
-        phh.setId("163086538001202");
+        phh.setId("164458028001202");
         phh.setPath("/storage/removable/sdcard1/DCIM/100ANDRO/DSC_0014.jpg");
 
-        Photo ph2 = new Photo(Photo.IS.GENERAL);
+
+       final UserController uc = new UserController(token,getAppContext());
+        uc.setListener(new RequestListener(0) {
+            @Override
+            public void onRequestReady(int requmber, String message) {
+
+                for (int i = 0; i < uc.getUserLikedPhotos().size(); i++) {
+
+                    Log.d("PhotoResponse", uc.getUserLikedPhotos().get(i).getId());
+                }
+
+            }
+        });
+
+        uc.requestLikedPhotos("me",2,1);
+
+        Photo ph2 = new Photo(Photo.IS.COVER);
         //ph2.setTitle("blaTitle");
         ph2.set_public(Boolean.TRUE);
         ph2.setPath("/storage/removable/sdcard1/DCIM/100ANDRO/DSC_0015.jpg");
 
-        // PhotoController.updatePhotoData(phh);
 
-         // PhotoControllerTests.testUploadImage(token,ph2);
-         // PhotoControllerTests.testRequestPhoto("163086538001202", token);
-        //  testPhoto.testLike("163086538001202", token);
-        // testPhoto.testUnLike("163086538001202",token);
-        // testPhoto.testComment("163086538001202","blaaaa",token);
+
+
+
+          // PhotoControllerTests.testUploadImage(token, ph2);
+          // PhotoController.updatePhotoData(ph2);
+          // PhotoControllerTests.testRequestPhoto("163086538001202", token);
+          // PhotoControllerTests.testLike("163086538001202", token);
+          // PhotoControllerTests.testUnLike("163086538001202",token);
+          // PhotoControllerTests.testAddComment("163086538001202","blaaaa",token);
 
 
         final PhotoController pc3 = new PhotoController(getAppContext(),token);
-        pc3.requestLikedUsers("163086538001202",0,50);
+      // pc3.requestLikedUsers("163086538001202",0,50);
         pc3.setListener(new RequestListener(0) {
             @Override
             public void onRequestReady(int requmber, String message) {
@@ -334,7 +406,7 @@ public class MainActivity extends Activity {
 
     @Override
     public void onStop() {
-
+        super.onStop();
     }
 
 }
