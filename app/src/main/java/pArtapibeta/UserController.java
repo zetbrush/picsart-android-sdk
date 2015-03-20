@@ -136,7 +136,10 @@ public class UserController {
      */
     public synchronized void requestUser() {
 
-        assert this.listener != null;
+        if(listener==null){
+            return;
+        }
+
         String url = PicsArtConst.SHOW_USER + "me" + PicsArtConst.TOKEN_PREFIX + accessToken;
         PARequest req = new PARequest(Request.Method.GET, url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
@@ -165,7 +168,14 @@ public class UserController {
      */
     public synchronized void requestUser(String id) {
 
-        assert this.listener != null;
+        if(listener==null){
+            Log.e("Error","null listener error");
+            return;
+        }
+        if(id==null){
+            Log.e("Error","null id");
+            return;
+        }
         String url = PicsArtConst.SHOW_USER + id + PicsArtConst.TOKEN_PREFIX + accessToken;
         PARequest req = new PARequest(Request.Method.GET, url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
@@ -213,15 +223,14 @@ public class UserController {
      */
     public synchronized void requestUserFollowers(String userId, final int offset, final int limit) {
 
-        /**
-         * checking argument validation
-         */
-
-        if (offset < 0 || limit < 0 || offset > limit) {
-            throw new IllegalArgumentException();
+        if(listener==null){
+            Log.e("Error","null listener error");
+            return;
         }
-
-        assert this.listener != null;
+        if(userId==null){
+            Log.e("Error","null id");
+            return;
+        }
         userFollowers = new ArrayList<>();
 
         String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.FOLLOWERS_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
@@ -271,15 +280,14 @@ public class UserController {
      */
     public synchronized void requestUserFollowing(String userId, final int offset, final int limit) {
 
-        /**
-         * checking argument validation
-         */
-
-        if (offset < 0 || limit < 0 || offset > limit) {
-            throw new IllegalArgumentException();
+        if(listener==null){
+            Log.e("Error","null listener error");
+            return;
         }
-
-        assert this.listener != null;
+        if(userId==null){
+            Log.e("Error","null id");
+            return;
+        }
         userFollowing = new ArrayList<>();
 
         String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.FOLLOWING_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
@@ -328,15 +336,14 @@ public class UserController {
      */
     public synchronized void requestLikedPhotos(String userId, final int offset, final int limit) {
 
-        /**
-         * checking argument validation
-         */
-
-        if (offset < 0 || limit < 0 || offset > limit) {
-            throw new IllegalArgumentException();
+        if(listener==null){
+            Log.e("Error","null listener error");
+            return;
         }
-
-        assert this.listener != null;
+        if(userId==null){
+            Log.e("Error","null id");
+            return;
+        }
         userLikedPhotos = new ArrayList<>();
 
         String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.LIKED_PHOTOS_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
@@ -386,15 +393,14 @@ public class UserController {
      */
     public synchronized void requestBlockedUsers(String userId, final int offset, final int limit) {
 
-        /**
-         * checking argument validation
-         */
-
-        if (offset < 0 || limit < 0 || offset > limit) {
-            throw new IllegalArgumentException();
+        if(listener==null){
+            Log.e("Error","null listener error");
+            return;
         }
-
-        assert this.listener != null;
+        if(userId==null){
+            Log.e("Error","null id");
+            return;
+        }
         blockedUsers = new ArrayList<>();
 
         String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.BLOCKED_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
@@ -411,7 +417,7 @@ public class UserController {
             @Override
             public void onResponse(Object response) {
 
-                Log.d(MY_LOGS, response.toString());
+                //Log.d(MY_LOGS, response.toString());
                 blockedUsers = UserFactory.parseFromAsArray(response, offset, limit, "blocks");
                 UserController.this.listener.onRequestReady(204, response.toString());
 
@@ -447,15 +453,10 @@ public class UserController {
      */
     public synchronized void requestPlaces(String userId, final int offset, final int limit) {    //  5
 
-        /**
-         * checking argument validation
-         */
-
-        if (offset < 0 || limit < 0 || offset > limit) {
-            throw new IllegalArgumentException();
+        if(userId==null || userId==""){
+            Log.e("Error","null id");
+            return;
         }
-
-        assert this.listener != null;
         userPlaces = new ArrayList<>();
 
         String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.PLACES_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
@@ -475,7 +476,7 @@ public class UserController {
                 JSONArray jsonArray = null;
                 try {
                     jsonArray = new JSONArray(((JSONObject) response).get("places").toString());
-                    Log.d(MY_LOGS, "" + jsonArray.get(0).toString());
+                    //Log.d(MY_LOGS, "" + jsonArray.get(0).toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -484,7 +485,8 @@ public class UserController {
                         JSONObject jsonObject1 = new JSONObject(jsonArray.get(i).toString());
                         JSONArray jsonArray1 = new JSONArray(jsonObject1.get("photos").toString());
                         JSONObject jsonObject2 = jsonArray1.getJSONObject(0);
-                        Log.d(MY_LOGS, "" + PhotoFactory.parseFrom(jsonObject2).getLocation().getPlace());
+                        userLikedPhotos.add(PhotoFactory.parseFrom(jsonObject2));
+                        //Log.d(MY_LOGS, "" + PhotoFactory.parseFrom(jsonObject2).getLocation().getPlace());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -523,20 +525,12 @@ public class UserController {
      */
     public synchronized void requestTags(String userId, final int offset, final int limit) {    // 6
 
-        /**
-         * checking argument validation
-         */
-
-        if (offset < 0 || limit < 0 || offset > limit) {
-            throw new IllegalArgumentException();
-        }
-
-        if(listener==null ){
-            Log.e("error","listener is null");
+        if(listener==null){
+            Log.e("Error","null listener error");
             return;
         }
-
         if(userId==null){
+            Log.e("Error","null id");
             return;
         }
         userTags = new ArrayList<>();
@@ -605,15 +599,14 @@ public class UserController {
      */
     public synchronized void requestUserPhotos(String userId, final int offset, final int limit) {    //  7
 
-        /**
-         * checking argument validation
-         */
-
-        if (offset < 0 || limit < 0 || offset > limit) {
-            throw new IllegalArgumentException();
+        if(listener==null){
+            Log.e("Error","null listener error");
+            return;
         }
-
-        assert this.listener != null;
+        if(userId==null){
+            Log.e("Error","null id");
+            return;
+        }
         userPhotos = new ArrayList<>();
 
         String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.PHOTOS_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
@@ -647,6 +640,14 @@ public class UserController {
      */
     public void blockUserWithID(final String blockingId) {
 
+        if(listener==null){
+            Log.e("Error","null listener error");
+            return;
+        }
+        if(blockingId==null){
+            Log.e("Error","null id");
+            return;
+        }
         String url = PicsArtConst.SHOW_USER + "me" + PicsArtConst.BLOCKED_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
         StringRequest req = new StringRequest(Request.Method.POST, url,
 
@@ -689,7 +690,14 @@ public class UserController {
      */
     public void unblockUserWithID(final String unblockingId) {
 
-        assert this.listener != null;
+        if(listener==null){
+            Log.e("Error","null listener error");
+            return;
+        }
+        if(unblockingId==null){
+            Log.e("Error","null id");
+            return;
+        }
         String url = PicsArtConst.SHOW_USER + "me" + PicsArtConst.BLOCKED_PREFIX + "/" + unblockingId + PicsArtConst.TOKEN_PREFIX + accessToken;
 
         PARequest req = new PARequest(Request.Method.DELETE, url, null, null) {
@@ -720,6 +728,14 @@ public class UserController {
      */
     public void followUserWithID(final String followingId) {
 
+        if(listener==null){
+            Log.e("Error","null listener error");
+            return;
+        }
+        if(followingId==null){
+            Log.e("Error","null id");
+            return;
+        }
         String url = PicsArtConst.SHOW_USER + "me" + PicsArtConst.FOLLOWING_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
         StringRequest req = new StringRequest(Request.Method.POST, url,
 

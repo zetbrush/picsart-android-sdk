@@ -1,22 +1,5 @@
 package test.pArtapibeta;
 
-import android.util.Log;
-
-import org.junit.Assert;
-import org.junit.Test;
-
-import java.util.ArrayList;
-
-import pArtapibeta.Main;
-import pArtapibeta.MainActivity;
-import pArtapibeta.Photo;
-
-import pArtapibeta.RequestListener;
-
-import pArtapibeta.User;
-import pArtapibeta.UserController;
-
-
 /*
 public class UserControllerTests {
 
