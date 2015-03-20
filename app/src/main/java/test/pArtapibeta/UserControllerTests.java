@@ -1,13 +1,9 @@
-
 package test.pArtapibeta;
 
-
-import android.content.Context;
-import android.test.ActivityUnitTestCase;
-import android.test.InstrumentationTestCase;
 import android.util.Log;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.util.ArrayList;
 
@@ -20,201 +16,290 @@ import pArtapibeta.RequestListener;
 import pArtapibeta.User;
 import pArtapibeta.UserController;
 
-public class UserControllerTests extends InstrumentationTestCase {
+
+/*
+public class UserControllerTests {
 
     public static final String MY_LOGS = "My_Logs";
 
+    */
+/**
+     * Testing User Profile Request
+     *//*
 
-    public static void testUserProfile(boolean printLogs) {
-        final UserController userController = new UserController(MainActivity.getAppContext());
+    @Test(expected = AssertionError.class)
+    public static void testUserProfile() {
+        final UserController userController = new UserController(Main.getAppContext());
         userController.setListener(new RequestListener(0) {
             @Override
             public void onRequestReady(int requmber, String msg) {
 
-                User user = userController.getUser();
-                if (requmber == 305)
-                    UserController.getSt_listener(0).onRequestReady(111, "UserTest get Info --- FAILD || CONNECTION ERROR");
-                else if (msg.contains("error"))
-                    UserController.getSt_listener(0).onRequestReady(111, "UserTest get Info --- FAILD");
-                else if (user != null && requmber == 205)
-                    UserController.getSt_listener(0).onRequestReady(111, "UserTest get Info --- PASSED");
+                Assert.assertTrue("Connection Error", requmber == 205);
+                Assert.assertFalse("Response Error", msg.contains("error"));
+                Assert.assertNotNull("null", userController.getUser());
 
             }
         });
-        userController.requestUser();
+
+        //userController.requestUser();
     }
 
-    public static void testUserProfile(String userId, boolean printLogs, Context context) {
-        final UserController userController = new UserController(context);
-        userController.setListener(new RequestListener(5) {
+    */
+/**
+     * Testing User Profile Request with ID
+     *
+     * @param userId ID of the User
+     *//*
+
+    @Test(expected = AssertionError.class)
+    public static void testUserProfile(String userId) {
+        final UserController userController = new UserController(Main.getAppContext());
+        userController.setListener(new RequestListener(0) {
             @Override
             public void onRequestReady(int requmber, String msg) {
 
-                User user = userController.getUser();
-                if (requmber == 302)
-                    UserController.notifyListeners(117, "UserTest get Info --- FAILD || CONNECTION ERROR");
-                else if (msg.contains("error"))
-                    UserController.notifyListeners(117, "UserTest get Info --- FAILD");
-                else if (user != null && requmber == 202)
-                    UserController.notifyListeners(117, "UserTest get Info --- PASSED");
+                Assert.assertTrue("Connection Error", requmber == 202);
+                Assert.assertFalse("Response Error", msg.contains("error"));
+                Assert.assertNotNull("null", userController.getUser());
 
             }
         });
         userController.requestUser(userId);
     }
 
-    public static void testUserFollowers(String userId, final boolean printLogs) {
+    */
+/**
+     * Testing User Followers Request
+     *
+     * @param userId ID of the User
+     *//*
+
+    @Test(expected = AssertionError.class)
+    public static void testUserFollowers(String userId) {
         final UserController userController = new UserController(MainActivity.getAppContext());
         userController.setListener(new RequestListener(0) {
             @Override
             public void onRequestReady(int requmber, String msg) {
 
-                ArrayList<User> userFollowers = userController.getUserFollowers();
-                if (requmber == 308)
-                    UserController.getSt_listener(0).onRequestReady(113, "UserTest get Info --- FAILD || CONNECTION ERROR");
-                else if (msg.contains("error"))
-                    UserController.getSt_listener(0).onRequestReady(113, "UserTest get Info --- FAILD");
-                else if (userFollowers != null && requmber == 208) {
-                    if (printLogs == true) {
-                        for (int i = 0; i < userFollowers.size(); i++) {
-                            Log.d(MY_LOGS, "userFollowers:  " + userFollowers.get(i));
-                        }
-                    }
-                    UserController.getSt_listener(0).onRequestReady(113, "UserTest get Info --- PASSED");
-                }
+                Assert.assertTrue("Connection Error", requmber == 208);
+                Assert.assertFalse("Response Error", msg.contains("error"));
+                Assert.assertNotNull("user followers null", userController.getUserFollowers());
 
             }
         });
         userController.requestUserFollowers(userId, 0, UserController.MAX_LIMIT);
     }
 
-    public static void testUserFollowing(final String userId, final boolean printLogs) {
+    */
+/**
+     * Testing User Following Request
+     *
+     * @param userId ID of the User
+     *//*
+
+    @Test(expected = AssertionError.class)
+    public static void testUserFollowing(final String userId) {
         final UserController userController = new UserController(MainActivity.getAppContext());
         userController.setListener(new RequestListener(0) {
             @Override
             public void onRequestReady(int requmber, String msg) {
 
-                ArrayList<User> userFollowing = userController.getUserFollowing();
-                if (requmber == 309)
-                    UserController.getSt_listener(0).onRequestReady(114, "UserTest get Info --- FAILD || CONNECTION ERROR");
-                else if (msg.contains("error"))
-                    UserController.getSt_listener(0).onRequestReady(114, "UserTest get Info --- FAILD");
-                else if (userFollowing != null && requmber == 209) {
-
-                    if (printLogs == true) {
-                        for (int i = 0; i < userFollowing.size(); i++) {
-                            Log.d(MY_LOGS, "userFollowing:  " + userFollowing.get(i));
-                        }
-                    }
-                    UserController.getSt_listener(0).onRequestReady(114, "UserTest get Info --- PASSED");
-                }
-
+                Assert.assertTrue("Connection Error", requmber == 209);
+                Assert.assertFalse("Response Error", msg.contains("error"));
+                Assert.assertNotNull("user following null", userController.getUserFollowing());
 
             }
         });
         userController.requestUserFollowing(userId, 0, UserController.MAX_LIMIT);
     }
 
-    public static void testUserLikedPhotos(final String userId, final boolean printLogs) {
+    */
+/**
+     * Testing User Liked Photos Request
+     *
+     * @param userId ID of the User
+     *//*
+
+    @Test(expected = AssertionError.class)
+    public static void testUserLikedPhotos(final String userId) {
         final UserController userController = new UserController(MainActivity.getAppContext());
         userController.setListener(new RequestListener(0) {
             @Override
             public void onRequestReady(int requmber, String msg) {
 
-                ArrayList<Photo> userLikedPhotos = userController.getUserLikedPhotos();
-                if (requmber == 310)
-                    UserController.getSt_listener(0).onRequestReady(115, "UserTest get Info --- FAILD || CONNECTION ERROR");
-                else if (msg.contains("error"))
-                    UserController.getSt_listener(0).onRequestReady(115, "UserTest get Info --- FAILD");
-                else if (userLikedPhotos != null && requmber == 210) {
 
-                    if (printLogs == true) {
-                        for (int i = 0; i < userLikedPhotos.size(); i++) {
-                            Log.d(MY_LOGS, "userLikedPhotos:  " + userLikedPhotos.get(i).getId());
-                        }
-                    }
-                    UserController.getSt_listener(0).onRequestReady(115, "UserTest get Info --- PASSED");
-                }
+                Assert.assertTrue("Connection Error", requmber == 210);
+                Assert.assertFalse("Response Error", msg.contains("error"));
+                Assert.assertNotNull("user liked photos is null", userController.getUserLikedPhotos());
+
             }
         });
         userController.requestLikedPhotos(userId, 0, UserController.MAX_LIMIT);
     }
 
-    public static void testUserBlockedUsers(String userId, final boolean printLogs) {
+    */
+/**
+     * Testing User Blocked Users Request
+     *
+     * @param userId ID of the User
+     *//*
+
+    @Test(expected = AssertionError.class)
+    public static void testUserBlockedUsers(String userId) {
         final UserController userController = new UserController(MainActivity.getAppContext());
         userController.setListener(new RequestListener(0) {
             @Override
             public void onRequestReady(int requmber, String msg) {
 
-                ArrayList<User> userBlockedUsers = userController.getBlockedUsers();
-                if (requmber == 304)
-                    UserController.getSt_listener(0).onRequestReady(116, "UserTest get Info --- FAILD || CONNECTION ERROR");
-                else if (msg.contains("error"))
-                    UserController.getSt_listener(0).onRequestReady(116, "UserTest get Info --- FAILD");
-                else if (userBlockedUsers != null && requmber == 204) {
+                Assert.assertTrue("Connection Error", requmber == 204);
+                Assert.assertFalse("Response Error", msg.contains("error"));
+                Assert.assertNotNull("user's blocked users null", userController.getBlockedUsers());
 
-                    if (printLogs == true) {
-                        for (int i = 0; i < userBlockedUsers.size(); i++) {
-                            Log.d(MY_LOGS, "userBlockedUsers:  " + userBlockedUsers.get(i));
-                        }
-                    }
-                    UserController.getSt_listener(0).onRequestReady(116, "UserTest get Info --- PASSED");
-                }
             }
         });
         userController.requestBlockedUsers(userId, 0, UserController.MAX_LIMIT);
     }
 
-    public static void testUserPlaces(String userId, final boolean printLogs) {
+    */
+/**
+     * Testing User Places Request
+     *
+     * @param userId ID of the User
+     *//*
+
+    @Test(expected = AssertionError.class)
+    public static void testUserPlaces(String userId) {
         final UserController userController = new UserController(MainActivity.getAppContext());
         userController.setListener(new RequestListener(0) {
             @Override
             public void onRequestReady(int requmber, String msg) {
 
-                ArrayList<String> userPlaces = userController.getUserPlaces();
-                if (requmber == 305)
-                    UserController.getSt_listener(0).onRequestReady(117, "UserTest get Info --- FAILD || CONNECTION ERROR");
-                else if (msg.contains("error"))
-                    UserController.getSt_listener(0).onRequestReady(117, "UserTest get Info --- FAILD");
-                else if (userPlaces != null && requmber == 205) {
 
-                    if (printLogs == true) {
-                        for (int i = 0; i < userPlaces.size(); i++) {
-                            Log.d(MY_LOGS, "userPlaces:  " + userPlaces.get(i));
-                        }
-                    }
-                    UserController.getSt_listener(0).onRequestReady(117, "UserTest get Info --- PASSED");
-                }
+                Assert.assertTrue("Connection Error", requmber == 205);
+                Assert.assertFalse("Response Error", msg.contains("error"));
+                Assert.assertNotNull("user places null", userController.getUserPlaces());
+
             }
         });
         userController.requestPlaces(userId, 0, UserController.MAX_LIMIT);
     }
 
-    public static void testUserTags(String userId, final boolean printLogs) {
+    */
+/**
+     * Testing User Tags Request
+     *
+     * @param userId ID of the User
+     *//*
+
+    @Test(expected = AssertionError.class)
+    public static void testUserTags(String userId) {
         final UserController userController = new UserController(MainActivity.getAppContext());
         userController.setListener(new RequestListener(0) {
                                        @Override
                                        public void onRequestReady(int requmber, String msg) {
 
-                                           ArrayList<String> userTags = userController.getUserTags();
-                                           if (requmber == 306)
-                                               UserController.getSt_listener(0).onRequestReady(118, "UserTest get Info --- FAILD || CONNECTION ERROR");
-                                           else if (msg.contains("error"))
-                                               UserController.getSt_listener(0).onRequestReady(118, "UserTest get Info --- FAILD");
-                                           else if (userTags != null && requmber == 206) {
 
-                                               if (printLogs == true) {
-                                                   for (int i = 0; i < userTags.size(); i++) {
-                                                       Log.d(MY_LOGS, "userTags:  " + userTags.get(i));
-                                                   }
-                                               }
-                                               UserController.getSt_listener(0).onRequestReady(118, "UserTest get Info --- PASSED");
-                                           }
+                                           Assert.assertTrue("Connection Error", requmber == 206);
+                                           Assert.assertFalse("Response Error", msg.contains("error"));
+                                           Assert.assertNotNull("user tags null", userController.getUserTags());
+
                                        }
                                    }
         );
         userController.requestTags(userId, 0, UserController.MAX_LIMIT);
     }
 
+    */
+/**
+     * Testing User Photos Request
+     *
+     * @param userId ID of the User
+     *//*
+
+    @Test(expected = AssertionError.class)
+    public static void testUserPhotos(String userId) {
+        final UserController userController = new UserController(MainActivity.getAppContext());
+        userController.setListener(new RequestListener(0) {
+                                       @Override
+                                       public void onRequestReady(int requmber, String msg) {
+
+
+                                           Assert.assertTrue("Connection Error", requmber == 207);
+                                           Assert.assertFalse("Response Error", msg.contains("error"));
+                                           Assert.assertNotNull("user photos null", userController.getPhotoUrl());
+
+                                       }
+                                   }
+        );
+        userController.requestTags(userId, 0, UserController.MAX_LIMIT);
+    }
+
+    */
+/**
+     * Testing User Block User with ID Request
+     *
+     * @param userId ID of the User
+     *//*
+
+    @Test(expected = AssertionError.class)
+    public static void testBlockUserWithIdRequest(String userId) {
+        final UserController userController = new UserController(MainActivity.getAppContext());
+        userController.setListener(new RequestListener(0) {
+            @Override
+            public void onRequestReady(int requmber, String msg) {
+
+                Assert.assertTrue("Connection Error", requmber == 211);
+                Assert.assertFalse("Response Error", msg.contains("error"));
+
+            }
+        });
+        userController.blockUserWithID(userId);
+    }
+
+    */
+/**
+     * Testing User Unblock User with ID Request
+     *
+     * @param userId ID of the User
+     *//*
+
+    @Test(expected = AssertionError.class)
+    public static void testUnblockUserWithIdRequest(String userId) {
+        final UserController userController = new UserController(MainActivity.getAppContext());
+        userController.setListener(new RequestListener(0) {
+            @Override
+            public void onRequestReady(int requmber, String msg) {
+
+                Assert.assertTrue("Connection Error", requmber == 212);
+                Assert.assertFalse("Response Error", msg.contains("error"));
+
+            }
+        });
+        userController.unblockUserWithID(userId);
+    }
+
+    */
+/**
+     * Testing User Follow User with ID Request
+     *
+     * @param userId ID of the User
+     *//*
+
+    @Test(expected = AssertionError.class)
+    public static void testFollowUserWithIdRequest(String userId) {
+        final UserController userController = new UserController(MainActivity.getAppContext());
+        userController.setListener(new RequestListener(0) {
+            @Override
+            public void onRequestReady(int requmber, String msg) {
+
+                Assert.assertTrue("Connection Error", requmber == 217);
+                Assert.assertFalse("Response Error", msg.contains("error"));
+
+            }
+        });
+        userController.followUserWithID(userId);
+    }
+
 }
 
+*/

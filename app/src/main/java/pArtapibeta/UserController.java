@@ -4,13 +4,18 @@ import android.content.Context;
 import android.util.Log;
 
 import com.android.volley.Request;
+import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class UserController {
@@ -21,6 +26,7 @@ public class UserController {
 
     private Context ctx;
     private pArtapibeta.RequestListener listener;
+    private String accessToken;
 
     private User user;
     private ArrayList<Photo> userPhotos;
@@ -28,12 +34,22 @@ public class UserController {
     private ArrayList<User> userFollowers;
     private ArrayList<Photo> userLikedPhotos;
     private ArrayList<String> userTags;
-    private ArrayList<String> userPlaces;
+    private ArrayList<Photo> userPlaces;
     private ArrayList<User> blockedUsers;
 
     private static RequestListener st_listener;
+    private static ArrayList<RequestListener> st_listeners_all = new ArrayList<>();
 
-    static ArrayList<RequestListener> st_listeners_all = new ArrayList<>();
+
+    public UserController(String token, Context ctx) {
+        this.ctx = ctx;
+        this.accessToken = token;
+    }
+
+
+    public void setListener(RequestListener listener) {
+        this.listener = listener;
+    }
 
 
     public static RequestListener getSt_listener(int indexNumb) {
@@ -69,6 +85,7 @@ public class UserController {
         }
     }
 
+
     public static ArrayList<RequestListener> getSt_listeners_all() {
         return st_listeners_all;
     }
@@ -78,20 +95,11 @@ public class UserController {
     }
 
 
-    public UserController(Context ctx) {
-        this.ctx = ctx;
-    }
-
-    public void setListener(RequestListener listener) {
-        this.listener = listener;
-    }
-
-
     public User getUser() {
         return user;
     }
 
-    public ArrayList<Photo> getPhotoUrl() {
+    public ArrayList<Photo> getPhoto() {
         return userPhotos;
     }
 
@@ -111,7 +119,7 @@ public class UserController {
         return userTags;
     }
 
-    public ArrayList<String> getUserPlaces() {
+    public ArrayList<Photo> getUserPlaces() {
         return userPlaces;
     }
 
@@ -120,31 +128,29 @@ public class UserController {
     }
 
 
-
     /**
      * Request User Profile
-     *
-     *           onResponse 205 code will be called in listener
-     *           onErrorResponse 305 code will be called in listener
+     * <p/>
+     * onResponse 205 code will be called in listener
+     * onErrorResponse 305 code will be called in listener
      */
     public synchronized void requestUser() {
 
         assert this.listener != null;
-        String url = PicsArtConst.SHOW_USER_URL + "me" + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+        String url = PicsArtConst.SHOW_USER + "me" + PicsArtConst.TOKEN_PREFIX + accessToken;
         PARequest req = new PARequest(Request.Method.GET, url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                listener.onRequestReady(305, error.toString());
+                listener.onRequestReady(301, error.toString());
             }
 
             @Override
             public void onResponse(Object response) {
                 Log.d(MY_LOGS, response.toString());
-                //user = new User();
                 user = UserFactory.parseFrom(response);
-                UserController.this.listener.onRequestReady(205, response.toString());
+                UserController.this.listener.onRequestReady(201, response.toString());
             }
         });
     }
@@ -153,14 +159,14 @@ public class UserController {
      * Request User Profile with ID
      *
      * @param id ID of the User
-     *
+     *           <p/>
      *           onResponse 202 code will be called in listener
      *           onErrorResponse 302 code will be called in listener
      */
-    public synchronized void requestUser(String id) {     //    3
+    public synchronized void requestUser(String id) {
 
         assert this.listener != null;
-        String url = PicsArtConst.SHOW_USER_URL + id + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+        String url = PicsArtConst.SHOW_USER + id + PicsArtConst.TOKEN_PREFIX + accessToken;
         PARequest req = new PARequest(Request.Method.GET, url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
@@ -172,11 +178,8 @@ public class UserController {
 
             @Override
             public void onResponse(Object response) {
-                /*Log.d(MY_LOGS, response.toString());
-                user = new User();
-                user.parseFrom(response);
-                UserController.this.listener.onRequestReady(3);*/
 
+                Log.d(MY_LOGS, response.toString());
                 user = UserFactory.parseFrom(response);
                 listener.onRequestReady(202, response.toString());
             }
@@ -184,16 +187,15 @@ public class UserController {
     }
 
 
-
     /**
      * Requests Followers of the User
      *
-     * @param user user(to examine)
+     * @param user   user(to examine)
      * @param offset starting point
-     * @param limit limit of users
-     *
-     *           onResponse 208 code will be called in listener
-     *           onErrorResponse 308 code will be called in listener
+     * @param limit  limit of users
+     *               <p/>
+     *               onResponse 208 code will be called in listener
+     *               onErrorResponse 308 code will be called in listener
      */
     public synchronized void requestUserFollowers(User user, final int offset, final int limit) {
         requestUserFollowers(user.getId().toString(), offset, limit);
@@ -202,14 +204,14 @@ public class UserController {
     /**
      * Requests Followers of the User
      *
-     * @param userId  ID of the User
+     * @param userId ID of the User
      * @param offset starting point
-     * @param limit limit of users
-     *
-     *           onResponse 208 code will be called in listener
-     *           onErrorResponse 308 code will be called in listener
+     * @param limit  limit of users
+     *               <p/>
+     *               onResponse 208 code will be called in listener
+     *               onErrorResponse 308 code will be called in listener
      */
-    public synchronized void requestUserFollowers(String userId, final int offset, final int limit) {    //   8
+    public synchronized void requestUserFollowers(String userId, final int offset, final int limit) {
 
         /**
          * checking argument validation
@@ -222,7 +224,7 @@ public class UserController {
         assert this.listener != null;
         userFollowers = new ArrayList<>();
 
-        String url = PicsArtConst.SHOW_USER_FOLLOWERS + userId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+        String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.FOLLOWERS_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
         PARequest req = new PARequest(Request.Method.GET, url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
@@ -235,38 +237,7 @@ public class UserController {
             @Override
             public void onResponse(Object response) {
 
-                /*int max_limit;
-
-
-                JSONArray jsonArray = null;
-                try {
-                    jsonArray = ((JSONObject) response).getJSONArray("response");
-                    Log.d(MY_LOGS,response.toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                max_limit = limit >= jsonArray.length() ? jsonArray.length() - 1 : limit;
-
-                    //userFollowers=UserFactory.parseFromAsArray(response);
-                    for (int i = offset; i <= max_limit; i++) {
-
-                        JSONObject jsonObject = null;
-                        try {
-                            jsonObject = jsonArray.getJSONObject(i);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        Gson gson=new Gson();
-
-                        userFollowers.add(gson.fromJson(jsonObject.toString(),User.class));
-                        try {
-                            Log.d(MY_LOGS, "follower id:  " + jsonObject.getString("id"));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }*/
-                userFollowers = UserFactory.parseFromAsArray(response, offset, limit);
+                userFollowers = UserFactory.parseFromAsArray(response, offset, limit, "response");
                 UserController.this.listener.onRequestReady(208, response.toString());
 
             }
@@ -274,16 +245,15 @@ public class UserController {
     }
 
 
-
     /**
      * Requests Following of the User
      *
-     * @param user user(to examine)
+     * @param user   user(to examine)
      * @param offset starting point
-     * @param limit limit of users
-     *
-     *           onResponse 209 code will be called in listener
-     *           onErrorResponse 309 code will be called in listener
+     * @param limit  limit of users
+     *               <p/>
+     *               onResponse 209 code will be called in listener
+     *               onErrorResponse 309 code will be called in listener
      */
     public synchronized void requestUserFollowing(User user, final int offset, final int limit) {
         requestUserFollowing(user.getId().toString(), offset, limit);
@@ -292,14 +262,14 @@ public class UserController {
     /**
      * Requests Following of the User
      *
-     * @param userId  ID of the User
+     * @param userId ID of the User
      * @param offset starting point
-     * @param limit limit of users
-     *
-     *           onResponse 209 code will be called in listener
-     *           onErrorResponse 309 code will be called in listener
+     * @param limit  limit of users
+     *               <p/>
+     *               onResponse 209 code will be called in listener
+     *               onErrorResponse 309 code will be called in listener
      */
-    public synchronized void requestUserFollowing(String userId, final int offset, final int limit) {    //   9
+    public synchronized void requestUserFollowing(String userId, final int offset, final int limit) {
 
         /**
          * checking argument validation
@@ -312,7 +282,7 @@ public class UserController {
         assert this.listener != null;
         userFollowing = new ArrayList<>();
 
-        String url = PicsArtConst.SHOW_USER_FOLLOWING + userId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+        String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.FOLLOWING_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
         PARequest req = new PARequest(Request.Method.GET, url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
@@ -325,42 +295,22 @@ public class UserController {
             @Override
             public void onResponse(Object response) {
 
-                /*int max_limit;
-
-                try {
-
-                    JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
-                    max_limit = limit >= jsonArray.length() ? jsonArray.length() - 1 : limit;
-
-                    for (int i = offset; i <= max_limit; i++) {
-
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        userFollowing.add(jsonObject.getString("id"));
-                        //Log.d(MY_LOGS, "following id:  " + jsonObject.getString("id"));
-
-                    }
-                    UserController.this.listener.onRequestReady(209, response.toString());
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }*/
-                userFollowing = UserFactory.parseFromAsArray(response, offset, limit);
+                userFollowing = UserFactory.parseFromAsArray(response, offset, limit, "response");
                 listener.onRequestReady(209, response.toString());
             }
         });
     }
 
 
-
     /**
      * RequestsLiked Photos of the User
      *
-     * @param user  user(to examine)
+     * @param user   user(to examine)
      * @param offset starting point
-     * @param limit limit of users
-     *
-     *           onResponse  210 code will be called in listener
-     *           onErrorResponse 310 code will be called in listener
+     * @param limit  limit of users
+     *               <p/>
+     *               onResponse  210 code will be called in listener
+     *               onErrorResponse 310 code will be called in listener
      */
     public synchronized void requestLikedPhotos(User user, final int offset, final int limit) {
         requestLikedPhotos(user.getId().toString(), offset, limit);
@@ -369,14 +319,14 @@ public class UserController {
     /**
      * Requests Liked Photos of the User
      *
-     * @param userId  ID of the User
+     * @param userId ID of the User
      * @param offset starting point
-     * @param limit limit of users
-     *
-     *           onResponse 210 code will be called in listener
-     *           onErrorResponse 310 code will be called in listener
+     * @param limit  limit of users
+     *               <p/>
+     *               onResponse 210 code will be called in listener
+     *               onErrorResponse 310 code will be called in listener
      */
-    public synchronized void requestLikedPhotos(String userId, final int offset, final int limit) {    //   10
+    public synchronized void requestLikedPhotos(String userId, final int offset, final int limit) {
 
         /**
          * checking argument validation
@@ -389,7 +339,7 @@ public class UserController {
         assert this.listener != null;
         userLikedPhotos = new ArrayList<>();
 
-        String url = PicsArtConst.SHOW_USER_LIKED_PHOTOS + userId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+        String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.LIKED_PHOTOS_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
         PARequest req = new PARequest(Request.Method.GET, url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
@@ -402,27 +352,8 @@ public class UserController {
             @Override
             public void onResponse(Object response) {
 
-                int max_limit;
-
-                try {
-
-                    JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
-                    max_limit = limit >= jsonArray.length() ? jsonArray.length() - 1 : limit;
-
-                    for (int i = offset; i <= max_limit; i++) {
-
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        Photo photo = PhotoFactory.parseFrom(jsonObject);
-                        //Photo photo = new Photo(jsonObject.getString("id"), new URL(jsonObject.getString("url")), null, null, jsonObject.getJSONObject("user").getString("id"));
-                        userLikedPhotos.add(photo);
-                        Log.d(MY_LOGS, "liked photo id :  " + photo.getId());
-
-                    }
-                    UserController.this.listener.onRequestReady(210, response.toString());
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                userLikedPhotos = PhotoFactory.parseFromAsArray(response, offset, limit, "likes");
+                UserController.this.listener.onRequestReady(210, response.toString());
 
             }
         });
@@ -432,12 +363,12 @@ public class UserController {
     /**
      * Requests Blocked Users of the User
      *
-     * @param user  user(to examine)
+     * @param user   user(to examine)
      * @param offset starting point
-     * @param limit limit of users
-     *
-     *           onResponse  204 code will be called in listener
-     *           onErrorResponse 304 code will be called in listener
+     * @param limit  limit of users
+     *               <p/>
+     *               onResponse  204 code will be called in listener
+     *               onErrorResponse 304 code will be called in listener
      */
     public synchronized void requestBlockedUsers(User user, final int offset, final int limit) {
         requestBlockedUsers(user.getId().toString(), offset, limit);
@@ -446,14 +377,14 @@ public class UserController {
     /**
      * Requests Blocked Users of the User
      *
-     * @param userId  ID of the User
+     * @param userId ID of the User
      * @param offset starting point
-     * @param limit limit of users
-     *
-     *           onResponse  204 code will be called in listener
-     *           onErrorResponse 304 code will be called in listener
+     * @param limit  limit of users
+     *               <p/>
+     *               onResponse  204 code will be called in listener
+     *               onErrorResponse 304 code will be called in listener
      */
-    public synchronized void requestBlockedUsers(String userId, final int offset, final int limit) {    //   4
+    public synchronized void requestBlockedUsers(String userId, final int offset, final int limit) {
 
         /**
          * checking argument validation
@@ -466,12 +397,13 @@ public class UserController {
         assert this.listener != null;
         blockedUsers = new ArrayList<>();
 
-        String url = PicsArtConst.SHOW_BLOCKED_USERS + userId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+        String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.BLOCKED_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
         PARequest req = new PARequest(Request.Method.GET, url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+
                 UserController.this.listener.onRequestReady(304, error.toString());
 
             }
@@ -479,29 +411,9 @@ public class UserController {
             @Override
             public void onResponse(Object response) {
 
-                blockedUsers = UserFactory.parseFromAsArray(response, offset, limit);
+                Log.d(MY_LOGS, response.toString());
+                blockedUsers = UserFactory.parseFromAsArray(response, offset, limit, "blocks");
                 UserController.this.listener.onRequestReady(204, response.toString());
-
-                /*int max_limit;
-
-                try {
-
-                    JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
-                    max_limit = limit >= jsonArray.length() ? jsonArray.length() - 1 : limit;
-
-                    for (int i = offset; i <= max_limit; i++) {
-
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        blockedUsers.add(jsonObject.getString("id"));
-                        //Log.d(MY_LOGS, "blocked user id :  " + jsonObject.getString("id"));
-
-                    }
-                    UserController.this.listener.onRequestReady(204, response.toString());
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-*/
 
             }
         });
@@ -512,12 +424,12 @@ public class UserController {
     /**
      * Requests Places of the User
      *
-     * @param user  user(to examine)
+     * @param user   user(to examine)
      * @param offset starting point
-     * @param limit limit of users
-     *
-     *           onResponse  205 code will be called in listener
-     *           onErrorResponse 305 code will be called in listener
+     * @param limit  limit of users
+     *               <p/>
+     *               onResponse  205 code will be called in listener
+     *               onErrorResponse 305 code will be called in listener
      */
     public synchronized void requestPlaces(User user, final int offset, final int limit) {
         requestPlaces(user.getId().toString(), offset, limit);
@@ -528,11 +440,10 @@ public class UserController {
      *
      * @param userId ID of the User
      * @param offset starting point
-     * @param limit limit of users
-     *
-     *           onResponse 205 code will be called in listener
-     *           onErrorResponse 305 code will be called in listener
-     *
+     * @param limit  limit of users
+     *               <p/>
+     *               onResponse 205 code will be called in listener
+     *               onErrorResponse 305 code will be called in listener
      */
     public synchronized void requestPlaces(String userId, final int offset, final int limit) {    //  5
 
@@ -547,10 +458,11 @@ public class UserController {
         assert this.listener != null;
         userPlaces = new ArrayList<>();
 
-        String url = PicsArtConst.SHOW_USER_PLACES + userId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+        String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.PLACES_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
         PARequest req = new PARequest(Request.Method.GET, url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
+
             @Override
             public void onErrorResponse(VolleyError error) {
                 UserController.this.listener.onRequestReady(305, error.toString());
@@ -559,25 +471,27 @@ public class UserController {
 
             @Override
             public void onResponse(Object response) {
-                int max_limit;
 
+                JSONArray jsonArray = null;
                 try {
-
-                    JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
-                    max_limit = limit >= jsonArray.length() ? jsonArray.length() - 1 : limit;
-
-                    for (int i = offset; i <= max_limit; i++) {
-
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        userPlaces.add(jsonObject.getString("place"));
-                        //Log.d(MY_LOGS, jsonObject.getString("place"));
-
-                    }
-                    UserController.this.listener.onRequestReady(205, response.toString());
-
+                    jsonArray = new JSONArray(((JSONObject) response).get("places").toString());
+                    Log.d(MY_LOGS, "" + jsonArray.get(0).toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    try {
+                        JSONObject jsonObject1 = new JSONObject(jsonArray.get(i).toString());
+                        JSONArray jsonArray1 = new JSONArray(jsonObject1.get("photos").toString());
+                        JSONObject jsonObject2 = jsonArray1.getJSONObject(0);
+                        Log.d(MY_LOGS, "" + PhotoFactory.parseFrom(jsonObject2).getLocation().getPlace());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                UserController.this.listener.onRequestReady(205, response.toString());
+
             }
         });
     }
@@ -586,12 +500,12 @@ public class UserController {
     /**
      * Requests Tags of the User
      *
-     * @param user user(to examine)
+     * @param user   user(to examine)
      * @param offset starting point
-     * @param limit limit of users
-     *
-     *           onResponse 206 code will be called in listener
-     *           onErrorResponse 306 code will be called in listener
+     * @param limit  limit of users
+     *               <p/>
+     *               onResponse 206 code will be called in listener
+     *               onErrorResponse 306 code will be called in listener
      */
     public synchronized void requestTags(User user, final int offset, final int limit) {
         requestTags(user.getId().toString(), offset, limit);
@@ -602,10 +516,10 @@ public class UserController {
      *
      * @param userId ID of the User
      * @param offset starting point
-     * @param limit limit of users
-     *
-     *           onResponse 206 code will be called in listener
-     *           onErrorResponse 306 code will be called in listener
+     * @param limit  limit of users
+     *               <p/>
+     *               onResponse 206 code will be called in listener
+     *               onErrorResponse 306 code will be called in listener
      */
     public synchronized void requestTags(String userId, final int offset, final int limit) {    // 6
 
@@ -617,10 +531,17 @@ public class UserController {
             throw new IllegalArgumentException();
         }
 
-        assert this.listener != null;
+        if(listener==null ){
+            Log.e("error","listener is null");
+            return;
+        }
+
+        if(userId==null){
+            return;
+        }
         userTags = new ArrayList<>();
 
-        String url = PicsArtConst.SHOW_USER_TAGS + userId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+        String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.TAGS_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
         PARequest req = new PARequest(Request.Method.GET, url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
@@ -637,14 +558,14 @@ public class UserController {
 
                 try {
 
-                    JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
+                    JSONArray jsonArray = ((JSONObject) response).getJSONArray("tags");
                     max_limit = limit >= jsonArray.length() ? jsonArray.length() - 1 : limit;
 
                     for (int i = offset; i <= max_limit; i++) {
 
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         userTags.add(jsonObject.getString("tag"));
-                        //Log.d(MY_LOGS, jsonObject.getString("tag"));
+                        Log.d(MY_LOGS, jsonObject.getString("tag"));
 
                     }
                     UserController.this.listener.onRequestReady(206, response.toString());
@@ -661,12 +582,12 @@ public class UserController {
     /**
      * Requests Photos of the User
      *
-     * @param user user(to examine)
+     * @param user   user(to examine)
      * @param offset starting point
-     * @param limit limit of users
-     *
-     *           onResponse 207 code will be called in listener
-     *           onErrorResponse 307 code will be called in listener
+     * @param limit  limit of users
+     *               <p/>
+     *               onResponse 207 code will be called in listener
+     *               onErrorResponse 307 code will be called in listener
      */
     public synchronized void requestUserPhotos(User user, final int offset, final int limit) {
         requestUserPhotos(user.getId().toString(), offset, limit);
@@ -677,10 +598,10 @@ public class UserController {
      *
      * @param userId ID of the User
      * @param offset starting point
-     * @param limit limit of users
-     *
-     *           onResponse 207 code will be called in listener
-     *           onErrorResponse 307 code will be called in listener
+     * @param limit  limit of users
+     *               <p/>
+     *               onResponse 207 code will be called in listener
+     *               onErrorResponse 307 code will be called in listener
      */
     public synchronized void requestUserPhotos(String userId, final int offset, final int limit) {    //  7
 
@@ -695,7 +616,7 @@ public class UserController {
         assert this.listener != null;
         userPhotos = new ArrayList<>();
 
-        String url = PicsArtConst.SHOW_USER_PHOTOS_LIST + userId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+        String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.PHOTOS_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
         PARequest req = new PARequest(Request.Method.GET, url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
@@ -709,27 +630,8 @@ public class UserController {
             @Override
             public void onResponse(Object response) {
 
-                int max_limit;
-
-                try {
-
-                    JSONArray jsonArray = ((JSONObject) response).getJSONArray("response");
-                    max_limit = limit >= jsonArray.length() ? jsonArray.length() - 1 : limit;
-
-                    for (int i = offset; i <= max_limit; i++) {
-
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        Photo photo = PhotoFactory.parseFrom(jsonObject);
-                        //Photo photo = new Photo(jsonObject.getString("id"), new URL(jsonObject.getString("url")), null, null, jsonObject.getJSONObject("user").getString("id"));
-                        userPhotos.add(photo);
-                        Log.d(MY_LOGS, photo.getId());
-
-                    }
-                    UserController.this.listener.onRequestReady(207, response.toString());
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                userPhotos = PhotoFactory.parseFromAsArray(response, offset, limit, "photos");
+                UserController.this.listener.onRequestReady(207, response.toString());
             }
         });
     }
@@ -739,34 +641,38 @@ public class UserController {
      * Requests for Blocking User with ID
      *
      * @param blockingId ID of Blocking User
-     *
-     *           onResponse 211 code will be called in listener
-     *           onErrorResponse 311 code will be called in listener
+     *                   <p/>
+     *                   onResponse 211 code will be called in listener
+     *                   onErrorResponse 311 code will be called in listener
      */
     public void blockUserWithID(final String blockingId) {
 
-        assert this.listener != null;
-        String url = PicsArtConst.BLOCK_USER_WITH_ID + blockingId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+        String url = PicsArtConst.SHOW_USER + "me" + PicsArtConst.BLOCKED_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
+        StringRequest req = new StringRequest(Request.Method.POST, url,
 
-        PARequest req = new PARequest(Request.Method.POST, url, null, null) {
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(MY_LOGS, response.toString());
+                        listener.onRequestReady(211, response.toString());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        listener.onRequestReady(311, error.toString());
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("block_id", blockingId);
+                return params;
 
+            }
         };
 
-        SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
-        req.setRequestListener(new PARequest.PARequestListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                UserController.this.listener.onRequestReady(311, error.toString());
-
-            }
-
-            @Override
-            public void onResponse(Object response) {
-
-                Log.d(MY_LOGS, response.toString());
-                UserController.this.listener.onRequestReady(211, response.toString());
-            }
-        });
+        SingletoneRequestQue.getInstance(MainActivity.getAppContext()).addToRequestQueue(req);
 
         //153741055000102
         //155035207000102
@@ -777,17 +683,16 @@ public class UserController {
      * Requests for Unblocking User with ID
      *
      * @param unblockingId ID of Unblocking User
-     *
-     *           onResponse 212 code will be called in listener
-     *           onErrorResponse 312 code will be called in listener
+     *                     <p/>
+     *                     onResponse 212 code will be called in listener
+     *                     onErrorResponse 312 code will be called in listener
      */
     public void unblockUserWithID(final String unblockingId) {
 
         assert this.listener != null;
-        String url = PicsArtConst.UNBLOCK_USER_WITH_ID + unblockingId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+        String url = PicsArtConst.SHOW_USER + "me" + PicsArtConst.BLOCKED_PREFIX + "/" + unblockingId + PicsArtConst.TOKEN_PREFIX + accessToken;
 
-        PARequest req = new PARequest(Request.Method.POST, url, null, null) {
-
+        PARequest req = new PARequest(Request.Method.DELETE, url, null, null) {
         };
 
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
@@ -795,60 +700,54 @@ public class UserController {
             @Override
             public void onErrorResponse(VolleyError error) {
                 UserController.this.listener.onRequestReady(312, error.toString());
-
             }
 
             @Override
             public void onResponse(Object response) {
-
                 Log.d(MY_LOGS, response.toString());
                 UserController.this.listener.onRequestReady(212, response.toString());
             }
         });
-
     }
 
     /**
      * Requests for Following User with ID
      *
      * @param followingId ID of Following User
-     *
-     *           onResponse 217 code will be called in listener
-     *           onErrorResponse 317 code will be called in listener
+     *                    <p/>
+     *                    onResponse 217 code will be called in listener
+     *                    onErrorResponse 317 code will be called in listener
      */
     public void followUserWithID(final String followingId) {
 
-        assert this.listener != null;
-        String url = PicsArtConst.FOLLOW_USER_WITH_ID + followingId + PicsArtConst.API_TEST_PREF + PicsArtConst.APIKEY;
+        String url = PicsArtConst.SHOW_USER + "me" + PicsArtConst.FOLLOWING_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
+        StringRequest req = new StringRequest(Request.Method.POST, url,
 
-        PARequest req = new PARequest(Request.Method.POST, url, null, null) {
-
-            /*@Override
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(MY_LOGS, response.toString());
+                        listener.onRequestReady(217, response.toString());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        listener.onRequestReady(317, error.toString());
+                    }
+                }) {
+            @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("is_social", followingId);
+                params.put("following_id", followingId);
                 return params;
-            }*/
+
+            }
         };
 
-        SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
-        req.setRequestListener(new PARequest.PARequestListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                UserController.this.listener.onRequestReady(317, error.toString());
+        SingletoneRequestQue.getInstance(MainActivity.getAppContext()).addToRequestQueue(req);
 
-            }
-
-            @Override
-            public void onResponse(Object response) {
-
-                Log.d(MY_LOGS, response.toString());
-                UserController.this.listener.onRequestReady(217, response.toString());
-            }
-        });
-        //new FollowUserAsyncTask().execute(id);
     }
-
 
 
     public static void notifyListeners(int reqnumber, String msg) {
@@ -865,5 +764,6 @@ public class UserController {
             Log.e("Listener Error: ", "Non Existing Listener with index " + listenerNumb);
         }
     }
+
 
 }

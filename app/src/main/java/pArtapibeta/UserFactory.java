@@ -1,5 +1,7 @@
 package pArtapibeta;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -53,27 +55,36 @@ public class UserFactory {
      *
      * Tries to Parse Object to ArrayList of User instances
      */
-    public static ArrayList<User> parseFromAsArray(Object object, int offset, int limit) {
+    public static ArrayList<User> parseFromAsArray(Object object, int offset, int limit, String keyword) {
 
         ArrayList<User> userArrayList = new ArrayList<>();
         User nwUs = null;
         Location loc;
         Gson gson;
         int max_limit;
+        JSONArray jarr=null;
+        JSONObject jsonObj=(JSONObject)object;
 
         try {
 
-            JSONArray jsonArray = ((JSONObject) object).getJSONArray("response");
-            max_limit = limit >= jsonArray.length() ? jsonArray.length() - 1 : limit;
+            if(keyword!=null || keyword!=""){
+                try{
+
+                    jarr = new JSONArray(jsonObj.get(keyword).toString());
+                } catch (Exception e){ }
+            }
+            else  jarr = new JSONArray(jsonObj.toString());
+
+            max_limit = limit >= jarr.length() ? jarr.length() - 1 : limit;
 
             for (int i = offset; i <= max_limit; i++) {
 
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                JSONObject jsonObject = jarr.getJSONObject(i);
 
                 gson = new Gson();
                 nwUs = gson.fromJson(jsonObject.toString(), User.class);
                 userArrayList.add(nwUs);
-                //Log.d("gagagagagag", "foll id:  " + nwUs.getUsername());
+                //Log.d("gagagagagag", "foll id:  " + nwUs.getId());
             }
             return userArrayList;
 
