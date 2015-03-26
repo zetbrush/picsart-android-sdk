@@ -7,11 +7,17 @@ import android.os.AsyncTask;
 import android.os.Looper;
 import android.util.Base64;
 import android.util.Log;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
+import com.google.inject.Binder;
+import com.google.inject.Inject;
+import com.google.inject.Module;
+import com.google.inject.name.Named;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -23,20 +29,29 @@ import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import roboguice.config.DefaultRoboModule;
+import roboguice.event.EventManager;
 
 /**
      * This class consists exclusively of void methods, that operate on making
@@ -54,9 +69,16 @@ import java.util.Map;
 
 
 
-public class PhotoController {
+public class PhotoController implements Module {
+
+    @Named(DefaultRoboModule.GLOBAL_EVENT_MANAGER_NAME)
+    @Inject EventManager globalEventManager;
+
     private Context ctx;
     private RequestListener listener;
+
+
+
     private static String token;
     private volatile Photo photo;
     private static volatile Comment _comment;
@@ -64,14 +86,21 @@ public class PhotoController {
     private ArrayList<User> photoLikedUsers;
     private static ArrayList<RequestListener> st_listeners_all = new ArrayList<>();
 
+
+
     // Getters and Setters for all fields //
 
     public static void setAccessToken(String token){
         PhotoController.token =token;
     }
+
     public ArrayList<Comment> getCommentsLists() throws NullPointerException {
 
         return commentsLists;
+    }
+
+    public static void setToken(String token) {
+        PhotoController.token = token;
     }
 
     public void setCommentsLists(ArrayList<Comment> commentList) {
@@ -142,10 +171,12 @@ public class PhotoController {
 
 
 
+
+
     /**
- * @param photo  photo objects to be uploaded
- *               if Success 101 code will be called in static listener
- * */
+    * @param photo  photo objects to be uploaded
+    *               if Success 101 code will be called in static listener
+    * */
     public static synchronized void uploadPhoto(Photo... photo) {
 
         new ImageUploadTask().execute(photo);
@@ -175,13 +206,14 @@ public class PhotoController {
             public void onResponse(Object response) {
                 Log.d("Response 9", response.toString());
                 photo = PhotoFactory.parseFrom(response);
+
                 listener.onRequestReady(201, response.toString());
             }
         });
 
 
     }
-
+    @Inject PARequest  reqq;
 
 
     /**
@@ -196,6 +228,7 @@ public class PhotoController {
     public synchronized void requestComments(String photoId, final int offset, final int limit) {
         String url = PicsArtConst.PHOTO_PRE_URL+photoId+PicsArtConst.PHOTO_ADD_COMMENT_URL+PicsArtConst.TOKEN_PREFIX+token;
         PARequest req = new PARequest(Request.Method.GET, url, null, null);
+
         SingletoneRequestQue.getInstance(MainActivity.getAppContext()).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
@@ -224,6 +257,11 @@ public class PhotoController {
                         comment = tmp;
                     }
                     commentsLists = new ArrayList<>(comment);
+
+                    globalEventManager.fire(new PACommentEvent(301,"Comments ready"));
+                    if(listener==null){
+                        Log.i("Inner/Listener", "Inner Listener is null, but you still can catch global event");
+                    }else
                     listener.onRequestReady(301, "Comments ready");
                     //notifyListeners(555, "getComments");
                 } catch (Exception e) {
@@ -284,8 +322,8 @@ public class PhotoController {
      * */
     public synchronized void deleteComment(String photoId, final String commentId) {
 
-        String url = PicsArtConst.PHOTO_PRE_URL +photoId+ PicsArtConst.PHOTO_COMMENT_MIDLE+commentId + PicsArtConst.TOKEN_PREFIX+token+"&method=delete";
-        StringRequest req = new StringRequest(Request.Method.POST, url,
+        String url = PicsArtConst.PHOTO_PRE_URL +photoId+ PicsArtConst.PHOTO_COMMENT_MIDLE+commentId + PicsArtConst.TOKEN_PREFIX+token;//+"&method=delete";
+        StringRequest req = new StringRequest(Request.Method.DELETE, url,
 
                 new Response.Listener<String>() {
                     @Override
@@ -381,10 +419,18 @@ public class PhotoController {
 
 
 
-        String url = PicsArtConst.PHOTO_PRE_URL + photo.getId() +  PicsArtConst.TOKEN_PREFIX +token+ "&method=put";
-        PARequest req = new PARequest(Request.Method.POST, url, jobj, null);
+        String url = PicsArtConst.PHOTO_PRE_URL + photo.getId() +  PicsArtConst.TOKEN_PREFIX +token;
+        PARequest req = new PARequest(Request.Method.PUT, url, jobj, null){
+            @Override
+            protected void deliverResponse(JSONObject jobj){
+                Log.d("deliveryResponse ", "At updatePhotoData"+ jobj.toString());
+                if(jobj.toString().contains("error")) notifyListeners(603,jobj.toString());
+
+            }
+        };
 
         req.setRequestListener(new PARequest.PARequestListener() {
+
             @Override
             public void onErrorResponse(VolleyError error) {
                 notifyListeners(603, error.toString());
@@ -393,6 +439,7 @@ public class PhotoController {
             @Override
             public void onResponse(Object response) {
                 Log.d("UpdatedonLisData ", response.toString());
+
                 notifyListeners(601, response.toString());
             }
 
@@ -497,7 +544,15 @@ public class PhotoController {
         this.ctx = ctx;
         PhotoController.token = token;
     }
+    public PhotoController(Context ctx) {
+        this.ctx = ctx;
 
+    }
+
+    public PhotoController() {
+
+
+    }
 
     /**
      *     @param listener     Listener objec
@@ -609,6 +664,12 @@ public class PhotoController {
 
 
 
+    @Override
+    public void configure(Binder binder) {
+
+    }
+
+
     /**
      *  Uploads images
      * */
@@ -620,15 +681,33 @@ public class PhotoController {
 
         @Override
         protected synchronized JSONObject doInBackground(Photo... phot) {
-            int iter = 0;
+            final int[] iter = new int[1];
+
             Looper.prepare();
             for (Photo ph : phot) {
                 try {
-                    File file = new File(ph.getPath());
+                    final File file = new File(ph.getPath());
+                   final long[] totalSize = new long[1];
+                     totalSize[0] = file.length();
                     HttpClient httpClient = new DefaultHttpClient();
                     String url = "";
-                    MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-                    entity.addPart("file", new FileBody(file));
+                 //   MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+                    MultiPartEntityMod multipartContent=null;
+                    try {
+
+                         multipartContent = new MultiPartEntityMod(new ProgressListener() {
+                            @Override
+                            public void transferred(long num) {
+                                publishProgress((int) ((num / (float) totalSize[0] * 100)), iter[0]);
+                            }
+                        });
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+
+                        multipartContent.addPart("file", new FileBody(file));
+                        totalSize[0] = multipartContent.getContentLength();
                     if (ph.isFor == Photo.IS.AVATAR) {
                         url = PicsArtConst.USER_URL_PATH + "me"+ PicsArtConst.PHOTO_AVATAR_ENDX+PicsArtConst.TOKEN_PREFIX + PhotoController.token;
                     } else if (ph.isFor == Photo.IS.COVER) {
@@ -640,28 +719,30 @@ public class PhotoController {
                             tmp = ph.getLocation().getLocationPair();
 
                             for (int i = 0; i < tmp.length; i++) {
-                                entity.addPart(tmp[i].getName(), new StringBody(tmp[i].getValue()));
+                                multipartContent.addPart(tmp[i].getName(), new StringBody(tmp[i].getValue()));
 
                             }
                         }
                         if(ph.getTags()!=null) {
                             for (String str : ph.getTags()) {
-                                entity.addPart("tags[]", new StringBody(str));
+                                multipartContent.addPart("tags[]", new StringBody(str));
                             }
                         }
                         if(ph.getTitle()!=null)
-                        entity.addPart("title", new StringBody(ph.getTitle()));
+                            multipartContent.addPart("title", new StringBody(ph.getTitle()));
                         if(ph.get_public()!=null)
-                        entity.addPart("is_public", new StringBody(ph.get_public().toString()) );
+                        multipartContent.addPart("is_public", new StringBody(ph.get_public().toString()) );
                         if(ph.getMature()!=null)
-                            entity.addPart("mature", new StringBody(ph.getMature().toString()) );
+                            multipartContent.addPart("mature", new StringBody(ph.getMature().toString()) );
                     }
 
                     HttpPost httpPost = new HttpPost(url);
-                    httpPost.setEntity(entity);
-                    HttpResponse response = httpClient.execute(httpPost);
+                    HttpContext httpContext = new BasicHttpContext();
+                    httpPost.setEntity(multipartContent);
+                    HttpResponse response = httpClient.execute(httpPost,httpContext);
                     HttpEntity httpEntity = response.getEntity();
                     is = httpEntity.getContent();
+
 
                 }
                  catch (UnsupportedEncodingException e) {
@@ -699,18 +780,25 @@ public class PhotoController {
                 } catch (Exception e) {
                     Log.e("JSON Parser", "Error parsing data " + e.toString());
                 }
-                iter++;
-                publishProgress(iter);
+                iter[0]++;
+
 
             }
             // Return JSON String
             return jObj;
 
         }
+        @Override
+        protected void onPreExecute()
+        {
+
+            Log.d("Upload/"," Uploading Picture...");
+
+        }
 
         @Override
         protected void onProgressUpdate(Integer... progress) {
-            Log.d("Uploaded", "photo #" + progress[0]);
+            Log.d("Uploaded", "photo #" + progress[1] + " done "+progress[0]+"%");
         }
 
         @Override
@@ -749,4 +837,71 @@ public class PhotoController {
 
     }
 
+    interface ProgressListener
+    {
+        void transferred(long num);
+    }
+
+    private static class MultiPartEntityMod extends MultipartEntity
+    {
+
+        private final ProgressListener listener;
+
+        public MultiPartEntityMod(final ProgressListener listener)
+        {
+            super();
+            this.listener = listener;
+        }
+
+        public MultiPartEntityMod(final HttpMultipartMode mode, final ProgressListener listener)
+        {
+            super(mode);
+            this.listener = listener;
+        }
+
+        public MultiPartEntityMod(HttpMultipartMode mode, final String boundary, final Charset charset, final ProgressListener listener)
+        {
+            super(mode, boundary, charset);
+            this.listener = listener;
+        }
+
+        @Override
+        public void writeTo(final OutputStream outstream) throws IOException
+        {
+            super.writeTo(new CountingOutputStream(outstream, this.listener));
+        }
+
+
+
+        public  class CountingOutputStream extends FilterOutputStream
+        {
+
+            private final ProgressListener listener;
+            private long transferred;
+
+            public CountingOutputStream(final OutputStream out, final ProgressListener listener)
+            {
+                super(out);
+                this.listener = listener;
+                this.transferred = 0;
+            }
+
+            public void write(byte[] b, int off, int len) throws IOException
+            {
+                out.write(b, off, len);
+                this.transferred += len;
+                this.listener.transferred(this.transferred);
+            }
+
+            public void write(int b) throws IOException
+            {
+                out.write(b);
+                this.transferred++;
+                this.listener.transferred(this.transferred);
+            }
+        }
+    }
+
 }
+
+

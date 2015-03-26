@@ -5,6 +5,9 @@ import com.android.volley.ParseError;
 import com.android.volley.Response;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.inject.Binder;
+import com.google.inject.Inject;
+import com.google.inject.Module;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,12 +31,12 @@ import java.io.UnsupportedEncodingException;
 
 
 
-public class PARequest extends JsonObjectRequest {
+public class PARequest extends JsonObjectRequest implements Module {
 
     JSONObject mResponse;
     PARequestListener requestListener;
 
-
+    @Inject
     public PARequest(int method, String url, JSONObject jsonRequest, PARequestListener listener) {
 
         super(method, url, jsonRequest, listener, listener);
@@ -46,9 +49,10 @@ public class PARequest extends JsonObjectRequest {
     @Override
     protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
         try {
-            String jsonString =
-                    new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+            String jsonString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+
             this.mResponse = new JSONObject(jsonString);
+
             return Response.success(new JSONObject(jsonString), HttpHeaderParser.parseCacheHeaders(response));
         } catch (UnsupportedEncodingException e) {
             return Response.error(new ParseError(e));
@@ -61,6 +65,12 @@ public class PARequest extends JsonObjectRequest {
     @Override
     protected void deliverResponse(JSONObject response) {
         this.requestListener.onResponse(response);
+    }
+
+    @Override
+    public void configure(Binder binder) {
+
+
     }
 
 
