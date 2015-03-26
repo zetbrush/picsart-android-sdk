@@ -84,7 +84,7 @@ public class Comment {
     @Override
     public String toString() {
 
-        return this.getText() + " " + this.getId();
+        return this.getText() + " ";
     }
 
 

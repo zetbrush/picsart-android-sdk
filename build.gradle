@@ -13,13 +13,6 @@ buildscript {
 }
 
 
-project.tasks.withType(JavaCompile) { task ->
-    options.compilerArgs << "-AguiceAnnotationDatabasePackageName=com.android.volley"
-
-    options.compilerArgs << "-AguiceAnnotationDatabasePackageName=pArtapibeta"
-
-}
-
 
 allprojects {
     repositories {

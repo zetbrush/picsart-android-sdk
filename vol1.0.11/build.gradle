@@ -15,7 +15,6 @@ buildscript {
     }
 }
 
-
 apply plugin: 'com.android.library'
 
 android {

@@ -160,11 +160,7 @@ public class BasicNetwork implements Network {
                 		statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
                 	VolleyLog.e("Request at %s has been redirected to %s", request.getOriginUrl(), request.getUrl());
                 } else {
-
                 	VolleyLog.e("Unexpected response code %d for %s", statusCode, request.getUrl());
-                    return new NetworkResponse(statusCode, responseContents,
-                            responseHeaders, false, SystemClock.elapsedRealtime() - requestStart);
-
                 }
                 if (responseContents != null) {
                     networkResponse = new NetworkResponse(statusCode, responseContents,

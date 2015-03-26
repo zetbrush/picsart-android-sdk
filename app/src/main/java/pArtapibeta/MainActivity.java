@@ -19,46 +19,26 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
-
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 import imageDLUtils.ImageLoader;
-import roboguice.activity.RoboActivity;
-import roboguice.config.DefaultRoboModule;
-import roboguice.event.EventListener;
-import roboguice.event.EventManager;
-import roboguice.event.Observes;
-import roboguice.inject.ContentView;
-import roboguice.inject.InjectView;
 
-@ContentView(R.layout.activity_main)
-public class MainActivity extends RoboActivity {
-    /*static {
-        RoboGuice.setUseAnnotationDatabases(false);
-    }*/
 
+public class MainActivity extends Activity {
+
+    static LinkedList<Photo> photoList = null;
     private static Context context;
-    ProgressDialog pDialog;
-    SharedPreferences pref;
-
     WebView web;
-    @Named(DefaultRoboModule.GLOBAL_EVENT_MANAGER_NAME)
-    @Inject EventManager eventManager;
-
-
-
-
-    @Inject PhotoController pctr;
-    @Inject EventManager locEventManager;
-    @InjectView(R.id.auth) Button auth;
-    @InjectView (R.id.Access) TextView Access;
-    @InjectView (R.id.testCall) Button testcallBtt;
-
+    Button auth;
+    SharedPreferences pref;
+    TextView Access;
+    ProgressDialog pDialog;
+    Button testcallBtt;
     static String token;
     static int[] counter = new int[1];
+
 
     public static Context getAppContext() {
         return context;
@@ -71,11 +51,11 @@ public class MainActivity extends RoboActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        testcallBtt = (Button) findViewById(R.id.testCall);
 
-        // setContentView(R.layout.activity_main);
-        // testcallBtt = (Button) findViewById(R.id.testCall);
-        // Access = (TextView) findViewById(R.id.Access);
-        // auth = (Button) findViewById(R.id.auth);
+        Access = (TextView) findViewById(R.id.Access);
+        auth = (Button) findViewById(R.id.auth);
         MainActivity.context = this.getApplicationContext();
         try {
             pref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
@@ -84,19 +64,6 @@ public class MainActivity extends RoboActivity {
         } catch (Exception c) {
             Log.i("ERROR Loading Token ", ": no token is persist ");
         }
-
-
-
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-        initing();
-
-    }
-
-    public void initing(){
 
         auth.setOnClickListener(new View.OnClickListener() {
             Dialog authDialog;
@@ -198,8 +165,6 @@ public class MainActivity extends RoboActivity {
 
                 });
 
-
-
                 String authURL = PicsArtConst.OAUTH_URL + "?redirect_uri=" + PicsArtConst.REDIRECT_URI + "&response_type=code&client_id=" + PicsArtConst.CLIENT_ID;
                 String tokenURL = PicsArtConst.TOKEN_URL + "?client_id=" + PicsArtConst.CLIENT_ID + "&client_secret=" + PicsArtConst.CLIENT_SECRET + "&redirect_uri=" + PicsArtConst.REDIRECT_URI + "&grant_type=authorization_code";
 
@@ -225,58 +190,8 @@ public class MainActivity extends RoboActivity {
         }
     }
 
-
-    EventListener comList = new EventListener<PEvent>() {
-
-        @Override
-        public void onEvent(PEvent pEvent) {
-            Log.d("Observ PEvent ", "Code "+pEvent.getCode()+ "  Message "+pEvent.getMsg());
-
-
-
-        }
-
-    };
-
-    EventListener comList2 = new EventListener<PACommentEvent>() {
-
-        @Override
-        public void onEvent(PACommentEvent pEvent) {
-            Log.d("Observ comList2", "Code "+pEvent.getCode()+ "  Message "+pEvent.getMsg());
-
-
-
-        }
-
-    };
-
-
-
-
-     public void reqListener(@Observes PACommentEvent evnt){
-
-        Log.d("Observ PACommentEvent", "Code "+evnt.getCode()+ "  Message "+evnt.getMsg() + " Index " + evnt.getIndex());
-
-    }
-
-
-    public void eventListener2(@Observes PAEvent evnt){
-
-        Log.d("Listener2", "Code "+evnt.getCode()+ "  Message "+evnt.getMsg());
-
-    }
-
-
-
-
-
-
-
     public void onTestCallClick(View v) {
 
-
-        eventManager.registerObserver(PAEvent.class,comList);
-        eventManager.registerObserver(PACommentEvent.class,comList2);
 
 
         final ImageView im1 = (ImageView) findViewById(R.id.img1);
@@ -329,12 +244,11 @@ public class MainActivity extends RoboActivity {
         ///Example  uploading photo to account/////
 
         PhotoController pccc = new PhotoController(getAppContext(),token);
-        Photo toUpload = new Photo(Photo.IS.GENERAL);
+        Photo toUpload = new Photo(Photo.IS.AVATAR);
         toUpload.setLocation(new Location("poxoooc", "Qaxaaaq", "Plac@@@", "State@@", "Zipcod@@", "Armenia", new ArrayList<>(Arrays.asList(45.0, 37.0))));
         toUpload.setTitle("picsarttt");
         toUpload.setTags(new ArrayList<>(Arrays.asList("ntag1", "nag2", "ntag3")));
-        toUpload.setPath("/storage/removable/sdcard1/DCIM/100ANDRO/DSC_0009.jpg");
-        toUpload.setId("164458028001202");
+        toUpload.setPath("/storage/removable/sdcard1/DCIM/100ANDRO/DSC_0025.jpg");
         toUpload.setMature(false);
         toUpload.set_public(true);
        // PhotoController.uploadPhoto(toUpload);
@@ -354,8 +268,6 @@ public class MainActivity extends RoboActivity {
 
         PhotoController.setSt_listener(listenerOne);
         PhotoController.setSt_listener(listenerTwo);
-
-
 
         pc.setListener(new RequestListener(0) {
             @Override
@@ -383,7 +295,6 @@ public class MainActivity extends RoboActivity {
                 }
 
                 if (requmber == 301) {
-                   // eventManager.fire(new PAEvent(301,message));
 
                     Log.d("commEENT: ", pc.getCommentsLists().toString());
 
@@ -414,30 +325,21 @@ public class MainActivity extends RoboActivity {
         String[] phids = {"164548899000202", "164294945000202", "147971743000201"};
 
 
+      //-- pc.like("164458028001202");
+      //--  pc.unLike("164458028001202");
+      //--  pc.addComment("164458028001202",new Comment("blaaaFinalP",true));
+      //--  pc.updatePhotoData(phh);
+      //-- pc.deleteComment("163086538001202", "54f5bc8a7854e2ed4a000067");
+      //--  pc.requestCommentByid("164458028001202","550abcd81fa703694b0000e5");
 
-
-
-
-      //++ pc.requestCommentByid("164458028001202","550abcd81fa703694b0000e5");
       //+// pc.requestPhoto("164458028001202");
-       //pc.requestComments("163086538001202", 0, 4);
+      //+// pc.requestComments("164458028001202",1,1);
+      //+// pc.requestComments("163086538001202", 0, 4);
       //+/  pc.requestLikedUsers("164458028001202",0,Integer.MAX_VALUE);
-      //++  pc.addComment("164458028001202",new Comment("blaaaFinalP",true));
-      //++  pc.like("164458028001202");
-      //++  pc.unLike("164458028001202");
-
-      //--pc.updatePhotoData(phh);
-       //  pc.deleteComment("164458028001202", "550abcce556768804b00016d");
-
-      //-- pc.uploadPhoto(toUpload);
+      //+-/ pc.uploadPhoto(toUpload,ph2);
 
 
-
-        pctr.setToken(getAccessToken());
-        //pctr.uploadPhoto(toUpload);
-
-        pctr.requestComments("164458028001202",0,5);
-        /*for (int i = 0; i < 3; i++) {
+       /* for (int i = 0; i < 3; i++) {
             pc.requestPhoto(phids[i]);
         }*/
 
@@ -456,35 +358,33 @@ public class MainActivity extends RoboActivity {
         uc.setListener(new RequestListener(0) {
             @Override
             public void onRequestReady(int requmber, String message) {
-                    if(requmber==207) {
-                        for (int i = 0; i < uc.getPhoto().size(); i++) {
 
-                            Log.d("PhotoResponse", uc.getPhoto().get(i).getId());
-                        }
-                    }
+                for (int i = 0; i < uc.getUserLikedPhotos().size(); i++) {
+
+                    Log.d("PhotoResponse", uc.getUserLikedPhotos().get(i).getId());
+                }
 
             }
         });
 
-        //uc.requestLikedPhotos("me",2,1);
-       // uc.requestUserPhotos("me",0,60);
+        uc.requestLikedPhotos("me",2,1);
 
-        Photo ph2 = new Photo(Photo.IS.GENERAL);
+        Photo ph2 = new Photo(Photo.IS.COVER);
         //ph2.setTitle("blaTitle");
         ph2.set_public(Boolean.TRUE);
         ph2.setPath("/storage/removable/sdcard1/DCIM/100ANDRO/DSC_0015.jpg");
 
 
-          // PhotoControllerTests.testDeleteComment("164458028001202", "550abcce556768804b00016d",token);
+
+
+
           // PhotoControllerTests.testUploadImage(token, ph2);
-          // PhotoControllerTests.testUpdatePhotoData(token, toUpload);
-          // PhotoController.uploadPhoto();
+          // PhotoController.updatePhotoData(ph2);
           // PhotoControllerTests.testRequestPhoto("163086538001202", token);
           // PhotoControllerTests.testLike("163086538001202", token);
           // PhotoControllerTests.testUnLike("163086538001202",token);
           // PhotoControllerTests.testAddComment("163086538001202","blaaaa",token);
 
-          //  pc.updatePhotoData(toUpload);
 
         final PhotoController pc3 = new PhotoController(getAppContext(),token);
       // pc3.requestLikedUsers("163086538001202",0,50);
