@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">ClientApp For PicsArt</string>
+
+    <string name="action_settings">Settings</string>
+</resources>

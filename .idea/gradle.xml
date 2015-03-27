@@ -9,6 +9,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/clientapp" />
             <option value="$PROJECT_DIR$/vol1.0.11" />
           </set>
         </option>

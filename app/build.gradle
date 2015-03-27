@@ -1,4 +1,8 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
+
+
+
+
 
 android {
     compileSdkVersion 21
@@ -13,11 +17,12 @@ android {
         exclude 'META-INF/DEPENDENCIES'
     }
     defaultConfig {
-        applicationId "test.api.picsart.com.picsart_api_test"
+        //applicationId "test.api.picsart.com.picsart_api"
         minSdkVersion 16
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -26,13 +31,66 @@ android {
         }
     }
 }
-project.tasks.withType(JavaCompile) { task ->
 
-    options.compilerArgs << "-AguiceAnnotationDatabasePackageName=pArtapibeta"
-
-}
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:21.0.2'
+    //compile 'com.android.support:appcompat-v7:21.0.2'
     compile project(':vol1.0.11')
+
+
 }
+
+android.libraryVariants.all { variant ->
+    task("generate${variant.name}Javadoc", type: Javadoc) {
+        description "Generates Javadoc for $variant.name."
+        source = variant.javaCompile.source
+        ext.androidJar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
+        classpath = files(variant.javaCompile.classpath.files) + files(ext.androidJar)
+    }
+
+    task("javadoc${variant.name}", type: Jar) {
+        classifier = "javadoc"
+        description "Bundles Javadoc into a JAR file for $variant.name."
+        from tasks["generate${variant.name}Javadoc"]
+
+    }
+
+    task("jar${variant.name}", type: Jar) {
+        description "Bundles compiled .class files into a JAR file for $variant.name."
+        dependsOn variant.javaCompile
+        from variant.javaCompile.destinationDir
+        exclude '**//**//*R.class', '**//**//*R$*.class', '**//**//*R.html', '**//**//*R.*.html'
+    }
+
+/*task jarTask(type: Jar) {
+    baseName="picsArt-SDK-android-1.0"
+    from 'src/main/java'
+}
+
+task createJarWithDependencies(type: Jar) {
+    baseName = "picsArt-SDK-android-1.0-with-dependencies"
+
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+
+    }
+
+    with jarTask
+}
+
+configurations {
+    jarConfiguration
+}
+
+artifacts {
+    jarConfiguration jarTask
+}*/
+
+}
+
+
+
+
+
