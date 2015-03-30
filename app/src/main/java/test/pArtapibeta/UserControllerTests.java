@@ -1,21 +1,30 @@
 package test.pArtapibeta;
 
+import android.content.Context;
 import android.util.Log;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import pArtapibeta.AccessToken;
 import pArtapibeta.Main;
 import pArtapibeta.RequestListener;
 import pArtapibeta.UserController;
 
 
+/**
+ * This class consists exclusively test methods, that operate on making
+ * requests and asserting for expectation.
+ *
+ * <p> If testMethod fails exception with message will logged</p>
+ *
+ * <p>This class is a member of the
+ * <a href="www.picsart.com">
+ * </a>.
+ *
+ */
 public class UserControllerTests {
 
 
-    //hbgdsfaklgjk;dg
-    public static final String MY_LOGS = "My_Logs";
     public static final String ERROR = "error";
     public static final String CONNECTION_ERROR = "Connection Error";
     public static final String RESPONSE_ERROR = "Response Error";
@@ -26,8 +35,8 @@ public class UserControllerTests {
      * @param accessToken Access Token
      */
     @Test(expected = AssertionError.class)
-    public static void testUserProfile(String accessToken) {
-        final UserController userController = new UserController(accessToken, Main.getAppContext());
+    public static void testUserProfile(String accessToken, Context context) {
+        final UserController userController = new UserController(accessToken, context);
         userController.setListener(new RequestListener(0) {
             @Override
             public void onRequestReady(int requmber, String msg) {
@@ -51,8 +60,8 @@ public class UserControllerTests {
      * @param accessToken Access Token
      */
     @Test(expected = AssertionError.class)
-    public static void testUserProfile(String accessToken, String userId) {
-        final UserController userController = new UserController(accessToken, Main.getAppContext());
+    public static void testUserProfile(String accessToken, String userId, Context context) {
+        final UserController userController = new UserController(accessToken, context);
         userController.setListener(new RequestListener(0) {
             @Override
             public void onRequestReady(int requmber, String msg) {
@@ -75,8 +84,8 @@ public class UserControllerTests {
      * @param accessToken Access Token
      */
     @Test(expected = AssertionError.class)
-    public static void testUserFollowers(String accessToken,String userId) {
-        final UserController userController = new UserController(accessToken, Main.getAppContext());
+    public static void testUserFollowers(String accessToken,String userId, Context context) {
+        final UserController userController = new UserController(accessToken, context);
         userController.setListener(new RequestListener(0) {
             @Override
             public void onRequestReady(int requmber, String msg) {
@@ -99,8 +108,8 @@ public class UserControllerTests {
      * @param accessToken Access Token
      */
     @Test(expected = AssertionError.class)
-    public static void testUserFollowing(String accessToken,String userId) {
-        final UserController userController = new UserController(accessToken, Main.getAppContext());
+    public static void testUserFollowing(String accessToken,String userId, Context context) {
+        final UserController userController = new UserController(accessToken, context);
         userController.setListener(new RequestListener(0) {
             @Override
             public void onRequestReady(int requmber, String msg) {
@@ -123,8 +132,8 @@ public class UserControllerTests {
      * @param accessToken Access Token
      */
     @Test(expected = AssertionError.class)
-    public static void testUserLikedPhotos(String accessToken,String userId) {
-        final UserController userController = new UserController(accessToken, Main.getAppContext());
+    public static void testUserLikedPhotos(String accessToken,String userId, Context context) {
+        final UserController userController = new UserController(accessToken, context);
         userController.setListener(new RequestListener(0) {
             @Override
             public void onRequestReady(int requmber, String msg) {
@@ -144,12 +153,11 @@ public class UserControllerTests {
     /**
      * Testing User Blocked Users Request
      *
-     * @param userId ID of the User
      * @param accessToken Access Token
      */
     @Test(expected = AssertionError.class)
-    public static void testUserBlockedUsers(String accessToken,String userId) {
-        final UserController userController = new UserController(accessToken, Main.getAppContext());
+    public static void testUserBlockedUsers(String accessToken, Context context) {
+        final UserController userController = new UserController(accessToken, context);
         userController.setListener(new RequestListener(0) {
 
 
@@ -165,7 +173,7 @@ public class UserControllerTests {
             }
 
         });
-        userController.requestBlockedUsers(userId, 0, UserController.MAX_LIMIT);
+        userController.requestBlockedUsers( 0, UserController.MAX_LIMIT);
     }
 
     /**
@@ -175,8 +183,8 @@ public class UserControllerTests {
      * @param accessToken Access Token
      */
     @Test(expected = AssertionError.class)
-    public static void testUserPlaces(String accessToken,String userId) {
-        final UserController userController = new UserController(accessToken, Main.getAppContext());
+    public static void testUserPlaces(String accessToken,String userId, Context context) {
+        final UserController userController = new UserController(accessToken, context);
         userController.setListener(new RequestListener(0) {
 
             @Override
@@ -201,9 +209,9 @@ public class UserControllerTests {
      * @param accessToken Access Token
      */
     @Test(expected = AssertionError.class)
-    public static void testUserTags(String accessToken,String userId) {
+    public static void testUserTags(String accessToken,String userId, Context context) {
 
-        final UserController userController = new UserController(accessToken, Main.getAppContext());
+        final UserController userController = new UserController(accessToken, context);
         userController.setListener(new RequestListener(0) {
 
             @Override
@@ -228,9 +236,9 @@ public class UserControllerTests {
      * @param accessToken Access Token
      */
     @Test(expected = AssertionError.class)
-    public static void testUserPhotos(String accessToken,String userId) {
+    public static void testUserPhotos(String accessToken,String userId, Context context) {
 
-        final UserController userController = new UserController(accessToken, Main.getAppContext());
+        final UserController userController = new UserController(accessToken, context);
         userController.setListener(new RequestListener(0) {
 
             @Override
@@ -255,8 +263,8 @@ public class UserControllerTests {
      * @param accessToken Access Token
      */
     @Test(expected = AssertionError.class)
-    public static void testBlockUserWithIdRequest(String accessToken,String userId) {
-        final UserController userController = new UserController(accessToken, Main.getAppContext());
+    public static void testBlockUserWithIdRequest(String accessToken,String userId, Context context) {
+        final UserController userController = new UserController(accessToken, context);
         userController.setListener(new RequestListener(0) {
 
             @Override
@@ -279,8 +287,8 @@ public class UserControllerTests {
      * @param accessToken Access Token
      */
     @Test(expected = AssertionError.class)
-    public static void testUnblockUserWithIdRequest(String accessToken,String userId) {
-        final UserController userController = new UserController(accessToken, Main.getAppContext());
+    public static void testUnblockUserWithIdRequest(String accessToken,String userId, Context context) {
+        final UserController userController = new UserController(accessToken, context);
         userController.setListener(new RequestListener(0) {
 
             @Override
@@ -303,8 +311,8 @@ public class UserControllerTests {
      * @param accessToken Access Token
      */
     @Test(expected = AssertionError.class)
-    public static void testFollowUserWithIdRequest(String accessToken,String userId) {
-        final UserController userController = new UserController(accessToken, Main.getAppContext());
+    public static void testFollowUserWithIdRequest(String accessToken,String userId, Context context) {
+        final UserController userController = new UserController(accessToken, context);
         userController.setListener(new RequestListener(0) {
 
             @Override

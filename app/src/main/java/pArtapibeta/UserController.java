@@ -19,6 +19,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+/**
+ * This class consists exclusively of void methods, that operate on making
+ * requests and initializing specific field.
+ *
+ * <p>Some Getters of this class  throw a <tt>NullPointerException</tt>
+ * if the collections or class objects provided to them are null.
+ *
+ * <p>This class is a member of the
+ * <a href="www.picsart.com">
+ * </a>.
+ *
+ */
 public class UserController {
 
 
@@ -137,8 +149,6 @@ public class UserController {
         return blockedUsers;
     }
 
-    //hgfvsadgkfs
-
     /**
      * Request User Profile
      * <p/>
@@ -148,13 +158,7 @@ public class UserController {
     public synchronized void requestUser() {
 
         String url = PicsArtConst.SHOW_USER + PicsArtConst.ME_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
-        PARequest req = new PARequest(Request.Method.GET, url, null, null) {
-            @Override
-            public void deliverError(VolleyError error) {
-                super.deliverError(error);
-                listener.onRequestReady(301, error.toString());
-            }
-        };
+        PARequest req = new PARequest(Request.Method.GET, url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
@@ -186,13 +190,7 @@ public class UserController {
             return;
         }
         String url = PicsArtConst.SHOW_USER + id + PicsArtConst.TOKEN_PREFIX + accessToken;
-        PARequest req = new PARequest(Request.Method.GET, url, null, null) {
-            @Override
-            public void deliverError(VolleyError error) {
-                super.deliverError(error);
-                listener.onRequestReady(302, error.toString());
-            }
-        };
+        PARequest req = new PARequest(Request.Method.GET, url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
 
@@ -248,13 +246,7 @@ public class UserController {
         userFollowers = new ArrayList<>();
 
         String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.FOLLOWERS_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
-        PARequest req = new PARequest(Request.Method.GET, url, null, null) {
-            @Override
-            public void deliverError(VolleyError error) {
-                super.deliverError(error);
-                listener.onRequestReady(303, error.toString());
-            }
-        };
+        PARequest req = new PARequest(Request.Method.GET, url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
 
@@ -307,13 +299,7 @@ public class UserController {
         userFollowing = new ArrayList<>();
 
         String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.FOLLOWING_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
-        PARequest req = new PARequest(Request.Method.GET, url, null, null) {
-            @Override
-            public void deliverError(VolleyError error) {
-                super.deliverError(error);
-                listener.onRequestReady(304, error.toString());
-            }
-        };
+        PARequest req = new PARequest(Request.Method.GET, url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
 
@@ -365,13 +351,7 @@ public class UserController {
         userLikedPhotos = new ArrayList<>();
 
         String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.LIKED_PHOTOS_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
-        PARequest req = new PARequest(Request.Method.GET, url, null, null) {
-            @Override
-            public void deliverError(VolleyError error) {
-                super.deliverError(error);
-                listener.onRequestReady(305, error.toString());
-            }
-        };
+        PARequest req = new PARequest(Request.Method.GET, url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
@@ -395,43 +375,18 @@ public class UserController {
     /**
      * Requests Blocked Users of the User
      *
-     * @param user   user(to examine)
      * @param offset starting point
      * @param limit  limit of users
      *               <p/>
      *               onResponse  206 code will be called in listener
      *               onErrorResponse 306 code will be called in listener
      */
-    public synchronized void requestBlockedUsers(User user, final int offset, final int limit) {
-        requestBlockedUsers(user.getId().toString(), offset, limit);
-    }
+    public synchronized void requestBlockedUsers(final int offset, final int limit) {
 
-    /**
-     * Requests Blocked Users of the User
-     *
-     * @param userId ID of the User
-     * @param offset starting point
-     * @param limit  limit of users
-     *               <p/>
-     *               onResponse  206 code will be called in listener
-     *               onErrorResponse 306 code will be called in listener
-     */
-    public synchronized void requestBlockedUsers(String userId, final int offset, final int limit) {
-
-        if (userId == null || userId == EMPTY_ID) {
-            Log.e(ERROR, NULL_ID_ERROR);
-            return;
-        }
         blockedUsers = new ArrayList<>();
 
-        String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.BLOCKED_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
-        PARequest req = new PARequest(Request.Method.GET, url, null, null) {
-            @Override
-            public void deliverError(VolleyError error) {
-                super.deliverError(error);
-                listener.onRequestReady(306, error.toString());
-            }
-        };
+        String url = PicsArtConst.SHOW_USER + PicsArtConst.ME_PREFIX + PicsArtConst.BLOCKED_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
+        PARequest req = new PARequest(Request.Method.GET, url, null, null) ;
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
@@ -485,13 +440,7 @@ public class UserController {
         userPlaces = new ArrayList<>();
 
         String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.PLACES_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
-        PARequest req = new PARequest(Request.Method.GET, url, null, null) {
-            @Override
-            public void deliverError(VolleyError error) {
-                super.deliverError(error);
-                listener.onRequestReady(307, error.toString());
-            }
-        };
+        PARequest req = new PARequest(Request.Method.GET, url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
 
@@ -562,13 +511,7 @@ public class UserController {
         userTags = new ArrayList<>();
 
         String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.TAGS_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
-        PARequest req = new PARequest(Request.Method.GET, url, null, null) {
-            @Override
-            public void deliverError(VolleyError error) {
-                super.deliverError(error);
-                listener.onRequestReady(308, error.toString());
-            }
-        };
+        PARequest req = new PARequest(Request.Method.GET, url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
@@ -620,13 +563,7 @@ public class UserController {
         userPhotos = new ArrayList<>();
 
         String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.PHOTOS_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
-        PARequest req = new PARequest(Request.Method.GET, url, null, null) {
-            @Override
-            public void deliverError(VolleyError error) {
-                super.deliverError(error);
-                listener.onRequestReady(309, error.toString());
-            }
-        };
+        PARequest req = new PARequest(Request.Method.GET, url, null, null) ;
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
 
@@ -714,14 +651,7 @@ public class UserController {
         }
         String url = PicsArtConst.SHOW_USER + PicsArtConst.ME_PREFIX + PicsArtConst.BLOCKED_PREFIX + "/" + unblockingId + PicsArtConst.TOKEN_PREFIX + accessToken;
 
-        PARequest req = new PARequest(Request.Method.DELETE, url, null, null) {
-            @Override
-            public void deliverError(VolleyError error) {
-                super.deliverError(error);
-                listener.onRequestReady(311, error.toString());
-            }
-        };
-
+        PARequest req = new PARequest(Request.Method.DELETE, url, null, null) ;
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
@@ -785,7 +715,57 @@ public class UserController {
 
     }
 
+    /**
+     * Requests for Unfollowing User with ID
+     *
+     * @param unfollowingId ID of Unfollowing User
+     *                    <p/>
+     *                    onResponse 212 code will be called in listener
+     *                    onErrorResponse 312 code will be called in listener
+     */
+    public void unfollowUserWithID(final String unfollowingId) {
 
+        if (unfollowingId == null || unfollowingId == EMPTY_ID) {
+            Log.e(ERROR, NULL_ID_ERROR);
+            return;
+        }
+        String url = PicsArtConst.SHOW_USER + PicsArtConst.ME_PREFIX + PicsArtConst.FOLLOWING_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
+        StringRequest req = new StringRequest(Request.Method.POST, url,
+
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        listener.onRequestReady(213, response.toString());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        listener.onRequestReady(313, error.toString());
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("unfollowing_id", unfollowingId);
+                return params;
+
+            }
+
+        };
+
+        SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
+
+    }
+
+
+    /**
+     *     @param reqnumber    code to send
+     *     @param msg          message
+     *
+     *         Notifies all static listeners with given code and message
+     */
     public static void notifyListeners(int reqnumber, String msg) {
         for (RequestListener listeners : getSt_listeners_all()) {
             listeners.onRequestReady(reqnumber, msg);
@@ -793,6 +773,13 @@ public class UserController {
         }
     }
 
+    /**
+     *     @param listenerNumb listener nuber(ID) to notify
+     *     @param reqNumb       code to send
+     *     @param msg          message
+     *
+     *         Notifies specified static listener with given code and message
+     */
     public static void notifyListener(int listenerNumb, int reqNumb, String msg) {
         try {
             getSt_listener(listenerNumb).onRequestReady(reqNumb, msg);
