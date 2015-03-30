@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 
 import java.io.File;
@@ -48,11 +51,23 @@ public class ImageLoader {
         stub_id = loader;
         imageViews.put(imageView, url);
         Bitmap bitmap = memoryCache.get(url);
-        if (bitmap != null)
+        if (bitmap != null) {
+            imageView.setAnimation(null);
             imageView.setImageBitmap(bitmap);
+        }
         else {
             queuePhoto(url, imageView);
             imageView.setImageResource(loader);
+            RotateAnimation anim = new RotateAnimation(0.0f, 360.0f,
+                    Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
+                    0.5f);
+            anim.setInterpolator(new LinearInterpolator());
+            anim.setRepeatCount(Animation.INFINITE);
+            anim.setDuration(700);
+            imageView.startAnimation(anim);
+
+
+
         }
     }
 
@@ -170,10 +185,20 @@ public class ImageLoader {
         public void run() {
             if (imageViewReused(photoToLoad))
                 return;
-            if (bitmap != null)
+            if (bitmap != null) {
+                photoToLoad.imageView.setAnimation(null);
                 photoToLoad.imageView.setImageBitmap(bitmap);
-            else
+            }
+            else{
                 photoToLoad.imageView.setImageResource(stub_id);
+                RotateAnimation anim = new RotateAnimation(0.0f, 360.0f,
+                        Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
+                        0.5f);
+                anim.setInterpolator(new LinearInterpolator());
+                anim.setRepeatCount(Animation.INFINITE);
+                anim.setDuration(700);
+                photoToLoad.imageView.startAnimation(anim);
+            }
         }
     }
 

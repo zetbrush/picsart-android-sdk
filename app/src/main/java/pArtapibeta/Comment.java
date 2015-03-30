@@ -32,16 +32,22 @@ public class Comment {
     private String created;
 
     private Date creat;
-    @SerializedName("_id")
+    @SerializedName("id")
     @Expose
     private String id;
     @SerializedName("is_social")
     @Expose
     private boolean isSocial;
+    @SerializedName("user_id")
+    @Expose
+    private String commenterId;
 
 
     public String getId() {
         return id;
+    }
+    public String getCommenterId() {
+        return commenterId;
     }
 
     public Date getCreated() {
@@ -78,7 +84,7 @@ public class Comment {
     @Override
     public String toString() {
 
-        return this.getText() + " " + this.getCreated() + " " + this.getId();
+        return this.getText() + " ";
     }
 
 

@@ -2,56 +2,55 @@ package pArtapibeta;
 
 /**
  * Created by Arman on 2/9/15.
+ *
  */
 public class PicsArtConst {
 
-    public static final String CLIENT_ID = "testtesttest1180eODOG3cZUUK2BN";
-    public static final String CLIENT_SECRET = "o1LafsilY9ZmUq9Z8IKmJi4fgTTxwmSb";
+
+   public static final String CLIENT_ID ="armanClientdT762iHtILCtf7sl";
+   public static final String CLIENT_SECRET ="IBjgv1OKPADXX8b9KRJfJloc5n1AzDMb";
     public static final String REDIRECT_URI = "localhost";
     public static final String GRANT_TYPE = "authorization_code";
-    public static final String TOKEN_URL = "http://picsart.com/api/oauth2/token";
-    public static final String OAUTH_URL = "https://picsart.com/api/oauth2/authorize";
+    public static final String OAUTH_URL ="https://picsart.com/api/oauth2/authorize";
+    public static final String TOKEN_URL ="https://picsart.com/api/oauth2/token";
+    // public static final String TOKEN_URL = "http://stage.i.picsart.com/api/oauth2/token";
+    //public static final String OAUTH_URL = "http://stage.i.picsart.com/api/oauth2/authorize";
     public static final String TOKEN_URL_PREFIX = ".json?token=";
     public static final String MY_PROFILE_URL = "http://stage.i.picsart.com/api/users/me";
     public static final String USE_PROFILE_URL = "http://stage.i.picsart.com/api/users/";
-    public static final String Get_PHOTO_URL = "http://stage.i.picsart.com/api/photos/";
+    public static final String Get_PHOTO_URL = "http://picsart.com/api/photos/";
     public static final String Get_PHOTO_URL_PUB = "https://api.picsart.com/photos/show/";
     public static final String TOKEN_PREFIX = "?token=";
-
-    public static final String OFFSET = "&offset=";
-    public static final String LIMIT = "&limit=";
-
-    public static final String Photo_UPLOAD_URL = "https://stage.i.picsart.com/api/photos/";
-    public static final String GET_PHOTO_FILTER = "?filter=";
-    public static final String APIKEY = "cd371244-3887-405b-82d1-7aadcb2617b9";
-    // public static final String APIKEY = "d97fb4fa-63e5-4a59-a84a-5124376b11ed";
-    public static final String API_PREFX = "?key=";
-    public static final String PHOTO_UPLOAD_URL = "https://api.picsart.com/photos/add.json";
-    public static final String PHOTO_COMMENT_URL = "https://api.picsart.com/photos/show/";
-    public static final String PHOTO_COVER_URL = "https://api.picsart.com/users/cover/add.json";
-    public static final String PHOTO_AVATAR_URL = "https://api.picsart.com/users/photo/add.json";
+    public static final String USER_URL_PATH = "http://picsart.com/api/users/";
 
     public static final String PHOTO_GENERAL_PREFIX = "http://picsart.com/api/photos/";
-    public static final String PHOTO_PRE_URL = "https://picsart.com/api/photos/";
+    public static final String OFFSET = "&offset=";
+    public static final String LIMIT = "&limit=";
+    public static final String Photo_UPLOAD_URL = "https://stage.i.picsart.com/api/photos/";
+    public static final String GET_PHOTO_FILTER = "?filter=";
+   // public static final String APIKEY = "cd371244-3887-405b-82d1-7aadcb2617b9";
+    public static final String APIKEY = "d97fb4fa-63e5-4a59-a84a-5124376b11ed";
+    public static final String API_PREFX = "?key=";
+    public static final String PHOTO_UPLOAD_URL = "https://picsart.com/api/photos";
+    public static final String PHOTO_COVER_ENDX = "/photos/cover";
+    public static final String PHOTO_AVATAR_ENDX = "/photos/avatar";
+
     public static final String PHOTO_COMMENTS_URL = "https://api.picsart.com/photos/comments/show/";
-    public static final String PHOTO_ADD_COMMENT_URL = "https://api.picsart.com/photos/comments/add/";
-    public static final String PHOTO_REMOVE_COMMENT_URL = "https://api.picsart.com/photos/comments/remove/";
+    public static final String PHOTO_ADD_COMMENT_URL = "/comments";
+    public static final String PHOTO_COMMENT_MIDLE = "/comments/";
 
-
-    public static final String PHOTO_LIKE_URL = "https://api.picsart.com/photos/likes/add/";
+    public static final String PHOTO_PRE_URL = "https://picsart.com/api/photos/";
+    public static final String PHOTO_LIKE_URL = "/likes";
     public static final String PHOTO_UNLIKE_URL = "https://api.picsart.com/photos/likes/remove/";
-    public static final String PHOTO_UPDATE_INFO_URL = "https://api.picsart.com/photos/update/";
+    public static final String PHOTO_UPDATE_INFO_URL = "https://api.picsart.com/photos/";
     public static final String PHOTO_SEARCH_URL = "https://api.picsart.com/photos/search.json";
     public static final String PHOTO_LIKED_USERS_URL = "https://api.picsart.com/photos/likes/show/";
     public static final String API_TEST_PREF = ".json?key=";
 
     public static final String GET_USER_PHOTOS_LIST = "http://stage.i.picsart.com/api/users/";
-
-    public static final String BLOCK_USER_WITH_ID = "https://api.picsart.com/blocks/add/";//161436357000102/blocks?token=";
-    //POST /users/{id}/blocks
+    public static final String BLOCK_USER_WITH_ID = "http://stage.i.picsart.com/api/users/161436357000102/";//161436357000102/blocks?token=";
     public static final String UNBLOCK_USER_WITH_ID = "http://stage.i.picsart.com/api/users/161436357000102/blocks/161263489000102?token=";
     public static final String FOLLOW_USER_WITH_ID = "http://stage.i.picsart.com/api/users/161436357000102/following?token=";
-
 
     public static final String SHOW_USER = "https://picsart.com/api/users/";
     //public static final String SHOW_USER_FOLLOWERS = "https://picsart.com/api/users/";
@@ -68,9 +67,9 @@ public class PicsArtConst {
     public static final String BLOCKED_PREFIX = "/blocks";
     //public static final String SHOW_USER_PHOTOS_LIST = "https://api.picsart.com/users/photos/show/";
     public static final String PHOTOS_PREFIX = "/photos";
+    public static final String DATE_FORMAT="yyyy-MM-dd'T'hh:mm:ss.SSS'X'";
 
-
-    public static final String[] paramsUserProfile =
+    public static final  String[] paramsUserProfile =
             new String[]{
                     "username",         //0
                     "name",             //1

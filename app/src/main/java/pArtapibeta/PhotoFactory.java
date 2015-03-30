@@ -76,14 +76,12 @@ public class PhotoFactory {
         if (offset < 0) offset = 0;
         if (limit < 1) limit = 1;
 
-
         try {
             JSONObject jsonObj = (JSONObject) obj;
             Gson gson = new Gson();
             JSONArray jarr=null;
             if(keyword!=null|| keyword!=""){
                 try{
-
                     jarr = new JSONArray(jsonObj.get(keyword).toString());
                 } catch (Exception e){ };
             }

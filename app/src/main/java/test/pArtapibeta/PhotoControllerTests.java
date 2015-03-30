@@ -5,6 +5,7 @@ import junit.framework.AssertionFailedError;
 
 import org.junit.Test;
 
+import pArtapibeta.Comment;
 import pArtapibeta.MainActivity;
 import pArtapibeta.Photo;
 import pArtapibeta.PhotoController;
@@ -25,6 +26,8 @@ import pArtapibeta.RequestListener;
 
 public class PhotoControllerTests  {
 
+
+
     @Test(expected=AssertionFailedError.class)
     public static void testRequestPhoto(String usid, String token) {
 
@@ -32,9 +35,9 @@ public class PhotoControllerTests  {
         pc.setListener(new RequestListener(1) {
             @Override
             public void onRequestReady(int requmber,String mmsg) {
-                Photo redPhto = pc.getPhoto();
-                Assert.assertNotSame("PhotoTest get Info --- FAILD || CONNECTION ERROR", 203, requmber);
-                Assert.assertFalse("PhotoTest get Info(error response)--- FAILD", mmsg.contains("error")|| redPhto==null);
+
+                Assert.assertNotSame("testRequestPhoto --- FAILD || CONNECTION ERROR", 203, requmber);
+                Assert.assertFalse("testRequestPhoto (error response)--- FAILD", mmsg.contains("error")|| pc.getPhoto()==null);
             }
         });
 
@@ -85,7 +88,7 @@ public class PhotoControllerTests  {
                 Assert.assertFalse("testAddComment --- FAILD || ERROR RESPONSE", mmsg.contains("error"));
             }
         });
-        pc.addComment(phid,comment);
+        pc.addComment(phid,new Comment(comment,true));
     }
 
 
@@ -121,17 +124,18 @@ public class PhotoControllerTests  {
 
 
     @Test(expected=AssertionFailedError.class)
-    public static  void testGetCommentById(String commentId, String token){
+    public static  void testGetCommentById(String photoId,String commentId, String token){
         final PhotoController pc = new PhotoController(MainActivity.getAppContext(), token);
         pc.setListener(new RequestListener(1) {
             @Override
             public void onRequestReady(int requmber,String mmsg) {
                 Assert.assertNotSame("testGetCommentById --- FAILD || CONNECTION ERROR", 903, requmber);
+
                 Assert.assertFalse("testGetCommentById --- FAILD || ERROR RESPONSE", mmsg.contains("error"));
                 Assert.assertNotNull("testGetCommentById --- FAILD || NULL",pc.getComment());
             }
         });
-        pc.requestCommentByid(commentId);
+        pc.requestCommentByid(photoId,commentId);
 
     }
 
