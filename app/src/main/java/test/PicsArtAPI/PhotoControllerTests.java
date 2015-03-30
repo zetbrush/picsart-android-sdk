@@ -1,4 +1,4 @@
-package test.PicsArtAPI;
+package test.picsartapi;
 
 import android.content.Context;
 
@@ -7,10 +7,11 @@ import junit.framework.AssertionFailedError;
 
 import org.junit.Test;
 
-import picsArtAPI.Comment;
-import picsArtAPI.Photo;
-import picsArtAPI.PhotoController;
-import picsArtAPI.RequestListener;
+import picsartapi.Comment;
+import picsartapi.Photo;
+import picsartapi.PhotoController;
+import picsartapi.RequestListener;
+
 
 /**
  * This class consists exclusively test methods, that operate on making
@@ -154,9 +155,9 @@ public class PhotoControllerTests  {
     }
 
     @Test(expected=AssertionFailedError.class)
-    public static  void testUploadImage(String token,Photo... photo){
+    public static  void testUploadImage(String token, Photo... photo){
        // final PhotoController pc = new PhotoController(MainActivity.getAppContext(), token);
-        PhotoController.setSt_listener(new RequestListener(123) {
+        PhotoController.resgisterListener(new RequestListener(123) {
             @Override
             public void onRequestReady(int requmber, String mmsg) {
                 Assert.assertSame("testUploadPhoto --- FAILD || " + mmsg, 101, requmber);
@@ -171,7 +172,7 @@ public class PhotoControllerTests  {
     @Test(expected=AssertionFailedError.class)
     public static  void testUpdatePhotoData(String token,Photo photo){
         // final PhotoController pc = new PhotoController(MainActivity.getAppContext(), token);
-        PhotoController.setSt_listener(new RequestListener(124) {
+        PhotoController.resgisterListener(new RequestListener(124) {
             @Override
             public void onRequestReady(int requmber, String mmsg) {
                 Assert.assertNotSame("testUpdatePhotoData --- FAILD || CONNECTION ERROR", 603, requmber);

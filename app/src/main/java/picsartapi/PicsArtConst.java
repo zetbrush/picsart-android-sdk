@@ -41,6 +41,7 @@ public class PicsArtConst {
     public static final String PHOTO_LIKE_URL = "/likes";
     public static final String API_TEST_PREF = ".json?key=";
 
+    public static final String ME_PREFIX = "me";
 
     public static final String SHOW_USER = "https://picsart.com/api/users/";
     public static final String FOLLOWERS_PREFIX = "/followers";
