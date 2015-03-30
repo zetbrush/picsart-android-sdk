@@ -8,13 +8,25 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-
+/**
+ * This class consists exclusively of parsing methods, that trying make User/ collection of User
+ * using gson reflection on class.
+ *
+ * <p>This class is a member of the
+ * <a href="www.picsart.com">
+ * </a>.
+ *
+ */
 public class UserFactory {
 
-
+    /**
+     * Tries to Parse Object to User
+     *
+     * @param object Object
+     * @return User
+     */
     public static User parseFrom(Object object) {
 
-        // try {
 
         JSONObject jsonObject = (JSONObject) object;
 
@@ -38,6 +50,14 @@ public class UserFactory {
 
 }
 
+    /**
+     * @param o  Object
+     * @param offset starting point (from)
+     * @param limit  limit of outcome
+     * @return ArrayList<User>
+     *
+     *  Tries to Parse Object to ArrayList of User instances
+     * */
     public static ArrayList<User> parseFromAsArray(Object o, int offset, int limit,String keyword) {
 
         ArrayList<User> userArrayList = new ArrayList<>();

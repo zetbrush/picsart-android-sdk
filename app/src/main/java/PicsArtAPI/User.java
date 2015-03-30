@@ -6,7 +6,17 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * This class serves as POJO
+ *
+ * <p>Some Getters of this class  throw a <tt>NullPointerException</tt>
+ * if the collections or class objects provided to them are null.
+ *
+ * <p>This class is a member of the
+ * <a href="www.picsart.com">
+ * </a>.
+ *
+ */
 public class User {
 
 
@@ -87,8 +97,6 @@ public class User {
     @Expose
     private Integer tagsCount;
 
-    public User(){
-    }
 
     public User(String id){
         this.id=Long.parseLong(id);
