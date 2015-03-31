@@ -1,4 +1,4 @@
-package picsartapi;
+package com.picsart.api;
 
 import com.google.gson.Gson;
 
@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * using gson reflection on class.
  *
  * This class is a member of the
- * "www.picsart.com"
+ * "www.com.picsart.com"
  *
  *
  */

@@ -1,4 +1,4 @@
-package picsartapi;
+package com.picsart.api;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -15,7 +15,7 @@ import com.android.volley.toolbox.Volley;
  * It hold all requests in one place.
  *
  * This class is a member of the
- * <a href="www.picsart.com">
+ * <a href="www.com.picsart.com">
  * </a>.
  *
  * @author  Arman Andreasyan 2/20/15

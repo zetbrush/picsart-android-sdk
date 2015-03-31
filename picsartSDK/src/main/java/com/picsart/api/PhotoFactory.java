@@ -1,7 +1,8 @@
-package picsartapi;
+package com.picsart.api;
 
 import android.util.Log;
 import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
  * This class consists exclusively of parsing methods, that trying make Photo/ collection of Photo
  * using gson reflection on class.
  *
- This class is a member of the  www.picsart.com
+ This class is a member of the  www.com.picsart.com
  *
  * @author  Arman Andreasyan 3/9/15
  */

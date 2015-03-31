@@ -1,4 +1,4 @@
-package picsartapi;
+package com.picsart.api;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
@@ -20,12 +20,11 @@ import java.io.UnsupportedEncodingException;
  * if the collections or class objects provided to them are null.
  *
  * <p>This class is a member of the
- * <a href="www.picsart.com">
+ * <a href="www.com.picsart.com">
  * </a>.
  *
  * @author  Arman Andreasyan 2/24/15
  */
-
 
 
 
@@ -71,7 +70,9 @@ public class PARequest extends JsonObjectRequest  {
     }
 
 
-    public static abstract class PARequestListener<T> implements Response.Listener, Response.ErrorListener {
+
+
+    protected static abstract class PARequestListener<T> implements Response.Listener, Response.ErrorListener {
 
     }
 

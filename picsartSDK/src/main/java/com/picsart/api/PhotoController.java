@@ -1,4 +1,4 @@
-package picsartapi;
+package com.picsart.api;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -49,7 +49,7 @@ import java.util.Map;
  * Some Getters of this class  throw a <tt>NullPointerException</tt>
  * if the collections or class objects provided to them are null.
  *
- * This class is a member of th "www.picsart.com".
+ * This class is a member of th "www.com.picsart.com".
  *
  * @author Arman Andreasyan
  */
@@ -67,7 +67,7 @@ public class PhotoController {
     private static volatile Comment _comment;
     private ArrayList<Comment> commentsLists;
     private ArrayList<User> photoLikedUsers;
-    private static ArrayList<RequestListener> st_listeners_all = new ArrayList<>();
+    private static ArrayList<RequestListener> stListeners = new ArrayList<>();
 
 
     // Getters and Setters for all fields //
@@ -101,10 +101,10 @@ public class PhotoController {
 
     public static RequestListener getRegisteredListener(int indexNumb) {
         int indx;
-        for (RequestListener listener : st_listeners_all)
+        for (RequestListener listener : stListeners)
             if (listener.getIndexOfListener() == indexNumb) {
-                indx = st_listeners_all.indexOf(listener);
-                return st_listeners_all.get(indx);
+                indx = stListeners.indexOf(listener);
+                return stListeners.get(indx);
             }
         return null;
     }
@@ -112,20 +112,20 @@ public class PhotoController {
     public static void resgisterListener(RequestListener st_listener) {
 
 
-        if (st_listeners_all.size() == 0) {
+        if (stListeners.size() == 0) {
             st_listener.setIndexInList(0);
-            st_listeners_all.add(st_listener);
+            stListeners.add(st_listener);
 
         } else {
             int index = st_listener.getIndexOfListener();
-            if (st_listeners_all.contains(st_listener) && st_listener.getIndexOfListener() == index) {
-                int indToChange = (st_listeners_all.indexOf(st_listener));
+            if (stListeners.contains(st_listener) && st_listener.getIndexOfListener() == index) {
+                int indToChange = (stListeners.indexOf(st_listener));
                 st_listener.setIndexInList(indToChange);
-                st_listeners_all.set(indToChange, st_listener);
-            } else if (!((st_listeners_all.contains(st_listener)))) {
-                int indxToput = st_listeners_all.size();
+                stListeners.set(indToChange, st_listener);
+            } else if (!((stListeners.contains(st_listener)))) {
+                int indxToput = stListeners.size();
                 st_listener.setIndexInList(indxToput);
-                st_listeners_all.add(st_listener);
+                stListeners.add(st_listener);
 
             }
 
@@ -134,11 +134,11 @@ public class PhotoController {
     }
 
     public static ArrayList<RequestListener> getListeners() {
-        return st_listeners_all;
+        return stListeners;
     }
 
     public static void registerListeners(ArrayList<RequestListener> st_listeners_all) {
-        PhotoController.st_listeners_all = st_listeners_all;
+        PhotoController.stListeners = st_listeners_all;
     }
 
     public Photo getPhoto() {
@@ -697,8 +697,8 @@ public class PhotoController {
                         }
                         if (ph.getTitle() != null)
                             multipartContent.addPart("title", new StringBody(ph.getTitle()));
-                        if (ph.get_public() != null)
-                            multipartContent.addPart("is_public", new StringBody(ph.get_public().toString()));
+                        if (ph.getIsPublic() != null)
+                            multipartContent.addPart("is_public", new StringBody(ph.getIsPublic().toString()));
                         if (ph.getMature() != null)
                             multipartContent.addPart("mature", new StringBody(ph.getMature().toString()));
                     }

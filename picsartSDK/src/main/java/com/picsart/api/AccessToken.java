@@ -1,4 +1,4 @@
-package picsartapi;
+package com.picsart.api;
 
 import android.content.Context;
 import android.util.Base64;
@@ -20,7 +20,7 @@ import java.util.Map;
  * Static listener is used to notify client.
  *
  * <p>This class is a member of the
- * <a href="www.picsart.com">
+ * <a href="www.com.picsart.com">
  * </a>.
  *
  * @author  Arman Andreasyan 3/9/15

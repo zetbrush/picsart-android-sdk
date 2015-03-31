@@ -1,1 +1,1 @@
-include ':app', ':vol1.0.11', ':clientapp'
+include ':picsartSDK', ':vol1.0.11', ':clientapp'

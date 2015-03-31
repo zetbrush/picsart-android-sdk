@@ -19,17 +19,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.picsart.api.AccessToken;
+import com.picsart.api.Location;
+import com.picsart.api.Photo;
+import com.picsart.api.PhotoController;
+import com.picsart.api.PicsArtConst;
+import com.picsart.api.RequestListener;
+import com.picsart.api.UserController;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import clieent.Utils_Image.ImageLoader;
-import picsartapi.AccessToken;
-import picsartapi.Location;
-import picsartapi.Photo;
-import picsartapi.PhotoController;
-import picsartapi.PicsArtConst;
-import picsartapi.RequestListener;
-import picsartapi.UserController;
 
 public class MainActivity extends Activity {
 
@@ -193,7 +194,7 @@ public class MainActivity extends Activity {
                 String tokenURL = PicsArtConst.TOKEN_URL + "?client_id=" + PicsArtConst.CLIENT_ID + "&client_secret=" + PicsArtConst.CLIENT_SECRET + "&redirect_uri=" + PicsArtConst.REDIRECT_URI + "&grant_type=authorization_code";
 
                 web.loadUrl(authURL);
-                // web.loadUrl("http://stage.i.picsart.com/api/oauth2/authorize?redirect_uri=localhost&response_type=code&client_id=armantestclient1nHhXPI9ZqwQA03XI");
+                // web.loadUrl("http://stage.i.com.picsart.com/api/oauth2/authorize?redirect_uri=localhost&response_type=code&client_id=armantestclient1nHhXPI9ZqwQA03XI");
                 authDialog.show();
                 authDialog.setTitle("Authorize PicsArt");
                 authDialog.setCancelable(true);
@@ -272,7 +273,7 @@ public class MainActivity extends Activity {
         toUpload.setPath("/storage/removable/sdcard1/DCIM/100ANDRO/DSC_0009.jpg");
         toUpload.setId("164458028001202");
         toUpload.setMature(false);
-        toUpload.set_public(true);
+        toUpload.setPublic(true);
          PhotoController.uploadPhoto(toUpload);
         // toUpload.setIsFor(Photo.IS.COVER);
         // PhotoController.uploadPhoto(toUpload);
@@ -388,7 +389,7 @@ public class MainActivity extends Activity {
 
         Photo ph2 = new Photo(Photo.IS.GENERAL);
         //ph2.setTitle("blaTitle");
-        ph2.set_public(Boolean.TRUE);
+        ph2.setPublic(Boolean.TRUE);
         ph2.setPath("/storage/removable/sdcard1/DCIM/100ANDRO/DSC_0015.jpg");
 
 
@@ -398,7 +399,7 @@ public class MainActivity extends Activity {
         // PhotoControllerTests.testRequestPhoto("163086538001202", token);
         // PhotoControllerTests.testLike("163086538001202", token);
         // PhotoControllerTests.testUnLike("163086538001202",token);
-        // PhotoControllerTests.testAddComment("163086538001202","blaaaa",token);
+        //PhotoControllerTests.testAddComment("163086538001202", "blaaaa", token,getAppContext());
 
         final PhotoController pc3 = new PhotoController(getAppContext(), token);
         // pc3.requestLikedUsers("163086538001202",0,50);

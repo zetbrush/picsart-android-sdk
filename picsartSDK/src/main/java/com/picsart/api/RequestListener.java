@@ -1,10 +1,10 @@
-package picsartapi;
+package com.picsart.api;
 
 /**
  * This abstract class serves as Listener for notification of responses,
  * It uses indexing for identification and accessibility.
  *
- *  This class is a member of the  www.picsart.com
+ *  This class is a member of the  www.com.picsart.com
  *
  * @author  Arman Andreasyan
  */

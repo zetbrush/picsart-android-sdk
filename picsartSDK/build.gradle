@@ -17,7 +17,7 @@ android {
         exclude 'META-INF/DEPENDENCIES'
     }
     defaultConfig {
-        //applicationId "test.api.picsart.com.picsart_api"
+        //applicationId "test.api.com.picsart.com.picsart_api"
         minSdkVersion 16
         targetSdkVersion 21
         versionCode 1
@@ -29,6 +29,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'test'
+
     }
 }
 

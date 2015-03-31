@@ -1,4 +1,4 @@
-package picsartapi;
+package com.picsart.api;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -19,7 +19,7 @@ import java.util.List;
  * It uses enum type IS to differentiate cover/profile/general types of pictures.
  *
  * <p>This class is a member of the
- * <a href="www.picsart.com">
+ * <a href="www.com.picsart.com">
  * </a>.
  *
  * @author  Arman Andreasyan 2/23/15
@@ -208,11 +208,11 @@ public class Photo {
         this.repostsCount = repostsCount;
     }
 
-    public Boolean get_public() {
+    public Boolean getIsPublic() {
         return _public;
     }
 
-    public void set_public(Boolean _public) {
+    public void setPublic(Boolean _public) {
         this._public = _public;
     }
 

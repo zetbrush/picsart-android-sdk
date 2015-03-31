@@ -1,4 +1,4 @@
-package picsartapi;
+package com.picsart.api;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -13,7 +13,7 @@ import java.util.List;
  * if the collections or class objects provided to them are null.
  *
  * <p>This class is a member of the
- * <a href="www.picsart.com">
+ * <a href="www.com.picsart.com">
  * </a>.
  *
  */
@@ -551,6 +551,7 @@ public class User {
 
     @Override
     public String toString() {
+
         if(getLocation()==null) {
             return "id: " + id + "\tname:  " + name + "\tusername:  " + username + "\tstatus:  " + status + "\tphoto:  " +
                     photo + "\tfollowing count:  " + followersCount + "\tfollowers count:  " + followersCount +

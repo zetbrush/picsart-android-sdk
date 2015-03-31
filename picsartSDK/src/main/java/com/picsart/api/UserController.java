@@ -1,4 +1,4 @@
-package picsartapi;
+package com.picsart.api;
 
 import android.content.Context;
 import android.util.Log;
@@ -25,7 +25,7 @@ import java.util.Map;
  * if the collections or class objects provided to them are null.
  *
  * This class is a member of the
- * www.picsart.com
+ * www.com.picsart.com
  *
  *
  */
@@ -45,7 +45,7 @@ public class UserController {
     public static final int MAX_LIMIT = Integer.MAX_VALUE;
 
     private Context ctx;
-    private picsartapi.RequestListener listener;
+    private RequestListener listener;
     private String accessToken;
 
     private User user;

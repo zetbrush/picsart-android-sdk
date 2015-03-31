@@ -1,4 +1,4 @@
-package picsartapi;
+package com.picsart.api;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -16,7 +16,7 @@ import java.util.List;
  * if the collections provided to them are null.
  *
  * <p>This class is a member of the
- * <a href="www.picsart.com">
+ * <a href="www.com.picsart.com">
  * </a>.
  *
  * @author  Arman Andreasyan
