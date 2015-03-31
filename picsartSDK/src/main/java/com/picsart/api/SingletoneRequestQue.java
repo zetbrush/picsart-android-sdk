@@ -15,7 +15,7 @@ import com.android.volley.toolbox.Volley;
  * It hold all requests in one place.
  *
  * This class is a member of the
- * <a href="www.com.picsart.com">
+ * <a href="www.picsart.com">
  * </a>.
  *
  * @author  Arman Andreasyan 2/20/15

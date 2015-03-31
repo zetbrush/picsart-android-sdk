@@ -113,6 +113,10 @@ public class Photo {
     IS isFor;
     private String path;
 
+    /**
+     * Used to differentiate Photo purpose.
+     *
+     * */
     public enum IS {AVATAR, COVER, GENERAL}
 
 

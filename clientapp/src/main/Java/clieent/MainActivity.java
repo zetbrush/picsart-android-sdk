@@ -40,7 +40,6 @@ public class MainActivity extends Activity {
     SharedPreferences pref;
 
     WebView web;
-    PhotoController pctr;
     Button auth;
     TextView Access;
     Button testcallBtt;
@@ -96,13 +95,11 @@ public class MainActivity extends Activity {
             public void onClick(View view) {
                 authDialog = new Dialog(MainActivity.this);
                 authDialog.setContentView(R.layout.auth_dialog);
-                // alert.setContentView(R.layout.auth_dialog);
-
                 web = (WebView) authDialog.findViewById(R.id.webv);
                 web.getSettings().setJavaScriptEnabled(true);
                 web.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
                 web.getSettings().setSupportMultipleWindows(true);
-                //web.setWebViewClient(new SomWebViewDefClient());
+
                 web.setWebViewClient(new WebViewClient() {
                     boolean authComplete = false;
                     Intent resultIntent = new Intent();
@@ -118,7 +115,7 @@ public class MainActivity extends Activity {
                     public void onPageStarted(WebView view, String url,
                                               Bitmap favicon) {
                         super.onPageStarted(view, url, favicon);
-                        // view.setWebChromeClient(new MyWebChromeClient());
+
                         authComplete = false;
                         pDialog = ProgressDialog.show(view.getContext(), "",
                                 "Connecting to " + " server", false);
@@ -150,16 +147,16 @@ public class MainActivity extends Activity {
                             edit.commit();
 
 
-                            // new TokenGet().execute();
-
                             String authCode = pref.getString("Code", "");
+
+
+
                             AccessToken.setListener(new RequestListener(1) {
                                 @Override
                                 public void onRequestReady(int requmber, String mmsg) {
                                     MainActivity.token = AccessToken.getAccessToken();
                                     MainActivity.token = mmsg;
                                     PhotoController.setAccessToken(mmsg);
-
                                     Log.d("Token is ready: ", MainActivity.token + "::::: as message " + mmsg);
                                     SharedPreferences.Editor edit = pref.edit();
                                     edit.putString("access_token", mmsg);
@@ -175,6 +172,7 @@ public class MainActivity extends Activity {
                                     Toast.LENGTH_LONG).show();
                             authDialog.dismiss();
                         } else if (url.contains("error=access_denied")) {
+
                             Log.i("", "ACCESS_DENIED_HERE");
                             resultIntent.putExtra("code", authCode);
                             authComplete = true;
@@ -190,11 +188,10 @@ public class MainActivity extends Activity {
                 });
 
 
-                String authURL = PicsArtConst.OAUTH_URL + "?redirect_uri=" + PicsArtConst.REDIRECT_URI + "&response_type=code&client_id=" + PicsArtConst.CLIENT_ID;
-                String tokenURL = PicsArtConst.TOKEN_URL + "?client_id=" + PicsArtConst.CLIENT_ID + "&client_secret=" + PicsArtConst.CLIENT_SECRET + "&redirect_uri=" + PicsArtConst.REDIRECT_URI + "&grant_type=authorization_code";
+            String authURL = PicsArtConst.OAUTH_URL + "?redirect_uri=" + PicsArtConst.REDIRECT_URI + "&response_type=code&client_id=" + PicsArtConst.CLIENT_ID;
+
 
                 web.loadUrl(authURL);
-                // web.loadUrl("http://stage.i.com.picsart.com/api/oauth2/authorize?redirect_uri=localhost&response_type=code&client_id=armantestclient1nHhXPI9ZqwQA03XI");
                 authDialog.show();
                 authDialog.setTitle("Authorize PicsArt");
                 authDialog.setCancelable(true);
@@ -223,10 +220,10 @@ public class MainActivity extends Activity {
         final ImageView im2 = (ImageView) findViewById(R.id.img2);
         final ImageView im3 = (ImageView) findViewById(R.id.img3);
 
-        counter[0] = 10;
+
         final ArrayList<Photo> tmpPh = new ArrayList<>();
 
-
+        counter[0] = 10;
         RequestListener listenerOne = new RequestListener(3333) {
             @Override
             public void onRequestReady(int requmber, String message) {
@@ -274,7 +271,8 @@ public class MainActivity extends Activity {
         toUpload.setId("164458028001202");
         toUpload.setMature(false);
         toUpload.setPublic(true);
-         PhotoController.uploadPhoto(toUpload);
+        // PhotoController.uploadPhoto(toUpload);
+
         // toUpload.setIsFor(Photo.IS.COVER);
         // PhotoController.uploadPhoto(toUpload);
 
@@ -341,25 +339,8 @@ public class MainActivity extends Activity {
         });
 
 
-        // pc.addComment("163773067002202","blabla  comment 2");
-        String[] phids = {"164548899000202", "164294945000202", "147971743000201"};
 
 
-        //++ pc.requestCommentByid("164458028001202","550abcd81fa703694b0000e5");
-        //++ pc.requestPhoto("164458028001202");
-        //++ pc.requestComments("163086538001202", 0, 4);
-        //++ pc.requestLikedUsers("165074146000202",0,Integer.MAX_VALUE);
-        //++ pc.addComment("164458028001202",new Comment("blaaaFinalP",true));
-        //++ pc.like("164458028001202");
-        //++ pc.unLike("164458028001202");
-
-        //++ pc.deleteComment("164458028001202", "550abcd4556768804b00016e");
-
-       // pc.uploadPhoto(toUpload);
-         //++pc.updatePhotoData(toUpload);
-        /*for (int i = 0; i < 3; i++) {
-            pc.requestPhoto(phids[i]);
-        }*/
 
 
         Photo phh = new Photo(Photo.IS.AVATAR);
@@ -384,11 +365,11 @@ public class MainActivity extends Activity {
             }
         });
 
-        //uc.requestLikedPhotos("me",2,1);
-        // uc.requestUserPhotos("me",0,60);
+         //uc.requestLikedPhotos("me",2,1);
+         // uc.requestUserPhotos("me",0,60);
 
         Photo ph2 = new Photo(Photo.IS.GENERAL);
-        //ph2.setTitle("blaTitle");
+        ph2.setTitle("blaTitle");
         ph2.setPublic(Boolean.TRUE);
         ph2.setPath("/storage/removable/sdcard1/DCIM/100ANDRO/DSC_0015.jpg");
 
@@ -401,8 +382,31 @@ public class MainActivity extends Activity {
         // PhotoControllerTests.testUnLike("163086538001202",token);
         //PhotoControllerTests.testAddComment("163086538001202", "blaaaa", token,getAppContext());
 
+
+        //++ pc.requestCommentByid("164458028001202","550abcd81fa703694b0000e5");
+        //++ pc.requestPhoto("164458028001202");
+        //++ pc.requestComments("163086538001202", 0, 4);
+        //++ pc.requestLikedUsers("165074146000202",0,Integer.MAX_VALUE);
+        //++ pc.addComment("164458028001202",new Comment("blaaaFinalP",true));
+        //++ pc.like("164458028001202");
+        //++ pc.unLike("164458028001202");
+
+        //++ pc.deleteComment("164458028001202", "550abcd4556768804b00016e");
+
+        // pc.uploadPhoto(toUpload);
+        //++pc.updatePhotoData(toUpload);
+
+        String[] phids = {"164548899000202", "164294945000202", "147971743000201"};
+
+
+        for (int i = 0; i < 3; i++) {
+            pc.requestPhoto(phids[i]);
+        }
+
+
         final PhotoController pc3 = new PhotoController(getAppContext(), token);
-        // pc3.requestLikedUsers("163086538001202",0,50);
+
+       // pc3.requestLikedUsers("163086538001202",0,50);
         pc3.setListener(new RequestListener(0) {
             @Override
             public void onRequestReady(int requmber, String message) {

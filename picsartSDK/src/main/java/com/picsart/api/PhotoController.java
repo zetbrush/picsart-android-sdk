@@ -49,7 +49,7 @@ import java.util.Map;
  * Some Getters of this class  throw a <tt>NullPointerException</tt>
  * if the collections or class objects provided to them are null.
  *
- * This class is a member of th "www.com.picsart.com".
+ * This class is a member of th www.picsart.com.
  *
  * @author Arman Andreasyan
  */
@@ -81,9 +81,6 @@ public class PhotoController {
         return commentsLists;
     }
 
-    public static void setToken(String token) {
-        PhotoController.token = token;
-    }
 
     public void setCommentsLists(ArrayList<Comment> commentList) {
         if (commentsLists == null) commentsLists = new ArrayList<>(commentList);

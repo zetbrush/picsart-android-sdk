@@ -25,7 +25,7 @@ import java.util.Map;
  * if the collections or class objects provided to them are null.
  *
  * This class is a member of the
- * www.com.picsart.com
+ * www.picsart.com
  *
  *
  */

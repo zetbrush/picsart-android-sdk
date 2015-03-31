@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * using gson reflection on class.
  *
  * This class is a member of the
- * "www.com.picsart.com"
+ * "www.picsart.com"
  *
  *
  */

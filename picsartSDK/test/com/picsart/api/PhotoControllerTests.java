@@ -11,9 +11,9 @@ import org.junit.Test;
 /**
  * This class consists exclusively test methods, that operate on making
  * requests and asserting for expectation.
- * <p/>
+ * <p>
  * If testMethod fails exception with message will logged
- * <p/>
+ * <p>
  * This class is a member of the www.com.picsart.com.
  *
  * @author Arman Andreasyan 3/9/15
@@ -26,7 +26,7 @@ public class PhotoControllerTests {
      * @param phID  photo ID
      * @param token OAuth 2.0 token
      * @param ctx   Context
-     *              <p/>
+     *              <p>
      *              Tests weather Photo is obtained.
      */
     @Test(expected = AssertionFailedError.class)
@@ -50,7 +50,7 @@ public class PhotoControllerTests {
      * @param phID  photo ID
      * @param token OAuth 2.0 token
      * @param ctx   Context
-     *              <p/>
+     *              <p>
      *              Tests if like was successfull.
      */
     @Test(expected = AssertionFailedError.class)
@@ -73,7 +73,7 @@ public class PhotoControllerTests {
      * @param phID  photo ID
      * @param token OAuth 2.0 token
      * @param ctx   Context
-     *              <p/>
+     *              <p>
      *              tests weather Photo is unliked.
      */
     @Test(expected = AssertionFailedError.class)
@@ -99,7 +99,7 @@ public class PhotoControllerTests {
      * @param comment commenting text
      * @param token   OAuth 2.0 token
      * @param ctx     Context
-     *                <p/>
+     *                <p>
      *                Tests weather commenting is successfull.
      */
     @Test(expected = AssertionFailedError.class)
@@ -122,7 +122,7 @@ public class PhotoControllerTests {
      * @param commentId comment ID
      * @param token     OAuth 2.0 token
      * @param ctx       Context
-     *                  <p/>
+     *                  <p>
      *                  Tests weather deletion of comment is successfull.
      */
     @Test(expected = AssertionFailedError.class)
@@ -146,7 +146,7 @@ public class PhotoControllerTests {
      * @param offset offset for result
      * @param token  OAuth 2.0 token
      * @param ctx    Context
-     *               <p/>
+     *               <p>
      *               Tests weather requested comments are obtained.
      */
     @Test(expected = AssertionFailedError.class)
@@ -170,7 +170,7 @@ public class PhotoControllerTests {
      * @param commentId ID of comment
      * @param token     OAuth 2.0 token
      * @param ctx       Context
-     *                  <p/>
+     *                  <p>
      *                  Tests weather requested concrete comment is obtained.
      */
     @Test(expected = AssertionFailedError.class)
@@ -196,7 +196,7 @@ public class PhotoControllerTests {
      * @param offset offset for result
      * @param token  OAuth 2.0 token
      * @param ctx    Context
-     *               <p/>
+     *               <p>
      *               Tests weather Liked Users are obtained successfully.
      */
     @Test(expected = AssertionFailedError.class)
@@ -216,7 +216,7 @@ public class PhotoControllerTests {
     /**
      * @param photo Photo's to be uploaded
      * @param token OAuth 2.0 token
-     *              <p/>
+     *              <p>
      *              Tests weather given Photos are uploaded successfully.
      */
 
@@ -239,7 +239,7 @@ public class PhotoControllerTests {
     /**
      * @param photo Photo to be updated
      * @param token OAuth 2.0 token
-     *              <p/>
+     *              <p>
      *              Tests weather Photo's info is updated successfully.
      */
     @Test(expected = AssertionFailedError.class)
