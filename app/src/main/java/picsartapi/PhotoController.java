@@ -53,9 +53,7 @@ import java.util.Map;
  * Some Getters of this class  throw a <tt>NullPointerException</tt>
  * if the collections or class objects provided to them are null.
  *
- * This class is a member of the
- * <a href="www.picsart.com">
- * </a>.
+ * This class is a member of th "www.picsart.com".
  *
  * @author Arman Andreasyan
  */

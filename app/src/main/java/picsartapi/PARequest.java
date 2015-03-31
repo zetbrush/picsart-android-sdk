@@ -3,6 +3,7 @@ package picsartapi;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 
@@ -64,8 +65,15 @@ public class PARequest extends JsonObjectRequest  {
         this.requestListener.onResponse(response);
     }
 
+    @Override
+    public void deliverError(VolleyError e){
+        this.requestListener.onErrorResponse(e);
+    }
+
 
     public static abstract class PARequestListener<T> implements Response.Listener, Response.ErrorListener {
 
     }
+
+
 }
