@@ -1,6 +1,7 @@
 package com.picsart.api;
 
 import android.content.Context;
+import android.util.Log;
 
 import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
@@ -39,6 +40,7 @@ public class PhotoControllerTests {
 
                 Assert.assertNotSame("testRequestPhoto --- FAILD || CONNECTION ERROR", 203, requmber);
                 Assert.assertFalse("testRequestPhoto (error response)--- FAILD", mmsg.contains("error") || pc.getPhoto() == null);
+                Log.i("RequestPhoto", "Test has successfully passed");
             }
         });
 
@@ -60,8 +62,9 @@ public class PhotoControllerTests {
         pc.setListener(new RequestListener(1) {
             @Override
             public void onRequestReady(int requmber, String mmsg) {
-                Assert.assertNotSame(" testLike --- FAILD || CONNECTION ERROR", 703, requmber);
-                Assert.assertFalse("testLike --- FAILD || ERROR RESPONSE", mmsg.contains("error"));
+                Assert.assertNotSame(" testLike --- FAILED || CONNECTION ERROR", 703, requmber);
+                Assert.assertFalse("testLike --- FAILED || ERROR RESPONSE", mmsg.contains("error"));
+                Log.i("Like ", "Test has successfully passed");
             }
         });
         pc.like(phID);
@@ -84,8 +87,9 @@ public class PhotoControllerTests {
             @Override
             public void onRequestReady(int requmber, String mmsg) {
 
-                Assert.assertNotSame("testUnLike --- FAILD || CONNECTION ERROR", 803, requmber);
-                Assert.assertFalse("testUnLike --- FAILD || ERROR RESPONSE", mmsg.contains("error"));
+                Assert.assertNotSame("testUnLike --- FAILED || CONNECTION ERROR", 803, requmber);
+                Assert.assertFalse("testUnLike --- FAILED || ERROR RESPONSE", mmsg.contains("error"));
+                Log.i("UnLike", "Test has successfully passed");
 
             }
         });
@@ -109,8 +113,9 @@ public class PhotoControllerTests {
         pc.setListener(new RequestListener(1) {
             @Override
             public void onRequestReady(int requmber, String mmsg) {
-                Assert.assertNotSame("testAddComment --- FAILD || CONNECTION ERROR", 403, requmber);
-                Assert.assertFalse("testAddComment --- FAILD || ERROR RESPONSE", mmsg.contains("error"));
+                Assert.assertNotSame("testAddComment --- FAILED || CONNECTION ERROR", 403, requmber);
+                Assert.assertFalse("testAddComment --- FAILED || ERROR RESPONSE", mmsg.contains("error"));
+                Log.i("AddComment", "Test has successfully passed");
             }
         });
         pc.addComment(phID, new Comment(comment, true));
@@ -131,8 +136,9 @@ public class PhotoControllerTests {
         pc.setListener(new RequestListener(1) {
             @Override
             public void onRequestReady(int requmber, String mmsg) {
-                Assert.assertNotSame("testDeleteComment --- FAILD || CONNECTION ERROR", 503, requmber);
-                Assert.assertFalse("testDeleteComment --- FAILD || ERROR RESPONSE", mmsg.contains("error"));
+                Assert.assertNotSame("testDeleteComment --- FAILED || CONNECTION ERROR", 503, requmber);
+                Assert.assertFalse("testDeleteComment --- FAILED || ERROR RESPONSE", mmsg.contains("error"));
+                Log.i("Del Comment", "Test has successfully passed");
             }
         });
         pc.deleteComment(phID, commentId);
@@ -155,9 +161,9 @@ public class PhotoControllerTests {
         pc.setListener(new RequestListener(1) {
             @Override
             public void onRequestReady(int requmber, String mmsg) {
-                Assert.assertNotSame("testRequestComments --- FAILD || CONNECTION ERROR", 303, requmber);
-                Assert.assertFalse("testRequestComments --- FAILD || ERROR RESPONSE", mmsg.contains("error"));
-
+                Assert.assertNotSame("testRequestComments --- FAILED || CONNECTION ERROR", 303, requmber);
+                Assert.assertFalse("testRequestComments --- FAILED || ERROR RESPONSE", mmsg.contains("error"));
+                Log.i("Request Comments", "Test has successfully passed");
             }
         });
         pc.requestComments(phID, offset, limit);
@@ -179,10 +185,10 @@ public class PhotoControllerTests {
         pc.setListener(new RequestListener(1) {
             @Override
             public void onRequestReady(int requmber, String mmsg) {
-                Assert.assertNotSame("testGetCommentById --- FAILD || CONNECTION ERROR", 903, requmber);
-
-                Assert.assertFalse("testGetCommentById --- FAILD || ERROR RESPONSE", mmsg.contains("error"));
-                Assert.assertNotNull("testGetCommentById --- FAILD || NULL", pc.getComment());
+                Assert.assertNotSame("testGetCommentById --- FAILED || CONNECTION ERROR", 903, requmber);
+                Assert.assertFalse("testGetCommentById --- FAILED || ERROR RESPONSE", mmsg.contains("error"));
+                Assert.assertNotNull("testGetCommentById --- FAILED || NULL", pc.getComment());
+                Log.i("GetCommentById", "Test has successfully passed");
             }
         });
         pc.requestCommentByid(phID, commentId);
@@ -205,8 +211,9 @@ public class PhotoControllerTests {
         pc.setListener(new RequestListener(1) {
             @Override
             public void onRequestReady(int requmber, String mmsg) {
-                Assert.assertNotSame("testGetLikedUsers --- FAILD || CONNECTION ERROR", 1003, requmber);
-                Assert.assertFalse("testGetLikedUsers --- FAILD || ERROR RESPONSE", mmsg.contains("error"));
+                Assert.assertNotSame("testGetLikedUsers --- FAILED || CONNECTION ERROR", 1003, requmber);
+                Assert.assertFalse("testGetLikedUsers --- FAILED || ERROR RESPONSE", mmsg.contains("error"));
+                Log.i("GetLikedUsers", "Test has successfully passed");
             }
         });
         pc.requestLikedUsers(phID, offset, limit);
@@ -226,9 +233,9 @@ public class PhotoControllerTests {
         PhotoController.resgisterListener(new RequestListener(123) {
             @Override
             public void onRequestReady(int requmber, String mmsg) {
-                Assert.assertSame("testUploadPhoto --- FAILD || " + mmsg, 101, requmber);
-                Assert.assertFalse("testUploadPhoto --- FAILD || ERROR RESPONSE", mmsg.contains("error"));
-
+                Assert.assertSame("testUploadPhoto --- FAILED || " + mmsg, 101, requmber);
+                Assert.assertFalse("testUploadPhoto --- FAILED || ERROR RESPONSE", mmsg.contains("error"));
+                Log.i("UploadImage", "Test has successfully passed");
             }
         });
         PhotoController.uploadPhoto(photo);
@@ -248,9 +255,9 @@ public class PhotoControllerTests {
         PhotoController.resgisterListener(new RequestListener(124) {
             @Override
             public void onRequestReady(int requmber, String mmsg) {
-                Assert.assertNotSame("testUpdatePhotoData --- FAILD || CONNECTION ERROR", 603, requmber);
-                Assert.assertFalse("testUpdatePhotoData --- FAILD || ERROR RESPONSE", mmsg.contains("error"));
-
+                Assert.assertNotSame("testUpdatePhotoData --- FAILED || CONNECTION ERROR", 603, requmber);
+                Assert.assertFalse("testUpdatePhotoData --- FAILED || ERROR RESPONSE", mmsg.contains("error"));
+                Log.i("UpdatePhotoData", "Test has successfully passed");
             }
         });
         PhotoController.updatePhotoData(photo);

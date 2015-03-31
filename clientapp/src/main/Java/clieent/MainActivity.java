@@ -23,6 +23,7 @@ import com.picsart.api.AccessToken;
 import com.picsart.api.Location;
 import com.picsart.api.Photo;
 import com.picsart.api.PhotoController;
+import com.picsart.api.PhotoControllerTests;
 import com.picsart.api.PicsArtConst;
 import com.picsart.api.RequestListener;
 import com.picsart.api.UserController;
@@ -43,6 +44,10 @@ public class MainActivity extends Activity {
     Button auth;
     TextView Access;
     Button testcallBtt;
+    Button likebtn;
+    Button unLikebtn;
+    Button commentbtn;
+    Button getPhotoinf;
 
     static String token;
     static int[] counter = new int[1];
@@ -63,8 +68,13 @@ public class MainActivity extends Activity {
         PicsArtConst.CLIENT_SECRET="IBjgv1OKPADXX8b9KRJfJloc5n1AzDMb";
 
         setContentView(R.layout.activity_main);
+        likebtn=(Button)findViewById(R.id.like);
+        unLikebtn = (Button)findViewById(R.id.unlike);
+        commentbtn = (Button)findViewById(R.id.comment);
+        getPhotoinf = (Button)findViewById(R.id.photoinf);
+
         testcallBtt = (Button) findViewById(R.id.testCall);
-        Access = (TextView) findViewById(R.id.Access);
+
         auth = (Button) findViewById(R.id.auth);
         MainActivity.context = this.getApplicationContext();
         try {
@@ -271,8 +281,8 @@ public class MainActivity extends Activity {
         toUpload.setId("164458028001202");
         toUpload.setMature(false);
         toUpload.setPublic(true);
-        // PhotoController.uploadPhoto(toUpload);
 
+        // PhotoController.uploadPhoto(toUpload);
         // toUpload.setIsFor(Photo.IS.COVER);
         // PhotoController.uploadPhoto(toUpload);
 
@@ -380,8 +390,10 @@ public class MainActivity extends Activity {
         // PhotoControllerTests.testRequestPhoto("163086538001202", token);
         // PhotoControllerTests.testLike("163086538001202", token);
         // PhotoControllerTests.testUnLike("163086538001202",token);
-        //PhotoControllerTests.testAddComment("163086538001202", "blaaaa", token,getAppContext());
-
+        // PhotoControllerTests.testAddComment("163086538001202", "blaaaa", token,getAppContext());
+        // PhotoControllerTests.testGetCommentById("163086538001202","",token,getAppContext());
+        // PhotoControllerTests.testGetLikedUsers("photoid",0,5,token,getAppContext());
+        // PhotoControllerTests.testRequestComments("photoid",0,5,token,getAppContext());
 
         //++ pc.requestCommentByid("164458028001202","550abcd81fa703694b0000e5");
         //++ pc.requestPhoto("164458028001202");
@@ -418,6 +430,34 @@ public class MainActivity extends Activity {
 
 
     }
+
+
+
+    public void onLike(View v){
+        try {
+            PhotoControllerTests.testLike("164458028001202",getAccessToken(),getAppContext());
+        }catch (Exception e){
+            Toast.makeText(getAppContext(),e.toString(),Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void onUnLike(View v){
+        try {
+            PhotoControllerTests.testUnLike("164458028001202",getAccessToken(),getAppContext());
+        }catch (Exception e){
+            Toast.makeText(getAppContext(),e.toString(),Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void onPhotoGetInfo(View v){
+        try {
+            PhotoControllerTests.testRequestPhoto("164458028001202",getAccessToken(),getAppContext());
+        }catch (Exception e){
+            Toast.makeText(getAppContext(),e.toString(),Toast.LENGTH_LONG).show();
+        }
+    }
+
+
 
 
     @Override
