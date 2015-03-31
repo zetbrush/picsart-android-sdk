@@ -21,12 +21,12 @@ import java.util.Map;
  * This class consists exclusively of void methods, that operate on making
  * requests and initializing specific field.
  *
- * <p>Some Getters of this class  throw a <tt>NullPointerException</tt>
+ * Some Getters of this class  throw a <tt>NullPointerException</tt>
  * if the collections or class objects provided to them are null.
  *
- * <p>This class is a member of the
- * <a href="www.picsart.com">
- * </a>.
+ * This class is a member of the
+ * www.picsart.com
+ *
  *
  */
 public class UserController {
@@ -72,7 +72,7 @@ public class UserController {
     }
 
 
-    public static RequestListener getSt_listener(int indexNumb) {
+    public static RequestListener getListener(int indexNumb) {
         int indx;
         for (RequestListener listener : st_listeners_all)
             if (listener.getIndexOfListener() == indexNumb) {
@@ -82,7 +82,7 @@ public class UserController {
         return null;
     }
 
-    public static void setSt_listener(RequestListener st_listener) {
+    public static void resgisterListener(RequestListener st_listener) {
 
         if (UserController.st_listener == null)
             UserController.st_listener = st_listener;
@@ -106,11 +106,11 @@ public class UserController {
     }
 
 
-    public static ArrayList<RequestListener> getSt_listeners_all() {
+    public static ArrayList<RequestListener> getRegisteredListeners() {
         return st_listeners_all;
     }
 
-    public static void setSt_listeners_all(ArrayList<RequestListener> st_listeners_all) {
+    public static void setListeners(ArrayList<RequestListener> st_listeners_all) {
         UserController.st_listeners_all = st_listeners_all;
     }
 
@@ -149,7 +149,7 @@ public class UserController {
 
     /**
      * Request User Profile
-     * <p/>
+     *
      * onResponse 201 code will be called in listener
      * onErrorResponse 301 code will be called in listener
      */
@@ -177,7 +177,7 @@ public class UserController {
      * Request User Profile with ID
      *
      * @param id ID of the User
-     *           <p/>
+     *
      *           onResponse 202 code will be called in listener
      *           onErrorResponse 302 code will be called in listener
      */
@@ -217,7 +217,7 @@ public class UserController {
      * @param user   user(to examine)
      * @param offset starting point
      * @param limit  limit of users
-     *               <p/>
+     *
      *               onResponse 203 code will be called in listener
      *               onErrorResponse 303 code will be called in listener
      */
@@ -231,7 +231,7 @@ public class UserController {
      * @param userId ID of the User
      * @param offset starting point
      * @param limit  limit of users
-     *               <p/>
+     *
      *               onResponse 203 code will be called in listener
      *               onErrorResponse 303 code will be called in listener
      */
@@ -270,7 +270,7 @@ public class UserController {
      * @param user   user(to examine)
      * @param offset starting point
      * @param limit  limit of users
-     *               <p/>
+     *
      *               onResponse 204 code will be called in listener
      *               onErrorResponse 304 code will be called in listener
      */
@@ -284,7 +284,7 @@ public class UserController {
      * @param userId ID of the User
      * @param offset starting point
      * @param limit  limit of users
-     *               <p/>
+     *
      *               onResponse 204 code will be called in listener
      *               onErrorResponse 304 code will be called in listener
      */
@@ -322,7 +322,7 @@ public class UserController {
      * @param user   user(to examine)
      * @param offset starting point
      * @param limit  limit of users
-     *               <p/>
+     *
      *               onResponse  205 code will be called in listener
      *               onErrorResponse 305 code will be called in listener
      */
@@ -336,7 +336,7 @@ public class UserController {
      * @param userId ID of the User
      * @param offset starting point
      * @param limit  limit of users
-     *               <p/>
+     *
      *               onResponse 205 code will be called in listener
      *               onErrorResponse 305 code will be called in listener
      */
@@ -375,7 +375,7 @@ public class UserController {
      *
      * @param offset starting point
      * @param limit  limit of users
-     *               <p/>
+     *
      *               onResponse  206 code will be called in listener
      *               onErrorResponse 306 code will be called in listener
      */
@@ -411,7 +411,7 @@ public class UserController {
      * @param user   user(to examine)
      * @param offset starting point
      * @param limit  limit of users
-     *               <p/>
+     *
      *               onResponse  207 code will be called in listener
      *               onErrorResponse 307 code will be called in listener
      */
@@ -425,7 +425,7 @@ public class UserController {
      * @param userId ID of the User
      * @param offset starting point
      * @param limit  limit of users
-     *               <p/>
+     *
      *               onResponse 207 code will be called in listener
      *               onErrorResponse 307 code will be called in listener
      */
@@ -482,7 +482,7 @@ public class UserController {
      * @param user   user(to examine)
      * @param offset starting point
      * @param limit  limit of users
-     *               <p/>
+     *
      *               onResponse 208 code will be called in listener
      *               onErrorResponse 308 code will be called in listener
      */
@@ -496,7 +496,7 @@ public class UserController {
      * @param userId ID of the User
      * @param offset starting point
      * @param limit  limit of users
-     *               <p/>
+     *
      *               onResponse 208 code will be called in listener
      *               onErrorResponse 308 code will be called in listener
      */
@@ -534,7 +534,7 @@ public class UserController {
      * @param user   user(to examine)
      * @param offset starting point
      * @param limit  limit of users
-     *               <p/>
+     *
      *               onResponse 209 code will be called in listener
      *               onErrorResponse 309 code will be called in listener
      */
@@ -548,7 +548,7 @@ public class UserController {
      * @param userId ID of the User
      * @param offset starting point
      * @param limit  limit of users
-     *               <p/>
+     *
      *               onResponse 209 code will be called in listener
      *               onErrorResponse 309 code will be called in listener
      */
@@ -585,7 +585,7 @@ public class UserController {
      * Requests for Blocking User with ID
      *
      * @param blockingId ID of Blocking User
-     *                   <p/>
+     *
      *                   onResponse 210 code will be called in listener
      *                   onErrorResponse 310 code will be called in listener
      */
@@ -637,7 +637,7 @@ public class UserController {
      * Requests for Unblocking User with ID
      *
      * @param unblockingId ID of Unblocking User
-     *                     <p/>
+     *
      *                     onResponse 211 code will be called in listener
      *                     onErrorResponse 311 code will be called in listener
      */
@@ -668,7 +668,7 @@ public class UserController {
      * Requests for Following User with ID
      *
      * @param followingId ID of Following User
-     *                    <p/>
+     *
      *                    onResponse 212 code will be called in listener
      *                    onErrorResponse 312 code will be called in listener
      */
@@ -717,7 +717,7 @@ public class UserController {
      * Requests for Unfollowing User with ID
      *
      * @param unfollowingId ID of Unfollowing User
-     *                    <p/>
+     *
      *                    onResponse 212 code will be called in listener
      *                    onErrorResponse 312 code will be called in listener
      */
@@ -765,7 +765,7 @@ public class UserController {
      *         Notifies all static listeners with given code and message
      */
     public static void notifyListeners(int reqnumber, String msg) {
-        for (RequestListener listeners : getSt_listeners_all()) {
+        for (RequestListener listeners : getRegisteredListeners()) {
             listeners.onRequestReady(reqnumber, msg);
 
         }
@@ -780,7 +780,7 @@ public class UserController {
      */
     public static void notifyListener(int listenerNumb, int reqNumb, String msg) {
         try {
-            getSt_listener(listenerNumb).onRequestReady(reqNumb, msg);
+            getListener(listenerNumb).onRequestReady(reqNumb, msg);
         } catch (NullPointerException e) {
             Log.e("Listener Error: ", "Non Existing Listener with index " + listenerNumb);
         }

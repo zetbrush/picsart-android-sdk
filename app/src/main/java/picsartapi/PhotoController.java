@@ -1,11 +1,8 @@
 package picsartapi;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Looper;
-import android.util.Base64;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -32,7 +29,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FilterOutputStream;
 import java.io.IOException;
@@ -137,7 +133,7 @@ public class PhotoController {
 
     }
 
-    public static ArrayList<RequestListener> getSt_listeners_all() {
+    public static ArrayList<RequestListener> getListeners() {
         return st_listeners_all;
     }
 
@@ -239,10 +235,6 @@ public class PhotoController {
                         comment = tmp;
                     }
                     commentsLists = new ArrayList<>(comment);
-
-                    /*if(listener==null){
-                        Log.i("Inner/Listener", "Inner Listener is null, but you still can catch global event");
-                    }else*/
 
                     listener.onRequestReady(301, "Comments ready");
 
@@ -420,7 +412,6 @@ public class PhotoController {
             @Override
             public void onResponse(Object response) {
                 Log.d("UpdatedonLisData ", response.toString());
-
                 notifyListeners(601, response.toString());
             }
 
@@ -619,7 +610,7 @@ public class PhotoController {
      *                 Notifies all static listeners with given code and message
      */
     public static void notifyListeners(int reqnumber, String msg) {
-        for (RequestListener listeners : getSt_listeners_all()) {
+        for (RequestListener listeners : getListeners()) {
             listeners.onRequestReady(reqnumber, msg);
 
         }
@@ -669,7 +660,12 @@ public class PhotoController {
                         multipartContent = new MultiPartEntityMod(new ProgressListener() {
                             @Override
                             public void transferred(long num) {
-                                publishProgress((int) ((num / (float) totalSize[0] * 100)), iter[0]);
+                                long checker=-1;
+                                if(num!=checker && num%2==0) {
+                                    checker=num;
+                                    publishProgress((int) ((num / (float) totalSize[0] * 100)), iter[0]);
+
+                                }
                             }
                         });
                     } catch (Exception e) {
@@ -680,9 +676,9 @@ public class PhotoController {
                     multipartContent.addPart("file", new FileBody(file));
                     totalSize[0] = multipartContent.getContentLength();
                     if (ph.isFor == Photo.IS.AVATAR) {
-                        url = PicsArtConst.USER_URL_PATH + "me" + PicsArtConst.PHOTO_AVATAR_ENDX + PicsArtConst.TOKEN_PREFIX + PhotoController.token;
+                        url = PicsArtConst.USER_URL_PATH + PicsArtConst.ME_PREFIX + PicsArtConst.PHOTO_AVATAR_ENDX + PicsArtConst.TOKEN_PREFIX + PhotoController.token;
                     } else if (ph.isFor == Photo.IS.COVER) {
-                        url = PicsArtConst.USER_URL_PATH + "me" + PicsArtConst.PHOTO_COVER_ENDX + PicsArtConst.TOKEN_PREFIX + PhotoController.token;
+                        url = PicsArtConst.USER_URL_PATH + PicsArtConst.ME_PREFIX + PicsArtConst.PHOTO_COVER_ENDX + PicsArtConst.TOKEN_PREFIX + PhotoController.token;
                     } else {
                         url = PicsArtConst.PHOTO_UPLOAD_URL + PicsArtConst.TOKEN_PREFIX + PhotoController.token;
                         BasicNameValuePair[] tmp = null;
@@ -762,7 +758,7 @@ public class PhotoController {
         @Override
         protected void onPreExecute() {
 
-            Log.d("Upload/", " Uploading Picture...");
+            Log.d("Upload", " Uploading Picture...");
 
         }
 
@@ -786,29 +782,18 @@ public class PhotoController {
             }
         }
 
-
-        public String encodeTobase64(Bitmap image) {
-            Bitmap immagex = image;
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            immagex.compress(Bitmap.CompressFormat.JPEG, 75, baos);
-            byte[] b = baos.toByteArray();
-            String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
-
-            Log.e("LOOK", imageEncoded);
-            return imageEncoded;
-        }
-
-        public Bitmap decodeBase64(String input) {
-            byte[] decodedByte = Base64.decode(input, 0);
-            return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
-        }
-
     }
 
     interface ProgressListener {
         void transferred(long num);
     }
 
+
+    /**
+     * This class serves as placeholder for mainly during image uploading.
+     * @link ProgressListener is used here to monitore progress.
+     *
+     * */
     private static class MultiPartEntityMod extends MultipartEntity {
 
         private final ProgressListener listener;
@@ -834,7 +819,12 @@ public class PhotoController {
         }
 
 
-        public class CountingOutputStream extends FilterOutputStream {
+
+        /**
+         *  This class serves for counting progress of transferred streams.
+         *
+         * */
+        private class CountingOutputStream extends FilterOutputStream {
 
             private final ProgressListener listener;
             private long transferred;

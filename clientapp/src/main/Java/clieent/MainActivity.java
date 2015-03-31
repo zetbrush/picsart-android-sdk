@@ -22,7 +22,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import Utils_Image.ImageLoader;
+import clieent.Utils_Image.ImageLoader;
 import picsartapi.AccessToken;
 import picsartapi.Location;
 import picsartapi.Photo;
@@ -268,7 +268,7 @@ public class MainActivity extends Activity {
         Photo toUpload = new Photo(Photo.IS.GENERAL);
         toUpload.setLocation(new Location("poxoooc", "Qaxaaaq", "Plac@@@", "State@@", "Zipcod@@", "Armenia", new ArrayList<>(Arrays.asList(45.0, 37.0))));
         toUpload.setTitle("picsarttt");
-        toUpload.setTags(new ArrayList<>(Arrays.asList("ntag1", "nag2", "ntag3")));
+        toUpload.setTags(new ArrayList<>(Arrays.asList("nnnntag1", "naaaaaag2", "ntaaag3")));
         toUpload.setPath("/storage/removable/sdcard1/DCIM/100ANDRO/DSC_0009.jpg");
         toUpload.setId("164458028001202");
         toUpload.setMature(false);
@@ -354,8 +354,8 @@ public class MainActivity extends Activity {
 
         //++ pc.deleteComment("164458028001202", "550abcd4556768804b00016e");
 
-        //+ pc.uploadPhoto(toUpload);
-         pc.updatePhotoData(toUpload);
+       // pc.uploadPhoto(toUpload);
+         //++pc.updatePhotoData(toUpload);
         /*for (int i = 0; i < 3; i++) {
             pc.requestPhoto(phids[i]);
         }*/

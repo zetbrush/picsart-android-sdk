@@ -4,9 +4,7 @@ package picsartapi;
  * This abstract class serves as Listener for notification of responses,
  * It uses indexing for identification and accessibility.
  *
- *  This class is a member of the
- * <a href="www.picsart.com">
- * </a>.
+ *  This class is a member of the  www.picsart.com
  *
  * @author  Arman Andreasyan
  */

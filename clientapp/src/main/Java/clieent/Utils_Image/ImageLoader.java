@@ -1,4 +1,4 @@
-package Utils_Image;
+package clieent.Utils_Image;
 
 import android.app.Activity;
 import android.content.Context;

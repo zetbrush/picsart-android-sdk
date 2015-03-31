@@ -1,4 +1,4 @@
-package Utils_Image;
+package clieent.Utils_Image;
 
 /**
  * This class is helper for ImageLoader class

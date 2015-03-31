@@ -13,11 +13,11 @@ import picsartapi.UserController;
  * This class consists exclusively test methods, that operate on making
  * requests and asserting for expectation.
  *
- * <p> If testMethod fails exception with message will logged</p>
+ *  If testMethod fails exception with message will logged
  *
- * <p>This class is a member of the
- * <a href="www.picsart.com">
- * </a>.
+ * This class is a member of the
+ *  www.picsart.com
+ *
  *
  */
 public class UserControllerTests {
