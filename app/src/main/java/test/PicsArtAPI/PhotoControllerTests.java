@@ -19,8 +19,7 @@ import picsartapi.RequestListener;
  *
  *  If testMethod fails exception with message will logged
  *
- * This class is a member of the
- * <a href="www.picsart.com"> </a>.
+ * This class is a member of the www.picsart.com.
  *
  * @author Arman Andreasyan 3/9/15
  */
