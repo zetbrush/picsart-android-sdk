@@ -12,19 +12,32 @@
         android:textSize="25sp"
         android:text="PicsArt SDK Sample" />
 
-    <Button
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Api call test"
-        android:id ="@+id/testCall"
-        android:layout_gravity="right"
-        android:onClick="onTestCallClick"/>
+        android:layout_gravity="center"
+       >
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-         android:id="@+id/auth"
-        android:text="Sign in with PicsArt" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Api call test"
+            android:id ="@+id/testCall"
+            android:layout_gravity="right"
+            android:onClick="onTestCallClick"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/auth"
+            android:text="Sign in with PicsArt" />
+
+
+        </LinearLayout>
+
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -54,7 +67,10 @@
         <android.support.v4.view.ViewPager
             android:id="@+id/myviewpager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+
+
+            />
 
 
         </LinearLayout>
@@ -66,33 +82,48 @@
 
 
 
-
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="onLike"
-        android:id="@+id/like"
-        android:text="Like"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/unlike"
-        android:onClick="onUnLike"
-        android:text="unLike"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="onComment"
-        android:id="@+id/comment"
-        android:text="Comment"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="onPhotoGetInfo"
+        android:onClick="onPhotoGet"
         android:id="@+id/photoinf"
-        android:text="Photo Info"/>
-
+        android:text="Photos"/>
 </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onFollowings"
+            android:id="@+id/followings"
+            android:text="Following"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onFollowers"
+            android:id="@+id/followers"
+            android:text="Followers"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onUpload"
+            android:id="@+id/uploadph"
+            android:text="Upload"
+           />
+
+
+        </LinearLayout>
+
+
+
+
+
+
 
 
 </LinearLayout>

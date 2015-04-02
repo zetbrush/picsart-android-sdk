@@ -238,7 +238,7 @@ public class PhotoControllerTests {
                 Log.i("UploadImage", "Test has successfully passed");
             }
         });
-        PhotoController.uploadPhoto(photo);
+       // PhotoController.uploadPhoto(photo);
 
     }
 

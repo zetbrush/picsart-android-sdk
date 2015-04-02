@@ -153,9 +153,9 @@ public class PhotoController {
      * @param photo photo objects to be uploaded
      *              if Success 101 code will be called in static listener
      */
-    public static synchronized void uploadPhoto(Photo... photo) {
+    public static synchronized void uploadPhoto(ProgressListener progrs, Photo... photo) {
 
-        new ImageUploadTask().execute(photo);
+        new ImageUploadTask(progrs).execute(photo);
 
     }
 
@@ -628,36 +628,70 @@ public class PhotoController {
         }
     }
 
+    /**
+ * Setting flag for canceling upload, if any.
+ * */
+    public static void cancelUpload(){
+        ImageUploadTask.setCancelFlag(true);
+    }
+
 
     /**
      * Uploads images
      */
-    private static class ImageUploadTask extends AsyncTask<Photo, Integer, JSONObject> {
+    private static class ImageUploadTask extends AsyncTask<Photo, Integer, JSONObject>  {
 
         InputStream is = null;
+        static boolean cancelFlag = false;
         volatile JSONObject jObj = null;
         String json = "";
+        ProgressListener progrs;
+
+        public static void setCancelFlag(boolean cancelFlag) {
+            ImageUploadTask.cancelFlag = cancelFlag;
+        }
+
+        public ImageUploadTask(ProgressListener progrs){
+            this.progrs = progrs;
+        }
 
         @Override
         protected synchronized JSONObject doInBackground(Photo... phot) {
+
+
+
+
             final int[] iter = new int[1];
 
             Looper.prepare();
             for (Photo ph : phot) {
+
                 try {
                     final File file = new File(ph.getPath());
                     final long[] totalSize = new long[1];
                     totalSize[0] = file.length();
-                    HttpClient httpClient = new DefaultHttpClient();
+                    final HttpClient httpClient = new DefaultHttpClient();
                     String url = "";
                     //   MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
                     MultiPartEntityMod multipartContent = null;
                     try {
 
+
                         multipartContent = new MultiPartEntityMod(new ProgressListener() {
+
+                            @Override
+                            public boolean doneFlag(boolean b)  {
+
+                                return false;
+                            }
+
                             @Override
                             public void transferred(long num) {
                                 long checker=-1;
+                                if(ImageUploadTask.this.isCancelled()){
+                                    httpClient.getConnectionManager().shutdown();
+                                }
+
                                 if(num!=checker && num%2==0) {
                                     checker=num;
                                     publishProgress((int) ((num / (float) totalSize[0] * 100)), iter[0]);
@@ -665,9 +699,12 @@ public class PhotoController {
                                 }
                             }
                         });
+
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+
 
 
                     multipartContent.addPart("file", new FileBody(file));
@@ -703,7 +740,12 @@ public class PhotoController {
                     HttpPost httpPost = new HttpPost(url);
                     HttpContext httpContext = new BasicHttpContext();
                     httpPost.setEntity(multipartContent);
-                    HttpResponse response = httpClient.execute(httpPost, httpContext);
+                    HttpResponse response= null;
+                    try {
+                         response = httpClient.execute(httpPost, httpContext);
+                    }catch(IllegalStateException e){
+                        return null;
+                    }
                     HttpEntity httpEntity = response.getEntity();
                     is = httpEntity.getContent();
 
@@ -746,11 +788,14 @@ public class PhotoController {
                 iter[0]++;
 
 
+
             }
             // Return JSON String
             return jObj;
 
         }
+
+
 
         @Override
         protected void onPreExecute() {
@@ -761,16 +806,22 @@ public class PhotoController {
 
         @Override
         protected void onProgressUpdate(Integer... progress) {
+            progrs.transferred(progress[0]);
+
+            if(cancelFlag) {
+                ImageUploadTask.this.cancel(true);
+                progrs.doneFlag(true);
+                cancelFlag=false;
+            }
             Log.d("Uploaded", "photo #" + progress[1] + " done " + progress[0] + "%");
         }
 
         @Override
         protected void onPostExecute(JSONObject sResponse) {
-
+             progrs.doneFlag(true);
             if (sResponse != null) {
                 try {
                     Log.d("response Upload", sResponse.toString());
-
                     notifyListeners(101, sResponse.toString());
 
                 } catch (Exception e) {
@@ -781,9 +832,7 @@ public class PhotoController {
 
     }
 
-    interface ProgressListener {
-        void transferred(long num);
-    }
+
 
 
     /**
@@ -844,6 +893,11 @@ public class PhotoController {
                 this.listener.transferred(this.transferred);
             }
         }
+    }
+
+    public interface ProgressListener {
+        abstract boolean doneFlag(boolean b);
+        void transferred(long num);
     }
 
 }

@@ -119,7 +119,7 @@ public class UserController {
         return user;
     }
 
-    public ArrayList<Photo> getPhoto() {
+    public ArrayList<Photo> getPhotos() {
         return userPhotos;
     }
 

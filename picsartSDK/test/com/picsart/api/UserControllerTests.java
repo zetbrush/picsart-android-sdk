@@ -242,7 +242,7 @@ public class UserControllerTests {
 
                 Assert.assertTrue(CONNECTION_ERROR, requmber == 209);
                 Assert.assertFalse(RESPONSE_ERROR, msg.contains(ERROR));
-                Assert.assertNotNull(NULL_OBJECT, userController.getPhoto());
+                Assert.assertNotNull(NULL_OBJECT, userController.getPhotos());
 
                 Log.i("User Photos Test", "Test was successfully passed");
 

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/image_frame"
+
+    >
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/image_only"
+
+
+        />
+
+
+    <TextView
+        android:id="@+id/titletext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#00000000"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text=""
+        android:textColor="@android:color/background_dark"
+        android:layout_marginBottom="80dp"
+        android:layout_gravity="left|bottom" />
+    <TextView
+        android:id="@+id/tags"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#00000000"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text=""
+        android:textColor="@android:color/background_dark"
+        android:layout_marginBottom="50dp"
+        android:layout_gravity="left|bottom" />
+
+    <ImageView
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:id="@+id/likeic"
+        android:background="@drawable/likeic"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_gravity="left|bottom"
+        android:onClick="onLikeUnlike"
+
+        />
+
+    <ImageView
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:background="@drawable/commentic"
+        android:id="@+id/commentic"
+        android:layout_marginLeft="-50dp"
+        android:layout_marginBottom="10dp"
+        android:layout_gravity="center_horizontal|bottom"
+        android:onClick="onLikeUnlike"
+        />
+
+    <TextView
+        android:id="@+id/infotext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#00000000"
+        android:gravity="left"
+        android:padding="5dp"
+        android:text=""
+        android:textColor="@android:color/background_dark"
+        android:layout_marginBottom="10dp"
+        android:layout_gravity="right|bottom" />
+</FrameLayout>

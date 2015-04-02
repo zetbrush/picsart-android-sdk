@@ -1,15 +1,20 @@
 package clieent;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
@@ -48,8 +53,11 @@ public class MainActivity extends Activity {
     Button unLikebtn;
     Button commentbtn;
     Button getPhotoinf;
-
+    Button uploadbtn;
+    ViewPager viewPager;
     static String token;
+    ArrayList<String> imagePaths =null;
+
     static int[] counter = new int[1];
 
     public static Context getAppContext() {
@@ -64,28 +72,71 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        PicsArtConst.CLIENT_ID="armanClientdT762iHtILCtf7sl";
-        PicsArtConst.CLIENT_SECRET="IBjgv1OKPADXX8b9KRJfJloc5n1AzDMb";
+        PicsArtConst.CLIENT_ID="ZetOmniaexo1SNtY52usPTry";
+        PicsArtConst.CLIENT_SECRET="yY2fEJU8R9rFmuwtOZRQhm4ZK2Kdwqhk";
 
         setContentView(R.layout.activity_main);
-        likebtn=(Button)findViewById(R.id.like);
-        unLikebtn = (Button)findViewById(R.id.unlike);
-        commentbtn = (Button)findViewById(R.id.comment);
-        getPhotoinf = (Button)findViewById(R.id.photoinf);
 
+        getPhotoinf = (Button)findViewById(R.id.photoinf);
+        uploadbtn = (Button)findViewById(R.id.uploadph);
         testcallBtt = (Button) findViewById(R.id.testCall);
+        viewPager = (ViewPager) findViewById(R.id.myviewpager);
+
+
 
         auth = (Button) findViewById(R.id.auth);
         MainActivity.context = this.getApplicationContext();
         try {
             pref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
             token = pref.getString("access_token", "");
+            PhotoController.setAccessToken(token);
             //Toast.makeText(getApplicationContext(), "Access Token " + token, Toast.LENGTH_LONG).show();
         } catch (Exception c) {
             Log.i("ERROR Loading Token ", ": no token is persist ");
         }
 
 
+
+        PhotoController.resgisterListener(new RequestListener(IMAGE_PICK) {
+            @Override
+            public void onRequestReady(int requmber, String message) {
+                final ProgressDialog d = new ProgressDialog(MainActivity.this, AlertDialog.THEME_HOLO_DARK);
+                d.setCanceledOnTouchOutside(true);
+                String path=imagePaths.get(0);
+                Photo ph = new Photo(Photo.IS.GENERAL);
+                ph.setPath(path);
+                PhotoController.ProgressListener progrs = new PhotoController.ProgressListener() {
+                    @Override
+                    public boolean doneFlag(boolean b) {
+                        if(b){
+                            d.dismiss();
+                        }
+                        return b;
+                    }
+
+                    @Override
+                    public void transferred(long num) {
+                        d.setProgress((int)num);
+                    }
+                } ;
+
+
+                d.setTitle("Uploading Photo..");
+                d.setCancelable(true);
+
+                d.setProgressStyle(d.STYLE_HORIZONTAL);
+                d.show();
+                d.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        PhotoController.cancelUpload();
+                        dialog.dismiss();
+                    }
+                });
+                PhotoController.uploadPhoto(progrs,ph);
+
+            }
+        });
 
     }
 
@@ -155,10 +206,7 @@ public class MainActivity extends Activity {
                             SharedPreferences.Editor edit = pref.edit();
                             edit.putString("Code", authCode);
                             edit.commit();
-
-
                             String authCode = pref.getString("Code", "");
-
 
 
                             AccessToken.setListener(new RequestListener(1) {
@@ -219,6 +267,29 @@ public class MainActivity extends Activity {
             if (resultCode == RESULT_OK) {
 
             }
+        }
+
+        if(requestCode ==IMAGE_PICK && resultCode==RESULT_OK){
+            Uri path = data.getData();
+
+                Cursor cursor = null;
+                try {
+                    String[] proj = { MediaStore.Images.Media.DATA };
+                    cursor = context.getContentResolver().query(path,  proj, null, null, null);
+                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                    cursor.moveToFirst();
+                    imagePaths=new ArrayList<>();
+                    imagePaths.add(cursor.getString(column_index));
+                    PhotoController.notifyListener(IMAGE_PICK,0,"");
+                } finally {
+                    if (cursor != null) {
+                        cursor.close();
+                    }
+
+                }
+
+
+
         }
     }
 
@@ -366,9 +437,9 @@ public class MainActivity extends Activity {
             @Override
             public void onRequestReady(int requmber, String message) {
                 if (requmber == 207) {
-                    for (int i = 0; i < uc.getPhoto().size(); i++) {
+                    for (int i = 0; i < uc.getPhotos().size(); i++) {
 
-                        Log.d("PhotoResponse", uc.getPhoto().get(i).getId());
+                        Log.d("PhotoResponse", uc.getPhotos().get(i).getId());
                     }
                 }
 
@@ -433,29 +504,70 @@ public class MainActivity extends Activity {
 
 
 
-    public void onLike(View v){
-        try {
-            PhotoControllerTests.testLike("164458028001202",getAccessToken(),getAppContext());
-        }catch (Exception e){
-            Toast.makeText(getAppContext(),e.toString(),Toast.LENGTH_LONG).show();
-        }
-    }
 
-    public void onUnLike(View v){
-        try {
-            PhotoControllerTests.testUnLike("164458028001202",getAccessToken(),getAppContext());
-        }catch (Exception e){
-            Toast.makeText(getAppContext(),e.toString(),Toast.LENGTH_LONG).show();
-        }
-    }
+    public void onPhotoGet(View v){
 
-    public void onPhotoGetInfo(View v){
+        final UserController uc = new UserController(getAccessToken(),getAppContext());
+
+        uc.setListener(new RequestListener(0) {
+            @Override
+            public void onRequestReady(int requmber, String message) {
+                ImagePagerAdapter adapter = new ImagePagerAdapter(uc.getPhotos(),getAppContext());
+                viewPager.setAdapter(adapter);
+
+
+            }
+        });
+        uc.requestUserPhotos("me",0,Integer.MAX_VALUE);
+
+
         try {
+
             PhotoControllerTests.testRequestPhoto("164458028001202",getAccessToken(),getAppContext());
         }catch (Exception e){
             Toast.makeText(getAppContext(),e.toString(),Toast.LENGTH_LONG).show();
         }
     }
+
+    final int IMAGE_PICK = 789987;
+    public void onUpload(View v){
+
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(intent, IMAGE_PICK);
+
+    }
+
+    public void onLikeUnlike(View v){
+        int phindx = viewPager.getCurrentItem();
+        final Photo tmp = ((ImagePagerAdapter)viewPager.getAdapter()).getmImages().get(phindx);
+        PhotoController pc = new PhotoController(getAppContext());
+        if(tmp.getIsLiked()==null || tmp.getIsLiked()==false ){
+            pc.like(tmp.getId());
+            pc.setListener(new RequestListener(0) {
+                @Override
+                public void onRequestReady(int requmber, String message) {
+                    if(requmber==701)
+                    tmp.setIsLiked(true);
+
+                    if(requmber==801)
+                        tmp.setIsLiked(false);
+                }
+            });
+        }
+        else if(tmp.getIsLiked()==true){
+            pc.unLike(tmp.getId());
+
+        }
+
+
+    }
+
+    public void onFollowings(View v){
+
+
+    }
+
 
 
 

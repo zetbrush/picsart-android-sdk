@@ -40,9 +40,11 @@ public class ImageLoader {
     private Map<ImageView, String> imageViews = Collections.synchronizedMap(new WeakHashMap<ImageView, String>());
     ExecutorService executorService;
 
+
     public ImageLoader(Context context) {
         fileCache = new FileCache(context);
         executorService = Executors.newFixedThreadPool(5);
+
     }
 
 
@@ -54,6 +56,7 @@ public class ImageLoader {
         if (bitmap != null) {
             imageView.setAnimation(null);
             imageView.setImageBitmap(bitmap);
+
         }
         else {
             queuePhoto(url, imageView);
@@ -188,6 +191,7 @@ public class ImageLoader {
             if (bitmap != null) {
                 photoToLoad.imageView.setAnimation(null);
                 photoToLoad.imageView.setImageBitmap(bitmap);
+
             }
             else{
                 photoToLoad.imageView.setImageResource(stub_id);
