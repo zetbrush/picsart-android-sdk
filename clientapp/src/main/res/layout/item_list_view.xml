@@ -8,8 +8,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/usname"
-        android:text="asasasa"
+        android:text=""
         android:layout_marginLeft="10dp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/created"
+        android:text=""
+        android:layout_marginRight="10dp"
+        android:layout_alignParentRight="true"
         />
     <TextView
         android:layout_below="@+id/usname"
@@ -17,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:id="@+id/comtext"
-        android:text="asasczxczc"/>
+        android:text=""/>
 
     <ImageView
         android:layout_width="20dp"
@@ -28,6 +37,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="23dp"
+        android:id="@+id/delcomment"
         />
 
 </RelativeLayout>

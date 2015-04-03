@@ -20,15 +20,15 @@ import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.picsart.api.AccessToken;
+import com.picsart.api.Comment;
 import com.picsart.api.Location;
 import com.picsart.api.Photo;
 import com.picsart.api.PhotoController;
-import com.picsart.api.PhotoControllerTests;
 import com.picsart.api.PicsArtConst;
 import com.picsart.api.RequestListener;
 import com.picsart.api.UserController;
@@ -57,6 +57,7 @@ public class MainActivity extends Activity {
     ViewPager viewPager;
     static String token;
     ArrayList<String> imagePaths =null;
+    final int IMAGE_PICK = 789654;
 
     static int[] counter = new int[1];
 
@@ -67,6 +68,8 @@ public class MainActivity extends Activity {
     public static String getAccessToken() {
         return token;
     }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +88,7 @@ public class MainActivity extends Activity {
 
 
         auth = (Button) findViewById(R.id.auth);
+
         MainActivity.context = this.getApplicationContext();
         try {
             pref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
@@ -100,43 +104,47 @@ public class MainActivity extends Activity {
         PhotoController.resgisterListener(new RequestListener(IMAGE_PICK) {
             @Override
             public void onRequestReady(int requmber, String message) {
-                final ProgressDialog d = new ProgressDialog(MainActivity.this, AlertDialog.THEME_HOLO_DARK);
-                d.setCanceledOnTouchOutside(true);
-                String path=imagePaths.get(0);
-                Photo ph = new Photo(Photo.IS.GENERAL);
-                ph.setPath(path);
-                PhotoController.ProgressListener progrs = new PhotoController.ProgressListener() {
-                    @Override
-                    public boolean doneFlag(boolean b) {
-                        if(b){
-                            d.dismiss();
+                if (requmber == IMAGE_PICK) {
+                    final ProgressDialog d = new ProgressDialog(MainActivity.this, AlertDialog.THEME_HOLO_DARK);
+                    d.setCanceledOnTouchOutside(true);
+                    String path = imagePaths.get(0);
+                    Photo ph = new Photo(Photo.IS.GENERAL);
+                    ph.setPath(path);
+                    PhotoController.ProgressListener progrs = new PhotoController.ProgressListener() {
+                        @Override
+                        public boolean doneFlag(boolean b) {
+                            if (b) {
+                                d.dismiss();
+                            }
+                            return b;
                         }
-                        return b;
-                    }
 
-                    @Override
-                    public void transferred(long num) {
-                        d.setProgress((int)num);
-                    }
-                } ;
+                        @Override
+                        public void transferred(long num) {
+                            d.setProgress((int) num);
+                        }
+                    };
 
 
-                d.setTitle("Uploading Photo..");
-                d.setCancelable(true);
+                    d.setTitle("Uploading Photo..");
+                    d.setCancelable(true);
 
-                d.setProgressStyle(d.STYLE_HORIZONTAL);
-                d.show();
-                d.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        PhotoController.cancelUpload();
-                        dialog.dismiss();
-                    }
-                });
-                PhotoController.uploadPhoto(progrs,ph);
+                    d.setProgressStyle(d.STYLE_HORIZONTAL);
+                    d.show();
+                    d.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            PhotoController.cancelUpload();
+                            dialog.dismiss();
+                        }
+                    });
+                    PhotoController.uploadPhoto(progrs, ph);
 
+                }
             }
         });
+
+
 
     }
 
@@ -144,6 +152,9 @@ public class MainActivity extends Activity {
     public void onResume() {
         super.onResume();
         initing();
+
+
+
 
     }
 
@@ -280,7 +291,7 @@ public class MainActivity extends Activity {
                     cursor.moveToFirst();
                     imagePaths=new ArrayList<>();
                     imagePaths.add(cursor.getString(column_index));
-                    PhotoController.notifyListener(IMAGE_PICK,0,"");
+                    PhotoController.notifyListener(IMAGE_PICK,IMAGE_PICK,"");
                 } finally {
                     if (cursor != null) {
                         cursor.close();
@@ -297,9 +308,6 @@ public class MainActivity extends Activity {
     public void onTestCallClick(View v) {
 
 
-        final ImageView im1 = (ImageView) findViewById(R.id.img1);
-        final ImageView im2 = (ImageView) findViewById(R.id.img2);
-        final ImageView im3 = (ImageView) findViewById(R.id.img3);
 
 
         final ArrayList<Photo> tmpPh = new ArrayList<>();
@@ -331,9 +339,7 @@ public class MainActivity extends Activity {
                 Log.d("imageDNLD ", String.valueOf(requmber));
                 if (requmber == 13) {
                     ImageLoader imLdr = new ImageLoader(getAppContext());
-                    imLdr.DisplayImage(tmpPh.get(0).getUrl(), R.drawable.preloader, im1);
-                    imLdr.DisplayImage(tmpPh.get(1).getUrl(), R.drawable.preloader, im2);
-                    imLdr.DisplayImage(tmpPh.get(2).getUrl(), R.drawable.preloader, im3);
+
                 }
             }
         };
@@ -356,9 +362,6 @@ public class MainActivity extends Activity {
         // PhotoController.uploadPhoto(toUpload);
         // toUpload.setIsFor(Photo.IS.COVER);
         // PhotoController.uploadPhoto(toUpload);
-
-
-        //////////// Getting given comments Count//////
 
 
 
@@ -421,9 +424,6 @@ public class MainActivity extends Activity {
 
 
 
-
-
-
         Photo phh = new Photo(Photo.IS.AVATAR);
         phh.setLocation(new Location("nor poxoc", "nor Qaxaaaq", "nor Plac@@@", "nor State@@", "nor Zipcod@@", "Armenia", new ArrayList<>(Arrays.asList(40.0, 36.0))));
         phh.setTitle("nor nkariii anun 2");
@@ -473,35 +473,14 @@ public class MainActivity extends Activity {
         //++ pc.addComment("164458028001202",new Comment("blaaaFinalP",true));
         //++ pc.like("164458028001202");
         //++ pc.unLike("164458028001202");
-
         //++ pc.deleteComment("164458028001202", "550abcd4556768804b00016e");
 
-        // pc.uploadPhoto(toUpload);
-        //++pc.updatePhotoData(toUpload);
-
         String[] phids = {"164548899000202", "164294945000202", "147971743000201"};
-
-
         for (int i = 0; i < 3; i++) {
             pc.requestPhoto(phids[i]);
         }
 
-
-        final PhotoController pc3 = new PhotoController(getAppContext(), token);
-
-       // pc3.requestLikedUsers("163086538001202",0,50);
-        pc3.setListener(new RequestListener(0) {
-            @Override
-            public void onRequestReady(int requmber, String message) {
-                if (requmber == 1001) {
-                    Log.d("liked Users", pc3.getPhotoLikedUsers().toString());
-                }
-            }
-        });
-
-
     }
-
 
 
 
@@ -512,72 +491,162 @@ public class MainActivity extends Activity {
         uc.setListener(new RequestListener(0) {
             @Override
             public void onRequestReady(int requmber, String message) {
-                ImagePagerAdapter adapter = new ImagePagerAdapter(uc.getPhotos(),getAppContext());
+
+
+                ImagePagerAdapter adapter = new ImagePagerAdapter(uc.getPhotos(), getAppContext(), new ImagePagerAdapter.onDoneClick() {
+                    @Override
+                    public void onPagerVClick(View v, int position, Photo ph) {
+                        switch (v.getId()) {
+
+                            case R.id.likeic:
+                                onLikeUnlike(v, position, ph);
+                                return;
+
+                            case R.id.commentic:
+                                onCommentsClick(v, position, ph);
+                                return;
+
+                            case R.id.addcomm:
+                                onAddCommentClick(v,position,ph);
+
+                                default:  ;
+                        }
+                    }
+
+                });
                 viewPager.setAdapter(adapter);
+
 
 
             }
         });
-        uc.requestUserPhotos("me",0,Integer.MAX_VALUE);
 
-
-        try {
-
-            PhotoControllerTests.testRequestPhoto("164458028001202",getAccessToken(),getAppContext());
-        }catch (Exception e){
-            Toast.makeText(getAppContext(),e.toString(),Toast.LENGTH_LONG).show();
-        }
-    }
-
-    final int IMAGE_PICK = 789987;
-    public void onUpload(View v){
-
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
-        startActivityForResult(intent, IMAGE_PICK);
+            uc.requestUserPhotos("me", 0, Integer.MAX_VALUE);
 
     }
 
-    public void onLikeUnlike(View v){
-        int phindx = viewPager.getCurrentItem();
-        final Photo tmp = ((ImagePagerAdapter)viewPager.getAdapter()).getmImages().get(phindx);
-        PhotoController pc = new PhotoController(getAppContext());
-        if(tmp.getIsLiked()==null || tmp.getIsLiked()==false ){
-            pc.like(tmp.getId());
-            pc.setListener(new RequestListener(0) {
-                @Override
-                public void onRequestReady(int requmber, String message) {
-                    if(requmber==701)
-                    tmp.setIsLiked(true);
+            public void onUpload(View v) {
 
-                    if(requmber==801)
-                        tmp.setIsLiked(false);
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+                startActivityForResult(intent, IMAGE_PICK);
+
+            }
+
+            public void onLikeUnlike(View v, int position, final Photo ph) {
+                PhotoController pc = new PhotoController(MainActivity.this);
+                pc.setListener(new RequestListener(0) {
+                    @Override
+                    public void onRequestReady(int requmber, String message) {
+
+                        if (requmber == 701) {
+                            Log.d("Like", message);
+                            ph.setIsLiked(true);
+                        }
+                        if (requmber == 801) {
+                            Log.d("Like", message);
+                            ph.setIsLiked(false);
+                        }
+                    }
+                });
+
+                if (ph.getIsLiked() == null || ph.getIsLiked() == false) {
+                    pc.like((ph.getId()));
+                } else if (ph.getIsLiked() == true) {
+                    pc.unLike(ph.getId());
                 }
-            });
-        }
-        else if(tmp.getIsLiked()==true){
-            pc.unLike(tmp.getId());
+
+
+            }
+
+
+            public void onCommentsClick(View v, int position, final Photo ph) {
+                final PhotoController pc = new PhotoController(this);
+
+
+                pc.setListener(new RequestListener(0) {
+                    @Override
+                    public void onRequestReady(int requmber, String message) {
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+
+                        alertDialog.setTitle("Comments");
+
+                        ListAdapter adapter = new ListAdapter(MainActivity.this, R.layout.item_list_view, pc.getCommentsLists());
+                        alertDialog.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+
+
+                        alertDialog.show();
+
+                    }
+                });
+                pc.requestComments(ph.getId(), 0, Integer.MAX_VALUE);
+            }
+
+
+            public void onAddCommentClick(View v,int position, final Photo ph){
+                final PhotoController pc = new PhotoController(this);
+                final Dialog commentDialog = new Dialog(MainActivity.this);
+                commentDialog.setTitle("New Comment");
+                pc.setListener(new RequestListener(0) {
+                    @Override
+                    public void onRequestReady(int requmber, String message) {
+                         if(requmber==401) {
+                             commentDialog.dismiss();
+                             Toast.makeText(MainActivity.this,"Successfully commented",Toast.LENGTH_SHORT).show();
+                         }
+                    }
+                });
+
+
+                commentDialog.setContentView(R.layout.add_comment);
+                Button okBtn = (Button) commentDialog.findViewById(R.id.ok);
+                okBtn.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+
+                        String txtcomment = ((EditText)(commentDialog.getWindow().findViewById(R.id.body))).getText().toString();
+                        pc.addComment(ph.getId(),new Comment(txtcomment,true));
+
+
+                    }
+
+                });
+                Button cancelBtn = (Button) commentDialog.findViewById(R.id.cancel);
+                cancelBtn.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+
+                        commentDialog.dismiss();
+                    }
+                });
+                  commentDialog.show();
+
+
+
+
+            }
+
+            public void onFollowings(View v) {
+
+
+            }
+
+
+            @Override
+            public void onStop() {
+                super.onStop();
+            }
 
         }
 
 
-    }
-
-    public void onFollowings(View v){
-
-
-    }
-
-
-
-
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-}
 
 
 

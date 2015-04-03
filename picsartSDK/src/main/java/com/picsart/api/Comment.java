@@ -42,6 +42,15 @@ public class Comment {
     @Expose
     private String commenterId;
 
+    private String potoID;
+
+    public String getPotoID() {
+        return potoID;
+    }
+
+    public void setPotoID(String potoID) {
+        this.potoID = potoID;
+    }
 
     public String getId() {
         return id;

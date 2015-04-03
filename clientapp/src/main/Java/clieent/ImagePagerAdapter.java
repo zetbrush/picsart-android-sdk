@@ -37,10 +37,12 @@ public class ImagePagerAdapter extends PagerAdapter {
 
     private ArrayList<Photo> mImages = new ArrayList<>();
 
+    private onDoneClick clickList;
 
-    public ImagePagerAdapter(ArrayList<Photo> imPaths, Context ctx) {
+    public ImagePagerAdapter(ArrayList<Photo> imPaths, Context ctx, onDoneClick onclicklisten ) {
         this.mImages = imPaths;
         this.ctx = ctx;
+        clickList = onclicklisten;
     }
 
     @Override
@@ -54,9 +56,9 @@ public class ImagePagerAdapter extends PagerAdapter {
     }
 
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Object instantiateItem(ViewGroup container, final int position) {
 
-        ImageView imageView = new ImageView(ctx);
+        final ImageView imageView = new ImageView(ctx);
 
         LayoutInflater inflater = (LayoutInflater) ctx.getSystemService
                 (Context.LAYOUT_INFLATER_SERVICE);
@@ -87,7 +89,7 @@ public class ImagePagerAdapter extends PagerAdapter {
         ImageView cmmim = (ImageView) fl.findViewById(R.id.commentic);
         TextView titxt = (TextView) fl.findViewById(R.id.titletext);
         TextView tagst = (TextView) fl.findViewById(R.id.tags);
-
+        ImageView addcomm = (ImageView) fl.findViewById(R.id.addcomm);
         if (mImages.get(position).getLikesCount() > 0) {
             lkim.setImageBitmap(glowimage(R.drawable.likeic));
 
@@ -112,9 +114,44 @@ public class ImagePagerAdapter extends PagerAdapter {
         info.setText(mImages.get(position).getLikesCount() + " likes\n" + mImages.get(position).getCommentsCount() + " comments\n" + mImages.get(position).getViewsCount() + " Views");
 
 
+
+
+
+
+        //Like and Unlike  Listener Redirection///
+        lkim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ImagePagerAdapter.this.clickList.onPagerVClick(v, position, mImages.get(position));
+
+                 }});
+            ///////////////
+
+
+            ///Show Comments  Listener Redirection/////
+            cmmim.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View v) {
+
+                    ImagePagerAdapter.this.clickList.onPagerVClick(v, position, mImages.get(position));
+
+              }});
+
+        //Add Comment Listener Redirection ////
+        addcomm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ImagePagerAdapter.this.clickList.onPagerVClick(v, position, mImages.get(position));
+            }
+        });
+
+
+
+
         ((ViewPager) container).addView(fl, 0);
         return fl;
     }
+
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
@@ -204,7 +241,18 @@ public class ImagePagerAdapter extends PagerAdapter {
             }
         }
     }
+
+
+    public interface  onDoneClick {
+        void onPagerVClick(View v, int position, Photo ph);
+
+    }
+
+
+
 }
+
+
 
 
 

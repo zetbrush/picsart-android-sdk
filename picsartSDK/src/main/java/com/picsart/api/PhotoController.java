@@ -200,7 +200,7 @@ public class PhotoController {
      *                onResponse       301 code will be called in listener
      *                onErrorResponse  303 code will be called in listener
      */
-    public synchronized void requestComments(String photoId, final int offset, final int limit) {
+    public synchronized void requestComments(final String photoId, final int offset, final int limit) {
         String url = PicsArtConst.PHOTO_PRE_URL + photoId + PicsArtConst.PHOTO_ADD_COMMENT_URL + PicsArtConst.TOKEN_PREFIX + token;
         PARequest req = new PARequest(Request.Method.GET, url, null, null);
 
@@ -220,6 +220,7 @@ public class PhotoController {
                         JSONObject val = _comArr.getJSONObject(i);
                         Gson gson = new Gson();
                         comment.add(i, (gson.fromJson(val.toString(), Comment.class)));
+                        comment.get(i).setPotoID(photoId);
 
                     }
                     Collections.reverse(comment);
@@ -533,7 +534,7 @@ public class PhotoController {
      *           onResponse          901 code will be called in listener
      *           onErrorResponse     903 code will be called in listener
      */
-    public synchronized void requestCommentByid(String photoId, String id) {
+    public synchronized void requestCommentByid(final String photoId, String id) {
 
 
         String url = PicsArtConst.PHOTO_GENERAL_PREFIX + photoId + PicsArtConst.PHOTO_COMMENT_MIDLE + id + PicsArtConst.TOKEN_PREFIX + token;
@@ -554,6 +555,7 @@ public class PhotoController {
                 //photo = new Photo(Photo.IS.GENERAL);
                 Gson gson = new Gson();
                 _comment = gson.fromJson(response.toString(), Comment.class);
+                _comment.setPotoID(photoId);
                 listener.onRequestReady(901, response.toString());
             }
         });
@@ -659,12 +661,11 @@ public class PhotoController {
         protected synchronized JSONObject doInBackground(Photo... phot) {
 
 
-
-
             final int[] iter = new int[1];
 
             Looper.prepare();
             for (Photo ph : phot) {
+
 
                 try {
                     final File file = new File(ph.getPath());
@@ -763,6 +764,7 @@ public class PhotoController {
                     e.printStackTrace();
                     notifyListeners(103, "error ");
                 }
+
 
                 try {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(
