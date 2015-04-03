@@ -41,6 +41,8 @@ public class UserController {
     public static final String BLOCKS = "blocks";
     public static final String PLACES = "places";
     public static final String PHOTOS = "photos";
+    public static final String TAGS = "tags";
+    public static final String TAG = "tag";
 
     public static final int MAX_LIMIT = Integer.MAX_VALUE;
 
@@ -521,7 +523,23 @@ public class UserController {
             @Override
             public void onResponse(Object response) {
 
-                Log.d(MY_LOGS, response.toString());
+                JSONArray jsonArray = null;
+                try {
+                    jsonArray = new JSONArray(((JSONObject) response).get(TAGS).toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    try {
+
+                        JSONObject jsonObject1 = new JSONObject(jsonArray.get(i).toString());
+                        userTags.add(jsonObject1.getString(TAG));
+                        Log.d(MY_LOGS, userTags.get(i));
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
                 UserController.this.listener.onRequestReady(208, response.toString());
             }
         });
