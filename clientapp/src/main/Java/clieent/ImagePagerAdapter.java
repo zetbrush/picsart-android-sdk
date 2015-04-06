@@ -3,16 +3,15 @@ package clieent;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.BlurMaskFilter;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -70,8 +69,8 @@ public class ImagePagerAdapter extends PagerAdapter {
         imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 
 
-        //il = new ImageLoader(ctx);
-        //il.DisplayImage((mImages.get(position)).getUrl()+"?r1024x1024", R.drawable.preloader, (ImageView) fl.findViewById(R.id.image_only));
+      //  il = new ImageLoader(ctx);
+      //  il.DisplayImage((mImages.get(position)).getUrl()+"?r1024x1024", R.drawable.preloader, (ImageView) fl.findViewById(R.id.image_only));
 
         URL url = null;
         try {
@@ -79,21 +78,23 @@ public class ImagePagerAdapter extends PagerAdapter {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        Bitmap bmp = null;
+       Bitmap bmp = null;
 
         new BitmapWorkerTask(((ImageView) fl.findViewById(R.id.image_only))).execute(url);
 
         ((ImageView) fl.findViewById(R.id.image_only)).setImageBitmap(bmp);
 
-        ImageView lkim = (ImageView) fl.findViewById(R.id.likeic);
+        final ImageView lkim = (ImageView) fl.findViewById(R.id.likeic);
         ImageView cmmim = (ImageView) fl.findViewById(R.id.commentic);
         TextView titxt = (TextView) fl.findViewById(R.id.titletext);
         TextView tagst = (TextView) fl.findViewById(R.id.tags);
         ImageView addcomm = (ImageView) fl.findViewById(R.id.addcomm);
-        if (mImages.get(position).getLikesCount() > 0) {
-            lkim.setImageBitmap(glowimage(R.drawable.likeic));
+        if (mImages.get(position).getIsLiked() ==null || !mImages.get(position).getIsLiked() ) {
+            lkim.startAnimation(blinkImage());
 
         }
+
+
 
         if (mImages.get(position).getTitle() != null && mImages.get(position).getTitle() != "") {
             titxt.setText(mImages.get(position).getTitle());
@@ -124,7 +125,15 @@ public class ImagePagerAdapter extends PagerAdapter {
             public void onClick(View v) {
                 ImagePagerAdapter.this.clickList.onPagerVClick(v, position, mImages.get(position));
 
+                if(mImages.get(position).getIsLiked()!=null && mImages.get(position).getIsLiked()){
+                    lkim.startAnimation(blinkImage());
+                }
+                else lkim.setAnimation(null);
+
+                    notifyDataSetChanged();
                  }});
+
+
             ///////////////
 
 
@@ -159,40 +168,14 @@ public class ImagePagerAdapter extends PagerAdapter {
     }
 
 
-    private Bitmap glowimage(int resource) {
+    private AlphaAnimation blinkImage() {
 
-        int margin = 24;
-        int halfMargin = margin / 2;
-
-
-        int glowRadius = 25;
-
-        // the glow color
-        int glowColor = Color.rgb(0, 192, 255);
-
-        // The original image to use
-        Bitmap src = BitmapFactory.decodeResource(ctx.getResources(),resource);
-
-        // extract the alpha from the source image
-        Bitmap alpha = src.extractAlpha();
-
-        // The output bitmap (with the icon + glow)
-        Bitmap bmp = Bitmap.createBitmap(src.getWidth() + margin,
-                src.getHeight() + margin, Bitmap.Config.ARGB_8888);
-
-        // The canvas to paint on the image
-        Canvas canvas = new Canvas(bmp);
-
-        Paint paint = new Paint();
-        paint.setColor(glowColor);
-
-        // outer glow
-        paint.setMaskFilter(new BlurMaskFilter(glowRadius, BlurMaskFilter.Blur.OUTER));
-        canvas.drawBitmap(alpha, halfMargin, halfMargin, paint);
-
-        // original icon
-        canvas.drawBitmap(src, halfMargin, halfMargin, null);
-        return bmp;
+        AlphaAnimation blinkanimation= new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
+        blinkanimation.setDuration(1000); // duration - half a second
+        blinkanimation.setInterpolator(new LinearInterpolator()); // do not alter animation rate
+        blinkanimation.setRepeatCount(20); // Repeat animation infinitely
+        blinkanimation.setRepeatMode(Animation.REVERSE);
+        return blinkanimation;
     }
 
 

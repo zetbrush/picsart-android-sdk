@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -49,15 +50,15 @@ public class MainActivity extends Activity {
     Button auth;
     TextView Access;
     Button testcallBtt;
-    Button likebtn;
-    Button unLikebtn;
-    Button commentbtn;
+    Button following;
+    Button follower;
     Button getPhotoinf;
     Button uploadbtn;
     ViewPager viewPager;
     static String token;
     ArrayList<String> imagePaths =null;
     final int IMAGE_PICK = 789654;
+    public static String USER_ID="me";
 
     static int[] counter = new int[1];
 
@@ -84,7 +85,8 @@ public class MainActivity extends Activity {
         uploadbtn = (Button)findViewById(R.id.uploadph);
         testcallBtt = (Button) findViewById(R.id.testCall);
         viewPager = (ViewPager) findViewById(R.id.myviewpager);
-
+        following = (Button)findViewById(R.id.followings);
+        follower = (Button)findViewById(R.id.followers);
 
 
         auth = (Button) findViewById(R.id.auth);
@@ -101,48 +103,7 @@ public class MainActivity extends Activity {
 
 
 
-        PhotoController.resgisterListener(new RequestListener(IMAGE_PICK) {
-            @Override
-            public void onRequestReady(int requmber, String message) {
-                if (requmber == IMAGE_PICK) {
-                    final ProgressDialog d = new ProgressDialog(MainActivity.this, AlertDialog.THEME_HOLO_DARK);
-                    d.setCanceledOnTouchOutside(true);
-                    String path = imagePaths.get(0);
-                    Photo ph = new Photo(Photo.IS.GENERAL);
-                    ph.setPath(path);
-                    PhotoController.ProgressListener progrs = new PhotoController.ProgressListener() {
-                        @Override
-                        public boolean doneFlag(boolean b) {
-                            if (b) {
-                                d.dismiss();
-                            }
-                            return b;
-                        }
 
-                        @Override
-                        public void transferred(long num) {
-                            d.setProgress((int) num);
-                        }
-                    };
-
-
-                    d.setTitle("Uploading Photo..");
-                    d.setCancelable(true);
-
-                    d.setProgressStyle(d.STYLE_HORIZONTAL);
-                    d.show();
-                    d.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                        @Override
-                        public void onCancel(DialogInterface dialog) {
-                            PhotoController.cancelUpload();
-                            dialog.dismiss();
-                        }
-                    });
-                    PhotoController.uploadPhoto(progrs, ph);
-
-                }
-            }
-        });
 
 
 
@@ -159,6 +120,7 @@ public class MainActivity extends Activity {
     }
 
     public void initing() {
+        onPhotoGet(getPhotoinf);
 
         auth.setOnClickListener(new View.OnClickListener() {
             Dialog authDialog;
@@ -305,9 +267,10 @@ public class MainActivity extends Activity {
     }
 
 
-    public void onTestCallClick(View v) {
+    public void myPageClick(View v) {
 
-
+        USER_ID="me";
+        onPhotoGet(getPhotoinf);
 
 
         final ArrayList<Photo> tmpPh = new ArrayList<>();
@@ -331,7 +294,6 @@ public class MainActivity extends Activity {
 
             }
         };
-
         RequestListener listenerTwo = new RequestListener(3335) {
             @Override
             public void onRequestReady(int requmber, String message) {
@@ -345,10 +307,7 @@ public class MainActivity extends Activity {
         };
 
 
-        Log.d("Access token", getAccessToken());
         final PhotoController pc = new PhotoController(getAppContext(), getAccessToken());
-
-
         ///Example  uploading photo to account/////
         Photo toUpload = new Photo(Photo.IS.GENERAL);
         toUpload.setLocation(new Location("poxoooc", "Qaxaaaq", "Plac@@@", "State@@", "Zipcod@@", "Armenia", new ArrayList<>(Arrays.asList(45.0, 37.0))));
@@ -423,36 +382,9 @@ public class MainActivity extends Activity {
         });
 
 
-
-        Photo phh = new Photo(Photo.IS.AVATAR);
-        phh.setLocation(new Location("nor poxoc", "nor Qaxaaaq", "nor Plac@@@", "nor State@@", "nor Zipcod@@", "Armenia", new ArrayList<>(Arrays.asList(40.0, 36.0))));
-        phh.setTitle("nor nkariii anun 2");
-        phh.setTags(new ArrayList<>(Arrays.asList("nor tag1", "nor tag2", "nor tag3")));
-        phh.setId("164458028001202");
-        phh.setPath("/storage/removable/sdcard1/DCIM/100ANDRO/DSC_0014.jpg");
-
-
-        final UserController uc = new UserController(token, getAppContext());
-        uc.setListener(new RequestListener(0) {
-            @Override
-            public void onRequestReady(int requmber, String message) {
-                if (requmber == 207) {
-                    for (int i = 0; i < uc.getPhotos().size(); i++) {
-
-                        Log.d("PhotoResponse", uc.getPhotos().get(i).getId());
-                    }
-                }
-
-            }
-        });
-
          //uc.requestLikedPhotos("me",2,1);
          // uc.requestUserPhotos("me",0,60);
 
-        Photo ph2 = new Photo(Photo.IS.GENERAL);
-        ph2.setTitle("blaTitle");
-        ph2.setPublic(Boolean.TRUE);
-        ph2.setPath("/storage/removable/sdcard1/DCIM/100ANDRO/DSC_0015.jpg");
 
 
         // PhotoControllerTests.testDeleteComment("164458028001202", "550abcce556768804b00016d",token);
@@ -475,10 +407,7 @@ public class MainActivity extends Activity {
         //++ pc.unLike("164458028001202");
         //++ pc.deleteComment("164458028001202", "550abcd4556768804b00016e");
 
-        String[] phids = {"164548899000202", "164294945000202", "147971743000201"};
-        for (int i = 0; i < 3; i++) {
-            pc.requestPhoto(phids[i]);
-        }
+
 
     }
 
@@ -507,9 +436,10 @@ public class MainActivity extends Activity {
                                 return;
 
                             case R.id.addcomm:
-                                onAddCommentClick(v,position,ph);
+                                onAddCommentClick(v, position, ph);
 
-                                default:  ;
+                            default:
+                                ;
                         }
                     }
 
@@ -517,19 +447,65 @@ public class MainActivity extends Activity {
                 viewPager.setAdapter(adapter);
 
 
-
             }
         });
 
-            uc.requestUserPhotos("me", 0, Integer.MAX_VALUE);
+            uc.requestUserPhotos(USER_ID, 0, Integer.MAX_VALUE);
 
     }
 
             public void onUpload(View v) {
+                //registering listener for uploading task, which will be called if IMAGE_PICK  Listener will be notified
+
+                PhotoController.resgisterListener(new RequestListener(IMAGE_PICK) {
+                    @Override
+                    public void onRequestReady(int requmber, String message) {
+                        if (requmber == IMAGE_PICK) {
+                            final ProgressDialog d = new ProgressDialog(MainActivity.this, AlertDialog.THEME_HOLO_DARK);
+                            d.setCanceledOnTouchOutside(true);
+                            String path = imagePaths.get(0);
+                            Photo ph = new Photo(Photo.IS.GENERAL);
+                            ph.setPath(path);
+                            PhotoController.ProgressListener progrs = new PhotoController.ProgressListener() {
+                                @Override
+                                public boolean doneFlag(boolean b) {
+                                    if (b) {
+                                        d.dismiss();
+                                        Toast.makeText(MainActivity.this,"Successfully uploaded",Toast.LENGTH_SHORT).show();
+                                        onPhotoGet(getPhotoinf);
+                                    }
+                                    return b;
+                                }
+
+                                @Override
+                                public void transferred(long num) {
+                                    d.setProgress((int) num);
+                                }
+                            };
+
+
+                            d.setTitle("Uploading Photo..");
+                            d.setCancelable(true);
+
+                            d.setProgressStyle(d.STYLE_HORIZONTAL);
+                            d.show();
+                            d.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                @Override
+                                public void onCancel(DialogInterface dialog) {
+                                    PhotoController.cancelUpload();
+                                    dialog.dismiss();
+                                }
+                            });
+                            PhotoController.uploadPhoto(progrs, ph);
+
+                        }
+                    }
+                });
 
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/*");
                 startActivityForResult(intent, IMAGE_PICK);
+
 
             }
 
@@ -542,6 +518,7 @@ public class MainActivity extends Activity {
                         if (requmber == 701) {
                             Log.d("Like", message);
                             ph.setIsLiked(true);
+
                         }
                         if (requmber == 801) {
                             Log.d("Like", message);
@@ -567,24 +544,27 @@ public class MainActivity extends Activity {
                 pc.setListener(new RequestListener(0) {
                     @Override
                     public void onRequestReady(int requmber, String message) {
-                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+                        if(requmber==301) {
+                            AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
 
-                        alertDialog.setTitle("Comments");
+                            alertDialog.setTitle("Comments");
 
-                        ListAdapter adapter = new ListAdapter(MainActivity.this, R.layout.item_list_view, pc.getCommentsLists());
-                        alertDialog.setAdapter(adapter, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                            ListCommentAdapter adapter = new ListCommentAdapter(MainActivity.this, R.layout.item_list_view, pc.getCommentsLists());
+                            alertDialog.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
 
-                            }
-                        });
+                                }
+                            });
 
 
-                        alertDialog.show();
+                            alertDialog.show();
+                        }
+                        else Toast.makeText(MainActivity.this,message.toString(),Toast.LENGTH_SHORT).show();
 
                     }
                 });
-                pc.requestComments(ph.getId(), 0, Integer.MAX_VALUE);
+                pc.requestComments(ph.getId(), ph.getCommentsCount()-50, Integer.MAX_VALUE);
             }
 
 
@@ -634,9 +614,86 @@ public class MainActivity extends Activity {
             }
 
             public void onFollowings(View v) {
+                final UserController uc = new UserController(getAccessToken(),MainActivity.this);
+
+                uc.setListener(new RequestListener(0) {
+                    @Override
+                    public void onRequestReady(int requmber, String message) {
+                        if (requmber == 204) {
+                              final AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+
+                            alertDialog.setTitle("Followings :: #"+uc.getUserFollowing().size()+"");
+
+                            ListFollowAdapter adapter = new ListFollowAdapter(MainActivity.this, R.layout.item_list_view, uc.getUserFollowing(),true);
+
+                            alertDialog.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+
+                            adapter.registerDataSetObserver(new DataSetObserver() {
+                                @Override
+                                public void onChanged() {
+                                    super.onChanged();
+                                    onFollowings(following);
+                                    onPhotoGet(getPhotoinf);
+
+                                }
+                            });
+
+
+                            alertDialog.show();
+                        }
+                    }
+                });
+                uc.requestUserFollowing(USER_ID, 0, Integer.MAX_VALUE);
+
+
 
 
             }
+
+
+    public void onFollowers(View v){
+
+        final UserController uc = new UserController(getAccessToken(),MainActivity.this);
+
+        uc.setListener(new RequestListener(0) {
+            @Override
+            public void onRequestReady(int requmber, String message) {
+                if (requmber == 203) {
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+
+                    alertDialog.setTitle("Followers :: #" + uc.getUserFollowers().size() + "");
+
+                    ListFollowAdapter adapter = new ListFollowAdapter(MainActivity.this, R.layout.item_list_view, uc.getUserFollowers(),false);
+
+                    alertDialog.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    adapter.registerDataSetObserver(new DataSetObserver() {
+                        @Override
+                        public void onChanged() {
+                            super.onChanged();
+                            onFollowers(follower);
+                            onPhotoGet(getPhotoinf);
+
+                        }
+                    });
+
+
+                    alertDialog.show();
+                }
+            }
+        });
+        uc.requestUserFollowers(USER_ID, 0, Integer.MAX_VALUE);
+    }
 
 
             @Override

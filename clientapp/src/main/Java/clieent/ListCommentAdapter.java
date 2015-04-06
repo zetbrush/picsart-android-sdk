@@ -17,15 +17,16 @@ import java.util.List;
 /**
  * Created by Arman Andreasyan on 4/3/15.
  */
-public class ListAdapter extends ArrayAdapter<Comment> {
+public class ListCommentAdapter extends ArrayAdapter<Comment> {
 
-    public ListAdapter(Context context, int textViewResourceId) {
+    public ListCommentAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
     }
 
-    public ListAdapter(Context context, int resource, List<Comment> items) {
+    public ListCommentAdapter(Context context, int resource, List<Comment> items) {
         super(context, resource, items);
     }
+
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
@@ -64,7 +65,7 @@ public class ListAdapter extends ArrayAdapter<Comment> {
             delv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    PhotoController pc = new PhotoController(ListAdapter.this.getContext(),MainActivity.getAccessToken());
+                    PhotoController pc = new PhotoController(ListCommentAdapter.this.getContext(),MainActivity.getAccessToken());
                     pc.setListener(new RequestListener(0) {
                         @Override
                         public void onRequestReady(int requmber, String message) {

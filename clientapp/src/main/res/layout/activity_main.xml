@@ -22,10 +22,10 @@
             android:layout_width="wrap_content"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Api call test"
+            android:text="My Page"
             android:id ="@+id/testCall"
             android:layout_gravity="right"
-            android:onClick="onTestCallClick"/>
+            android:onClick="myPageClick"/>
 
         <Button
             android:layout_width="wrap_content"
