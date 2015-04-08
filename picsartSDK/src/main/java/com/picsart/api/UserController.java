@@ -533,8 +533,13 @@ public class UserController {
                     try {
 
                         JSONObject jsonObject1 = new JSONObject(jsonArray.get(i).toString());
+
                         userTags.add(jsonObject1.getString(TAG));
-                        Log.d(MY_LOGS, userTags.get(i));
+                    /*String key = jsonObject1.getString(TAG);
+                    ArrayList<Photo> value = PhotoFactory.parseFromAsArray(jsonArray.get(i), 0, MAX_LIMIT, PHOTOS);
+                    Log.d(MY_LOGS, key);
+                    Log.d(MY_LOGS, PhotoFactory.parseFromAsArray(jsonArray.get(i), 0, MAX_LIMIT, PHOTOS).size() + "");
+                    userTags.put(key, value);*/
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -745,8 +750,9 @@ public class UserController {
             Log.e(ERROR, NULL_ID_ERROR);
             return;
         }
-        String url = PicsArtConst.SHOW_USER + PicsArtConst.ME_PREFIX + PicsArtConst.FOLLOWING_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
-        StringRequest req = new StringRequest(Request.Method.POST, url,
+
+        String url = PicsArtConst.SHOW_USER + PicsArtConst.ME_PREFIX + PicsArtConst.FOLLOWING_PREFIX +"/"+unfollowingId+ PicsArtConst.TOKEN_PREFIX + accessToken;
+        StringRequest req = new StringRequest(Request.Method.DELETE, url,
 
                 new Response.Listener<String>() {
                     @Override
