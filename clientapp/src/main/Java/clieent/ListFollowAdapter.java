@@ -96,6 +96,7 @@ public class ListFollowAdapter extends ArrayAdapter<User> {
             public boolean onLongClick(View v) {
 
                 MainActivity.USER_ID= getItem(position).getId().toString();
+                MainActivity.USER_NM= getItem(position).getUsername();
                 notifyDataSetChanged();
                 return true;
             }

@@ -2,8 +2,6 @@ package clieent;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -12,23 +10,25 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.picsart.api.Photo;
 
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-
-import clieent.Utils_Image.ImageLoader;
 
 public class ImagePagerAdapter extends PagerAdapter {
     Context ctx;
-    static  ImageLoader il;
+    ImageLoaderConfiguration conf;
+    com.nostra13.universalimageloader.core.ImageLoader imageLoader;
 
     public ArrayList<Photo> getmImages() {
         return mImages;
@@ -38,10 +38,13 @@ public class ImagePagerAdapter extends PagerAdapter {
 
     private onDoneClick clickList;
 
-    public ImagePagerAdapter(ArrayList<Photo> imPaths, Context ctx, onDoneClick onclicklisten ) {
+    public ImagePagerAdapter(ArrayList<Photo> imPaths, Context ctx, onDoneClick onclicklisten) {
         this.mImages = imPaths;
         this.ctx = ctx;
         clickList = onclicklisten;
+        conf = ImageLoaderConfiguration.createDefault(ctx);
+        imageLoader = com.nostra13.universalimageloader.core.ImageLoader.getInstance();
+        imageLoader.init(conf);
     }
 
     @Override
@@ -66,23 +69,49 @@ public class ImagePagerAdapter extends PagerAdapter {
 
         int padding = 3;
         imageView.setPadding(padding, padding, padding, padding);
-        imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 
 
-      //  il = new ImageLoader(ctx);
-      //  il.DisplayImage((mImages.get(position)).getUrl()+"?r1024x1024", R.drawable.preloader, (ImageView) fl.findViewById(R.id.image_only));
+        ImageView img = (ImageView) fl.findViewById(R.id.image_only);
 
-        URL url = null;
-        try {
-            url = new URL(mImages.get(position).getUrl()+"?r1024x1024");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-       Bitmap bmp = null;
+        final DisplayImageOptions optionsImg = new DisplayImageOptions.Builder()
+                .showImageForEmptyUri(R.drawable.preloader)
+                .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
+                .cacheInMemory(true)
+                .bitmapConfig(Bitmap.Config.ARGB_8888)
+                .considerExifParams(true)
+                .showImageOnLoading(R.drawable.preloader)
+                .displayer(new FadeInBitmapDisplayer(1555))
+                .build();
 
-        new BitmapWorkerTask(((ImageView) fl.findViewById(R.id.image_only))).execute(url);
+        imageLoader.displayImage((mImages.get(position)).getUrl() + "?r1024x1024", img, optionsImg, new ImageLoadingListener() {
+            @Override
+            public void onLoadingStarted(String s, View view) {
+                view.startAnimation(rotateLoadingAnim());
+            }
 
-        ((ImageView) fl.findViewById(R.id.image_only)).setImageBitmap(bmp);
+            @Override
+            public void onLoadingFailed(String s, View view, FailReason failReason) {
+                if(view !=null) {
+                    view.setAnimation(null);
+                    view.setBackgroundResource(R.drawable.noimageavailable);
+                }
+            }
+
+            @Override
+            public void onLoadingComplete(String s, View view, Bitmap bitmap) {
+                view.setAnimation(null);
+
+            }
+
+            @Override
+            public void onLoadingCancelled(String s, View view) {
+                if(view !=null) {
+                    view.setAnimation(null);
+                    view.setBackgroundResource(R.drawable.noimageavailable);
+                }
+            }
+        });
+
 
         final ImageView lkim = (ImageView) fl.findViewById(R.id.likeic);
         ImageView cmmim = (ImageView) fl.findViewById(R.id.commentic);
@@ -178,52 +207,18 @@ public class ImagePagerAdapter extends PagerAdapter {
         return blinkanimation;
     }
 
+    private Animation rotateLoadingAnim(){
 
-
-    class BitmapWorkerTask extends AsyncTask<URL, Void, Bitmap> {
-        private final WeakReference<ImageView> imageViewReference;
-        private URL url;
-        Bitmap bmp = null;
-        ImageView iv;
-
-
-        public BitmapWorkerTask(ImageView imageView) {
-            imageView.setImageResource(R.drawable.preloader);
-            iv = imageView;
-            // Use a WeakReference to ensure the ImageView can be garbage collected
-            imageViewReference = new WeakReference<ImageView>(imageView);
-        }
-
-        // Decode image in background.
-        @Override
-        protected Bitmap doInBackground(URL... params) {
-            url = params[0];
-
-            if (url != null) {
-                try {
-
-                    bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return bmp;
-        }
-
-
-
-        // Once complete, see if ImageView is still around and set bitmap.
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            if (imageViewReference != null && bitmap != null) {
-                final ImageView imageView = imageViewReference.get();
-                imageView.animate().cancel();
-                if (imageView != null) {
-                    imageView.setImageBitmap(bitmap);
-                }
-            }
-        }
+        RotateAnimation anim = new RotateAnimation(0.0f, 360.0f,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
+                0.5f);
+        anim.setInterpolator(new LinearInterpolator());
+        anim.setRepeatCount(Animation.INFINITE);
+        anim.setDuration(700);
+       return anim;
     }
+
+
 
 
     public interface  onDoneClick {

@@ -31,7 +31,7 @@ android {
 
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile files ('libs/unimloader1.9.3.jar')
     compile 'com.android.support:appcompat-v7:21.0.2'
     compile project(':picsartSDK')
 }

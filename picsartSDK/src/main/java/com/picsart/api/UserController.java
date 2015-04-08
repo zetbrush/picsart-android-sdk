@@ -651,8 +651,7 @@ public class UserController {
 
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
 
-        //153741055000102
-        //155035207000102
+
 
     }
 
