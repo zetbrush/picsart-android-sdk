@@ -76,16 +76,23 @@ public class ListFollowAdapter extends ArrayAdapter<User> {
                                 remove(getItem(position));
                                 notifyDataSetChanged();
 
-                            } else if (requmber == 211) {
-
+                            } else if (requmber == 213) {
+                                remove(getItem(position));
+                                notifyDataSetChanged();
 
                             } else Log.i("UnFoll", message);
                         }
                     });
+                    if(MainActivity.USER_NM=="me"){
+                        if(ListFollowAdapter.this.isFollowing)
+                            uc.unfollowUserWithID(getItem(position).getId().toString());//unFollowing if is Follower othrwise blocking
+                        else uc.blockUserWithID(getItem(position).getId().toString());
 
-                    uc.blockUserWithID(getItem(position).getId().toString());
-                    if(ListFollowAdapter.this.isFollowing)   //unFollowing if is Follower othrwise blocking
-                    uc.unblockUserWithID(getItem(position).getId().toString());
+                    }
+                    else {
+                        uc.blockUserWithID(getItem(position).getId().toString());
+                    }
+
 
                 }
             });

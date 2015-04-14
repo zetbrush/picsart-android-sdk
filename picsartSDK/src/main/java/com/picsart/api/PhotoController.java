@@ -61,7 +61,6 @@ public class PhotoController {
     private static Context ctx;
     private RequestListener listener;
 
-
     private static String token;
     private volatile Photo photo;
     private static volatile Comment _comment;
@@ -71,6 +70,10 @@ public class PhotoController {
 
 
     // Getters and Setters for all fields //
+
+    public static String getAccessToken() {
+        return token;
+    }
 
     public static void setAccessToken(String token) {
         PhotoController.token = token;

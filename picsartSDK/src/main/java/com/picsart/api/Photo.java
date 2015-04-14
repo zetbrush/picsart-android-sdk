@@ -141,6 +141,7 @@ public class Photo {
     }
 
     public Integer getCommentsCount() {
+        if(commentsCount==null)return 0;
         return commentsCount;
     }
 

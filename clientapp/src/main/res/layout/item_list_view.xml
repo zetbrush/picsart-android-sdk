@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/created"
         android:text=""
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="100dp"
         android:layout_alignParentRight="true"
         />
     <TextView
@@ -29,8 +29,8 @@
         android:text=""/>
 
     <ImageView
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:background="@drawable/deleteimg"
         android:layout_marginRight="23dp"
         android:layout_alignBottom="@+id/comtext"

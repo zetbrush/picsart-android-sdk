@@ -48,7 +48,16 @@ public class UserController {
 
     private Context ctx;
     private RequestListener listener;
-    private String accessToken;
+
+    public static void setAccessToken(String accessToken) {
+        UserController.accessToken = accessToken;
+    }
+
+    public static String getAccessToken() {
+        return accessToken;
+    }
+
+    private static  String accessToken;
 
     private User user;
     private ArrayList<Photo> userPhotos;
