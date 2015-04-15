@@ -60,15 +60,11 @@ public class ImagePagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, final int position) {
 
-        final ImageView imageView = new ImageView(ctx);
 
         LayoutInflater inflater = (LayoutInflater) ctx.getSystemService
                 (Context.LAYOUT_INFLATER_SERVICE);
 
         FrameLayout fl = (FrameLayout) inflater.inflate(R.layout.main_image_frame, container, false);
-
-        int padding = 3;
-        imageView.setPadding(padding, padding, padding, padding);
 
 
         ImageView img = (ImageView) fl.findViewById(R.id.image_only);
@@ -114,19 +110,17 @@ public class ImagePagerAdapter extends PagerAdapter {
 
 
         final ImageView lkim = (ImageView) fl.findViewById(R.id.likeic);
-        ImageView cmmim = (ImageView) fl.findViewById(R.id.commentic);
-        TextView titxt = (TextView) fl.findViewById(R.id.titletext);
+        ImageView commImBtn = (ImageView) fl.findViewById(R.id.commentic);
+        TextView titlText = (TextView) fl.findViewById(R.id.titletext);
         TextView tagst = (TextView) fl.findViewById(R.id.tags);
-        ImageView addcomm = (ImageView) fl.findViewById(R.id.addcomm);
+        ImageView addComm = (ImageView) fl.findViewById(R.id.addcomm);
         if (mImages.get(position).getIsLiked() ==null || !mImages.get(position).getIsLiked() ) {
             lkim.startAnimation(blinkImage());
 
         }
 
-
-
         if (mImages.get(position).getTitle() != null && mImages.get(position).getTitle() != "") {
-            titxt.setText(mImages.get(position).getTitle());
+            titlText.setText(mImages.get(position).getTitle());
 
         }
 
@@ -142,9 +136,6 @@ public class ImagePagerAdapter extends PagerAdapter {
         TextView info = (TextView) fl.findViewById(R.id.infotext);
 
         info.setText(mImages.get(position).getLikesCount() + " likes\n" + mImages.get(position).getCommentsCount() + " comments\n" + mImages.get(position).getViewsCount() + " Views");
-
-
-
 
 
 
@@ -167,16 +158,16 @@ public class ImagePagerAdapter extends PagerAdapter {
 
 
             ///Show Comments  Listener Redirection/////
-            cmmim.setOnClickListener(new View.OnClickListener() {
+            commImBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View v) {
-
                     ImagePagerAdapter.this.clickList.onPagerVClick(v, position, mImages.get(position));
 
-              }});
+                }
+            });
 
         //Add Comment Listener Redirection ////
-        addcomm.setOnClickListener(new View.OnClickListener() {
+        addComm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ImagePagerAdapter.this.clickList.onPagerVClick(v, position, mImages.get(position));

@@ -2,7 +2,6 @@ package clieent;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,12 +17,10 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.picsart.api.AccessToken;
-import com.picsart.api.Comment;
 import com.picsart.api.Photo;
 import com.picsart.api.PhotoController;
 import com.picsart.api.PicsArtConst;
@@ -39,13 +36,13 @@ public class MainActivity extends Activity {
     private static Context context;
 
     SharedPreferences pref;
-    Button signInBttn;
+    Button signInBtn;
     TextView userName;
     Button myPageBtn;
     Button followingBtn;
     Button followerBtn;
-    Button getPhotoinf;
-    Button uploadbtn;
+    Button getPhotosBtn;
+    Button uploadBtn;
     ViewPager viewPager;
     static String token;
     ArrayList<String> imagePaths = null;
@@ -53,7 +50,6 @@ public class MainActivity extends Activity {
     public static String USER_ID = "me";
     public static String USER_NM = "";
 
-    static int[] counter = new int[1];
 
     public static Context getAppContext() {
         return context;
@@ -73,23 +69,25 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
-        getPhotoinf = (Button) findViewById(R.id.photoinf);
-        uploadbtn = (Button) findViewById(R.id.uploadph);
+        getPhotosBtn = (Button) findViewById(R.id.photoinf);
+        uploadBtn = (Button) findViewById(R.id.uploadph);
         myPageBtn = (Button) findViewById(R.id.mypagebtn);
         viewPager = (ViewPager) findViewById(R.id.myviewpager);
         followingBtn = (Button) findViewById(R.id.followings);
         followerBtn = (Button) findViewById(R.id.followers);
         userName = (TextView) findViewById(R.id.usernametext);
-        signInBttn = (Button) findViewById(R.id.auth);
+        signInBtn = (Button) findViewById(R.id.auth);
 
         MainActivity.context = this.getApplicationContext();
+
+
         try {
             pref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
             token = pref.getString("access_token", "");
-            PhotoController.setAccessToken(token);
-            //Toast.makeText(getApplicationContext(), "Access Token " + token, Toast.LENGTH_LONG).show();
+            AccessToken.setAccessToken(token);
+
         } catch (Exception c) {
-            Log.i("ERROR Loading Token ", ": no token is persist ");
+            Log.i("ERROR Loading Token ", ": no token is persisted ");
         }
 
     }
@@ -99,34 +97,27 @@ public class MainActivity extends Activity {
         super.onResume();
         initing();
 
-
     }
 
     public void initing() {
-        if(getAccessToken()==null || getAccessToken()==""){
-            token=("");
-        }
-        else {
-            onPhotoGet(getPhotoinf);
-        }
-        signInBttn.setOnClickListener(new View.OnClickListener() {
+        onPhotoGet(getPhotosBtn);
+
+        signInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 AccessToken.setListener(new RequestListener(1) {
                     @Override
-                    public void onRequestReady(int requmber, String mmsg) {
+                    public void onRequestReady(int reqnumber, String mmsg) {
                         SharedPreferences.Editor edit = pref.edit();
                         if (mmsg.contains("logout")) {
                             edit.clear();
                             edit.commit();
-                        } else if (mmsg.contains("denied")) {
-                            Log.d("Token info: ", MainActivity.token + "::::: as message " + mmsg);
+                        } else if (mmsg.contains("access_denied")) {
+                            Log.d("Token info: ", mmsg);
                         } else {
                             MainActivity.token = AccessToken.getAccessToken();
-                            PhotoController.setAccessToken(mmsg);
-                            UserController.setAccessToken(mmsg);
-                            Log.d("Token info: ","::::: " + mmsg);
+                            Log.d("Token info: ", mmsg);
                             edit.putString("access_token", mmsg);
                             edit.commit();
                         }
@@ -140,15 +131,9 @@ public class MainActivity extends Activity {
     }
 
     //////listener for  image picking
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-    protected void onActivityResult(int requestCode, int resultCode,
-                                    Intent data) {
-        if (requestCode == 88) {    //Picking path of photo
-            if (resultCode == RESULT_OK) {
-
-            }
-        }
-
+            //Picking path of photo and notifying to upload when selection is made
         if (requestCode == IMAGE_PICK && resultCode == RESULT_OK) {
             Uri path = data.getData();
 
@@ -177,22 +162,21 @@ public class MainActivity extends Activity {
         USER_ID = "me";
         USER_NM = "ME";
         userName.setText(USER_NM);
-        onPhotoGet(getPhotoinf);
+        onPhotoGet(getPhotosBtn);
 
     }
 
 
     public void onPhotoGet(View v) {
-            if(getAccessToken()==null || getAccessToken()=="" )
-                MainActivity.token="";
+            if(!accessGranted() ){
 
-        else {
-                final UserController uc = new UserController(getAccessToken(), getAppContext());
+            } else {
+                final UserController uc = new UserController(getAppContext());
 
                 uc.setListener(new RequestListener(0) {
                     @Override
-                    public void onRequestReady(int requmber, String message) {
-                        if (requmber == 209) {
+                    public void onRequestReady(int reqnumber, String message) {
+                        if (reqnumber == 209) {
 
 
                             final ImagePagerAdapter adapter = new ImagePagerAdapter(uc.getPhotos(), getAppContext(), new ImagePagerAdapter.onDoneClick() {
@@ -201,15 +185,15 @@ public class MainActivity extends Activity {
                                     switch (v.getId()) {
 
                                         case R.id.likeic:
-                                            onLikeUnlike(v, position, ph);
+                                            ClickActionHelper.onLikeUnlike(v, position, ph, MainActivity.this);
                                             return;
 
                                         case R.id.commentic:
-                                            onCommentsClick(v, position, ph);
+                                            ClickActionHelper.onCommentsClick(v, position, ph,MainActivity.this);
                                             return;
 
                                         case R.id.addcomm:
-                                            onAddCommentClick(v, position, ph);
+                                            ClickActionHelper.onAddCommentClick(v, position, ph,MainActivity.this);
 
                                         default:
 
@@ -230,18 +214,17 @@ public class MainActivity extends Activity {
     }
 
     public void onUpload(View v) {
-        //registering listener for uploading task, which will be called if IMAGE_PICK  Listener will be notified
+        //registering listener with id IMAGE_PICK for uploading task, which will be called if IMAGE_PICK Listener will be notified
 
-        if(getAccessToken()==null || token=="")
-        {
-            MainActivity.token = "";
+        if(!accessGranted()) {
+
         }
         else {
 
             PhotoController.resgisterListener(new RequestListener(IMAGE_PICK) {
                 @Override
-                public void onRequestReady(int requmber, String message) {
-                    if (requmber == IMAGE_PICK) {
+                public void onRequestReady(int reqnumber, String message) {
+                    if (reqnumber == IMAGE_PICK) {
                         final ProgressDialog pd = new ProgressDialog(MainActivity.this, AlertDialog.THEME_HOLO_DARK);
                         pd.setCanceledOnTouchOutside(true);
                         String path = imagePaths.get(0);
@@ -253,7 +236,7 @@ public class MainActivity extends Activity {
                                 if (b) {
                                     pd.dismiss();
                                     Toast.makeText(MainActivity.this, "Successfully uploaded", Toast.LENGTH_SHORT).show();
-                                    onPhotoGet(getPhotoinf);
+                                    onPhotoGet(getPhotosBtn);
                                 }
                                 return b;
                             }
@@ -289,128 +272,18 @@ public class MainActivity extends Activity {
 
     }
 
-    public void onLikeUnlike(View v, int position, final Photo ph) {
-        PhotoController pc = new PhotoController(MainActivity.this);
-        if(PhotoController.getAccessToken()==null){
-            PhotoController.setAccessToken("");
-        }
-        pc.setListener(new RequestListener(0) {
-            @Override
-            public void onRequestReady(int requmber, String message) {
-
-                if (requmber == 701) {
-                    Log.d("Like", message);
-                    ph.setIsLiked(true);
-
-                }
-                if (requmber == 801) {
-                    Log.d("Like", message);
-                    ph.setIsLiked(false);
-                }
-            }
-        });
-
-        if (ph.getIsLiked() == null || ph.getIsLiked() == false) {
-            pc.like((ph.getId()));
-        } else if (ph.getIsLiked() == true) {
-            pc.unLike(ph.getId());
-        }
-
-
-    }
-
-
-    public void onCommentsClick(View v, int position, final Photo ph) {
-        final PhotoController pc = new PhotoController(this);
-
-        if(PhotoController.getAccessToken()==null){
-            PhotoController.setAccessToken("");
-        }
-
-        pc.setListener(new RequestListener(0) {
-            @Override
-            public void onRequestReady(int requmber, String message) {
-                if (requmber == 301) {
-                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
-
-                    alertDialog.setTitle("Comments");
-
-                    ListCommentAdapter adapter = new ListCommentAdapter(MainActivity.this, R.layout.item_list_view, pc.getCommentsLists());
-                    alertDialog.setAdapter(adapter, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    });
-
-
-                    alertDialog.show();
-                } else
-                    Toast.makeText(MainActivity.this, message.toString(), Toast.LENGTH_SHORT).show();
-
-            }
-        });
-        pc.requestComments(ph.getId(), ph.getCommentsCount(), Integer.MAX_VALUE);
-    }
-
-
-    public void onAddCommentClick(View v, int position, final Photo ph) {
-        if(PhotoController.getAccessToken()==null){
-            PhotoController.setAccessToken("");
-        }
-        final PhotoController pc = new PhotoController(this);
-        final Dialog commentDialog = new Dialog(MainActivity.this);
-        commentDialog.setTitle("New Comment");
-        pc.setListener(new RequestListener(0) {
-            @Override
-            public void onRequestReady(int requmber, String message) {
-                if (requmber == 401) {
-                    commentDialog.dismiss();
-                    Toast.makeText(MainActivity.this, "Successfully commented", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-
-        commentDialog.setContentView(R.layout.add_comment);
-        Button okBtn = (Button) commentDialog.findViewById(R.id.ok);
-        okBtn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                String txtcomment = ((EditText) (commentDialog.getWindow().findViewById(R.id.body))).getText().toString();
-                pc.addComment(ph.getId(), new Comment(txtcomment, true));
-
-
-            }
-
-        });
-        Button cancelBtn = (Button) commentDialog.findViewById(R.id.cancel);
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                commentDialog.dismiss();
-            }
-        });
-        commentDialog.show();
-
-
-    }
 
     public void onFollowings(View v) {
-        if(getAccessToken()==null || token==""){
-           token=("");
+        if(!accessGranted()){
+
         }
         else {
             final UserController uc = new UserController(getAccessToken(), MainActivity.this);
 
             uc.setListener(new RequestListener(0) {
                 @Override
-                public void onRequestReady(int requmber, String message) {
-                    if (requmber == 204) {
+                public void onRequestReady(int reqnumber, String message) {
+                    if (reqnumber == 204) {
                         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
 
                         alertDialog.setTitle("Followings :: #" + uc.getUserFollowing().size() + "");
@@ -429,7 +302,7 @@ public class MainActivity extends Activity {
                             public void onChanged() {
                                 super.onChanged();
                                 userName.setText(USER_NM);
-                                onPhotoGet(getPhotoinf);
+                                onPhotoGet(getPhotosBtn);
 
                             }
                         });
@@ -446,15 +319,15 @@ public class MainActivity extends Activity {
 
 
     public void onFollowers(View v) {
-        if (getAccessToken() == null || token=="") {
-            token = ("");
-        } else {
-            final UserController uc = new UserController(getAccessToken(), MainActivity.this);
+        if (!accessGranted()) {
 
+        }
+        else {
+            final UserController uc = new UserController(getAccessToken(), MainActivity.this);
             uc.setListener(new RequestListener(0) {
                 @Override
-                public void onRequestReady(int requmber, String message) {
-                    if (requmber == 203) {
+                public void onRequestReady(int reqnumber, String message) {
+                    if (reqnumber == 203) {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
                         alertDialog.setTitle("Followers :: #" + uc.getUserFollowers().size() + "");
                         ListFollowAdapter adapter = new ListFollowAdapter(MainActivity.this, R.layout.item_list_view, uc.getUserFollowers(), false);
@@ -471,7 +344,7 @@ public class MainActivity extends Activity {
                             public void onChanged() {
                                 super.onChanged();
                                 userName.setText(USER_NM);
-                                onPhotoGet(getPhotoinf);
+                                onPhotoGet(getPhotosBtn);
 
                             }
                         });
@@ -486,16 +359,19 @@ public class MainActivity extends Activity {
     }
 
 
+    public boolean accessGranted(){
+        if(AccessToken.getAccessToken()!=null && AccessToken.getAccessToken()!="")
+            return true;
+        return false;
+    }
+
+
     @Override
     public void onStop() {
         super.onStop();
     }
 
 }
-
-
-
-
 
 
 

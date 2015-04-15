@@ -62,7 +62,7 @@ public class ListFollowAdapter extends ArrayAdapter<User> {
             }
             if (ttcr != null) {
 
-                ttcr.setText("Email "+p.getEmail());
+                ttcr.setText("ID "+p.getId());
             }
 
             delv.setOnClickListener(new View.OnClickListener() {
@@ -71,12 +71,12 @@ public class ListFollowAdapter extends ArrayAdapter<User> {
                     UserController uc = new UserController(MainActivity.getAccessToken(),ListFollowAdapter.this.getContext());
                     uc.setListener(new RequestListener(0) {
                         @Override
-                        public void onRequestReady(int requmber, String message) {
-                            if (requmber == 210) {
+                        public void onRequestReady(int reqnumber, String message) {
+                            if (reqnumber == 210) {
                                 remove(getItem(position));
                                 notifyDataSetChanged();
 
-                            } else if (requmber == 213) {
+                            } else if (reqnumber == 213) {
                                 remove(getItem(position));
                                 notifyDataSetChanged();
 

@@ -76,7 +76,10 @@ public class UserController {
         this.ctx = ctx;
         this.accessToken = token;
     }
+    public UserController(Context ctx) {
+        this.ctx = ctx;
 
+    }
 
     public void setListener(RequestListener listener) {
         this.listener = listener;

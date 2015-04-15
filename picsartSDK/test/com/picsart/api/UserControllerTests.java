@@ -35,9 +35,9 @@ public class UserControllerTests {
         final UserController userController = new UserController(accessToken, context);
         userController.setListener(new RequestListener(0) {
             @Override
-            public void onRequestReady(int requmber, String msg) {
+            public void onRequestReady(int reqnumber, String msg) {
 
-                Assert.assertTrue(CONNECTION_ERROR, requmber == 201);
+                Assert.assertTrue(CONNECTION_ERROR, reqnumber == 201);
                 Assert.assertFalse(RESPONSE_ERROR, msg.contains(ERROR));
                 Assert.assertNotNull(NULL_OBJECT, userController.getUser());
 
@@ -60,9 +60,9 @@ public class UserControllerTests {
         final UserController userController = new UserController(accessToken, context);
         userController.setListener(new RequestListener(0) {
             @Override
-            public void onRequestReady(int requmber, String msg) {
+            public void onRequestReady(int reqnumber, String msg) {
 
-                Assert.assertTrue(CONNECTION_ERROR, requmber == 202);
+                Assert.assertTrue(CONNECTION_ERROR, reqnumber == 202);
                 Assert.assertFalse(RESPONSE_ERROR, msg.contains(ERROR));
                 Assert.assertNotNull(NULL_OBJECT, userController.getUser());
 
@@ -84,9 +84,9 @@ public class UserControllerTests {
         final UserController userController = new UserController(accessToken, context);
         userController.setListener(new RequestListener(0) {
             @Override
-            public void onRequestReady(int requmber, String msg) {
+            public void onRequestReady(int reqnumber, String msg) {
 
-                Assert.assertTrue(CONNECTION_ERROR, requmber == 203);
+                Assert.assertTrue(CONNECTION_ERROR, reqnumber == 203);
                 Assert.assertFalse(RESPONSE_ERROR, msg.contains(ERROR));
                 Assert.assertNotNull(NULL_OBJECT, userController.getUserFollowers());
 
@@ -108,9 +108,9 @@ public class UserControllerTests {
         final UserController userController = new UserController(accessToken, context);
         userController.setListener(new RequestListener(0) {
             @Override
-            public void onRequestReady(int requmber, String msg) {
+            public void onRequestReady(int reqnumber, String msg) {
 
-                Assert.assertTrue(CONNECTION_ERROR, requmber == 204);
+                Assert.assertTrue(CONNECTION_ERROR, reqnumber == 204);
                 Assert.assertFalse(RESPONSE_ERROR, msg.contains(ERROR));
                 Assert.assertNotNull(NULL_OBJECT, userController.getUserFollowing());
 
@@ -132,9 +132,9 @@ public class UserControllerTests {
         final UserController userController = new UserController(accessToken, context);
         userController.setListener(new RequestListener(0) {
             @Override
-            public void onRequestReady(int requmber, String msg) {
+            public void onRequestReady(int reqnumber, String msg) {
 
-                Assert.assertTrue(CONNECTION_ERROR, requmber == 205);
+                Assert.assertTrue(CONNECTION_ERROR, reqnumber == 205);
                 Assert.assertFalse(RESPONSE_ERROR, msg.contains(ERROR));
                 Assert.assertNotNull(NULL_OBJECT, userController.getUserLikedPhotos());
 
@@ -158,9 +158,9 @@ public class UserControllerTests {
 
 
             @Override
-            public void onRequestReady(int requmber, String msg) {
+            public void onRequestReady(int reqnumber, String msg) {
 
-                Assert.assertTrue(CONNECTION_ERROR, requmber == 206);
+                Assert.assertTrue(CONNECTION_ERROR, reqnumber == 206);
                 Assert.assertFalse(RESPONSE_ERROR, msg.contains(ERROR));
                 Assert.assertNotNull(NULL_OBJECT, userController.getBlockedUsers());
 
@@ -184,9 +184,9 @@ public class UserControllerTests {
         userController.setListener(new RequestListener(0) {
 
             @Override
-            public void onRequestReady(int requmber, String msg) {
+            public void onRequestReady(int reqnumber, String msg) {
 
-                Assert.assertTrue(CONNECTION_ERROR, requmber == 207);
+                Assert.assertTrue(CONNECTION_ERROR, reqnumber == 207);
                 Assert.assertFalse(RESPONSE_ERROR, msg.contains(ERROR));
                 Assert.assertNotNull(NULL_OBJECT, userController.getUserPlaces());
 
@@ -211,9 +211,9 @@ public class UserControllerTests {
         userController.setListener(new RequestListener(0) {
 
             @Override
-            public void onRequestReady(int requmber, String msg) {
+            public void onRequestReady(int reqnumber, String msg) {
 
-                Assert.assertTrue(CONNECTION_ERROR, requmber == 208);
+                Assert.assertTrue(CONNECTION_ERROR, reqnumber == 208);
                 Assert.assertFalse(RESPONSE_ERROR, msg.contains(ERROR));
                 Assert.assertNotNull(NULL_OBJECT, userController.getUserTags());
 
@@ -238,9 +238,9 @@ public class UserControllerTests {
         userController.setListener(new RequestListener(0) {
 
             @Override
-            public void onRequestReady(int requmber, String msg) {
+            public void onRequestReady(int reqnumber, String msg) {
 
-                Assert.assertTrue(CONNECTION_ERROR, requmber == 209);
+                Assert.assertTrue(CONNECTION_ERROR, reqnumber == 209);
                 Assert.assertFalse(RESPONSE_ERROR, msg.contains(ERROR));
                 Assert.assertNotNull(NULL_OBJECT, userController.getPhotos());
 
@@ -264,9 +264,9 @@ public class UserControllerTests {
         userController.setListener(new RequestListener(0) {
 
             @Override
-            public void onRequestReady(int requmber, String msg) {
+            public void onRequestReady(int reqnumber, String msg) {
 
-                Assert.assertTrue(CONNECTION_ERROR, requmber == 210);
+                Assert.assertTrue(CONNECTION_ERROR, reqnumber == 210);
                 Assert.assertFalse(RESPONSE_ERROR, msg.contains(ERROR));
 
                 Log.i("Block User Test", "Test was successfully passed");
@@ -288,9 +288,9 @@ public class UserControllerTests {
         userController.setListener(new RequestListener(0) {
 
             @Override
-            public void onRequestReady(int requmber, String msg) {
+            public void onRequestReady(int reqnumber, String msg) {
 
-                Assert.assertTrue(CONNECTION_ERROR, requmber == 211);
+                Assert.assertTrue(CONNECTION_ERROR, reqnumber == 211);
                 Assert.assertFalse(RESPONSE_ERROR, msg.contains(ERROR));
 
                 Log.i("Unblock User Test", "Test was successfully passed");
@@ -312,9 +312,9 @@ public class UserControllerTests {
         userController.setListener(new RequestListener(0) {
 
             @Override
-            public void onRequestReady(int requmber, String msg) {
+            public void onRequestReady(int reqnumber, String msg) {
 
-                Assert.assertTrue(CONNECTION_ERROR, requmber == 212);
+                Assert.assertTrue(CONNECTION_ERROR, reqnumber == 212);
                 Assert.assertFalse(RESPONSE_ERROR, msg.contains(ERROR));
 
                 Log.i("Follow User Test", "Test was successfully passed");

@@ -39,11 +39,9 @@ import java.util.Map;
 public class AccessToken {
 
     private static String accessToken;
-
     public static RequestListener getListener() {
         return listener;
     }
-
     private static RequestListener listener = null;
     private static String code;
     private static Context ctx=null;
@@ -53,15 +51,15 @@ public class AccessToken {
     }
     public static void setAccessToken(String accessToken) {
         AccessToken.accessToken = accessToken;
+        PhotoController.setAccessToken(accessToken);
+        UserController.setAccessToken(accessToken);
     }
 
     public static void setListener(RequestListener listener) {
         AccessToken.listener = listener;
     }
 
-
-    private AccessToken() {
-    }
+    private AccessToken() {}
 
 
     public static void requestAccessToken(final Context ctx){
@@ -85,7 +83,7 @@ public class AccessToken {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Log.i("ShouldOvver", " rideUrlLoading" + url);
+                Log.i("ShouldOver", "rideUrlLoading " + url);
                 if (url.contains("logout")) {
                  AccessToken.accessToken=null;
                     PhotoController.setAccessToken(null);
@@ -106,8 +104,6 @@ public class AccessToken {
 
                 authComplete = false;
 
-                //pDialog[0].dismiss();
-
             }
 
             String authCode;
@@ -117,7 +113,6 @@ public class AccessToken {
                 super.onPageFinished(view, url);
 
                 authDialog.setContentView(web);
-
 
                 if (url.contains("?code=") && authComplete != true) {
 
@@ -131,7 +126,7 @@ public class AccessToken {
                     authDialog.dismiss();
 
                 } else if (url.contains("error=access_denied")) {
-                    AccessToken.listener.onRequestReady(7777,"access denied");
+                    AccessToken.listener.onRequestReady(7777,"access_denied");
                     Log.i(" ", "ACCESS_DENIED_HERE");
                     authComplete = true;
 
@@ -164,20 +159,15 @@ public class AccessToken {
 
                 JSONObject jsOOb;
                 Log.d("accessTokenResp: ", response);
+
                 try {
                     jsOOb = new JSONObject(response);
                     String tok;
                     tok = jsOOb.getString("access_token");
-                    AccessToken.accessToken = tok;
-
+                    AccessToken.setAccessToken(tok);
                     AccessToken.listener.onRequestReady(7777, tok);
 
-                } catch (JSONException e) {
-
-                }
-
-
-
+                } catch (JSONException e) {}
 
             }
         }
@@ -191,7 +181,6 @@ public class AccessToken {
                 params.put("client_secret", client_secret);
                 params.put("redirect_uri", redirect_uri);
                 params.put("grant_type", grant_type);
-
                 return params;
 
             }
@@ -209,6 +198,8 @@ public class AccessToken {
         SingletoneRequestQue.getInstance(AccessToken.ctx).addToRequestQueue(req);
 
     }
+
+
 
 
 }

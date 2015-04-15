@@ -60,7 +60,6 @@ public class PhotoController {
 
     private static Context ctx;
     private RequestListener listener;
-
     private static String token;
     private volatile Photo photo;
     private static volatile Comment _comment;
@@ -176,14 +175,14 @@ public class PhotoController {
         request.setRequestListener(new PARequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("Error", error.toString());
+                Log.d("requestPhoto", error.toString());
                 listener.onRequestReady(203, error.toString());
 
             }
 
             @Override
             public void onResponse(Object response) {
-                Log.d("Response 9", response.toString());
+                Log.d("requestPhoto", response.toString());
                 photo = PhotoFactory.parseFrom(response);
 
                 listener.onRequestReady(201, response.toString());
@@ -302,6 +301,7 @@ public class PhotoController {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+
                         // Log.d("RemoveComment ", response);
                         listener.onRequestReady(501, response);
 
@@ -438,7 +438,7 @@ public class PhotoController {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("PhotoLike ", response);
+                        Log.d("like ", response);
                         listener.onRequestReady(701, response);
                         // st_listener.onRequestReady(999,response);
                     }
@@ -446,7 +446,7 @@ public class PhotoController {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("PhotoLikeError ", error.toString());
+                        Log.d("like ", error.toString());
                         listener.onRequestReady(703, error.toString());
                         // st_listener.onRequestReady(999,"");
                     }
@@ -481,7 +481,7 @@ public class PhotoController {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("PhotoUnlike ", response);
+                        Log.d("unLike ", response);
                         listener.onRequestReady(801, response);
                         //st_listener.onRequestReady(1111,"");
                     }
@@ -489,7 +489,7 @@ public class PhotoController {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("PhotoUnlike ", error.toString());
+                        Log.d("unLike ", error.toString());
                         listener.onRequestReady(803, error.toString());
                         //st_listener.onRequestReady(1111,"");
                     }
@@ -547,14 +547,14 @@ public class PhotoController {
         request.setRequestListener(new PARequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("Error", error.toString());
+                Log.d("requestCommentByid", error.toString());
                 listener.onRequestReady(903, error.toString());
 
             }
 
             @Override
             public void onResponse(Object response) {
-                Log.d("Response 9", response.toString());
+                Log.d("requestCommentByid", response.toString());
                 //photo = new Photo(Photo.IS.GENERAL);
                 Gson gson = new Gson();
                 _comment = gson.fromJson(response.toString(), Comment.class);
@@ -585,14 +585,14 @@ public class PhotoController {
         request.setRequestListener(new PARequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("Error", error.toString());
+                Log.d("requestLikedUsers", error.toString());
                 listener.onRequestReady(1003, error.toString());
 
             }
 
             @Override
             public void onResponse(Object response) {
-                Log.d("Response 9", response.toString());
+                Log.d("requestLikedUsers", response.toString());
                 if(response.toString().contains("error")) {
                     listener.onRequestReady(1003, response.toString());
                     return;
@@ -901,7 +901,7 @@ public class PhotoController {
     }
 
     public interface ProgressListener {
-        abstract boolean doneFlag(boolean b);
+        boolean doneFlag(boolean b);
         void transferred(long num);
     }
 

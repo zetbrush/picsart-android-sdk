@@ -38,9 +38,14 @@ public class Comment {
     @SerializedName("is_social")
     @Expose
     private boolean isSocial;
+
     @SerializedName("user_id")
     @Expose
     private String commenterId;
+
+    @SerializedName("username")
+    @Expose
+    private String commenterUserName;
 
     private String potoID;
 
@@ -57,6 +62,14 @@ public class Comment {
     }
     public String getCommenterId() {
         return commenterId;
+    }
+
+    public String getCommenterUserName() {
+        return commenterUserName;
+    }
+
+    public void setCommenterUserName(String commenterUserName) {
+        this.commenterUserName = commenterUserName;
     }
 
     public Date getCreated() {

@@ -1,6 +1,7 @@
 package clieent;
 
 import android.content.Context;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,15 +52,16 @@ public class ListCommentAdapter extends ArrayAdapter<Comment> {
             ImageView delv = (ImageView)v.findViewById(R.id.delcomment);
 
             if (tt != null) {
-                tt.setText(p.getCommenterId());
+                tt.setText(p.getCommenterUserName());
             }
             if (tt1 != null) {
 
                 tt1.setText(p.getText());
             }
             if (ttcr != null) {
+               String date = DateFormat.format("yyyy.MM.dd", p.getCreated()).toString();
 
-                ttcr.setText(p.getCreated().getYear()+ ":"+p.getCreated().getDay()+":"+p.getCreated().getHours());
+                ttcr.setText(date);
             }
 
             delv.setOnClickListener(new View.OnClickListener() {
@@ -68,7 +70,7 @@ public class ListCommentAdapter extends ArrayAdapter<Comment> {
                     PhotoController pc = new PhotoController(ListCommentAdapter.this.getContext(),MainActivity.getAccessToken());
                     pc.setListener(new RequestListener(0) {
                         @Override
-                        public void onRequestReady(int requmber, String message) {
+                        public void onRequestReady(int reqnumber, String message) {
                             remove(getItem(position));
                             notifyDataSetChanged();
 

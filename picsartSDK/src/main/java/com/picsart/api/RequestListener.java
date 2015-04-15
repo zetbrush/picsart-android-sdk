@@ -28,7 +28,7 @@ public abstract class RequestListener {
     }
 
 
-    public abstract void onRequestReady(int requmber, String message);
+    public abstract void onRequestReady(int reqnumber, String message);
     public RequestListener(int idOfListener) {
         this.indexOfListener = idOfListener;
     }
