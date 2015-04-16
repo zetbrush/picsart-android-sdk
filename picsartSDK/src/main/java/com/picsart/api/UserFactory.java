@@ -100,4 +100,40 @@ public class UserFactory {
         }
         return null;
     }
+
+    public static ArrayList<User> parseFromArray(Object o, int offset, int limit) {
+
+        ArrayList<User> userArrayList = new ArrayList<>();
+        User nwUs = null;
+        Location loc;
+        Gson gson;
+
+        try {
+
+            JSONArray jarr = (JSONArray)o;
+
+            for (int i = offset; i < jarr.length() && limit>=0; i++,limit--) {
+                JSONObject jsonObject = jarr.getJSONObject(i);
+                gson = new Gson();
+                try {
+                    nwUs = gson.fromJson(jsonObject.toString(), User.class);
+
+                }catch(Exception e){}
+
+                try{
+                    loc = gson.fromJson(jsonObject.toString(), Location.class);
+                    nwUs.setLocation(loc);
+                }catch(Exception e){}
+
+                userArrayList.add(nwUs);
+
+            }
+
+            return userArrayList;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

@@ -204,10 +204,10 @@ public class PhotoController {
      */
     public synchronized void requestComments(final String photoId, final int offset, final int limit) {
         String url = PicsArtConst.PHOTO_PRE_URL + photoId + PicsArtConst.PHOTO_ADD_COMMENT_URL + PicsArtConst.TOKEN_PREFIX + token;
-        PARequest req = new PARequest(Request.Method.GET, url, null, null);
+        PaArrayRequest req = new PaArrayRequest( url, null, null);
 
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
-        req.setRequestListener(new PARequest.PARequestListener() {
+        req.setRequestListener(new PaArrayRequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 listener.onRequestReady(303, error.toString());
@@ -216,7 +216,7 @@ public class PhotoController {
             @Override
             public void onResponse(Object response) {
                 try {
-                    JSONArray _comArr = ((JSONObject) response).getJSONArray("comments");
+                    JSONArray _comArr = (JSONArray)response;
                     ArrayList<Comment> comment = new ArrayList<Comment>();
                     for (int i = 0; i < _comArr.length(); i++) {
                         JSONObject val = _comArr.getJSONObject(i);
@@ -580,9 +580,9 @@ public class PhotoController {
 
         String url = PicsArtConst.PHOTO_PRE_URL + photoId + PicsArtConst.PHOTO_LIKE_URL + PicsArtConst.TOKEN_PREFIX + token;
 
-        PARequest request = new PARequest(Request.Method.GET, url, null, null);
+        PaArrayRequest request = new PaArrayRequest( url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(request);
-        request.setRequestListener(new PARequest.PARequestListener() {
+        request.setRequestListener(new PaArrayRequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("requestLikedUsers", error.toString());
@@ -597,8 +597,7 @@ public class PhotoController {
                     listener.onRequestReady(1003, response.toString());
                     return;
                 }
-                else
-                  photoLikedUsers = UserFactory.parseFromAsArray(response, offset, limit, "likes");
+                else photoLikedUsers = UserFactory.parseFromArray(response, offset, limit);
                 listener.onRequestReady(1001, response.toString());
             }
         });

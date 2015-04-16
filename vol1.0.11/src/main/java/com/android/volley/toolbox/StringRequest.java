@@ -57,6 +57,7 @@ public class StringRequest extends Request<String> {
 
     @Override
     protected void deliverResponse(String response) {
+
         mListener.onResponse(response);
     }
 
@@ -65,6 +66,7 @@ public class StringRequest extends Request<String> {
         String parsed;
         try {
             parsed = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+
         } catch (UnsupportedEncodingException e) {
             parsed = new String(response.data);
         }

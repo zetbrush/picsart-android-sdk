@@ -81,8 +81,8 @@ public class PhotoFactory {
             JSONArray jarr=null;
             if(keyword!=null|| keyword!=""){
                 try{
-                    jarr = new JSONArray(jsonObj.get(keyword).toString());
-                } catch (Exception e){ };
+                    jarr = new JSONArray(jsonObj.toString());
+                } catch (Exception e){ e.printStackTrace();};
             }
             else  jarr = new JSONArray(jsonObj.toString());
             for (int i = offset; i < jarr.length() && limit > 0; i++, limit--) {
@@ -119,6 +119,52 @@ public class PhotoFactory {
         return null;
     }
 
+
+    public static ArrayList<Photo> parseFromArray(Object obj, int offset, int limit) {
+        ArrayList<Photo> tmpPh = new ArrayList<>();
+        Photo nwPh;
+        User nwUs;
+        Location loc;
+        if (offset < 0) offset = 0;
+        if (limit < 1) limit = 1;
+
+        try {
+
+            Gson gson = new Gson();
+            JSONArray jarr =(JSONArray)obj;
+            for (int i = offset; i < jarr.length() && limit > 0; i++, limit--) {
+
+                nwPh = gson.fromJson(jarr.get(i).toString(), Photo.class);
+
+                try {
+                    gson = new Gson();
+                    JSONObject jooobj = (JSONObject) jarr.get(i);
+                    nwUs = gson.fromJson(jooobj.get("user").toString(), User.class);
+                    nwPh.setOwner(nwUs);
+                } catch (Exception e) {
+                }
+
+                try {
+                    gson = new Gson();
+                    JSONObject jooobj = (JSONObject) jarr.get(i);
+                    loc = gson.fromJson(jooobj.get("location").toString(), Location.class);
+                    nwPh.setLocation(loc);
+                } catch (Exception e) {
+                }
+
+                tmpPh.add(nwPh);
+
+            }
+
+            return tmpPh;
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 
     /**
      * @param o  Object

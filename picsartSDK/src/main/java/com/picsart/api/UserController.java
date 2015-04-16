@@ -311,9 +311,9 @@ public class UserController {
         userFollowing = new ArrayList<>();
 
         String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.FOLLOWING_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
-        PARequest req = new PARequest(Request.Method.GET, url, null, null);
+        PaArrayRequest req = new PaArrayRequest( url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
-        req.setRequestListener(new PARequest.PARequestListener() {
+        req.setRequestListener(new PaArrayRequest.PARequestListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -323,7 +323,7 @@ public class UserController {
             @Override
             public void onResponse(Object response) {
 
-                userFollowing = UserFactory.parseFromAsArray(response, offset, limit, RESPONSE);
+                userFollowing = UserFactory.parseFromArray(response, offset, limit);
                 listener.onRequestReady(204, response.toString());
             }
         });
@@ -363,9 +363,9 @@ public class UserController {
         userLikedPhotos = new ArrayList<>();
 
         String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.LIKED_PHOTOS_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
-        PARequest req = new PARequest(Request.Method.GET, url, null, null);
+        PaArrayRequest req = new PaArrayRequest( url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
-        req.setRequestListener(new PARequest.PARequestListener() {
+        req.setRequestListener(new PaArrayRequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 
@@ -376,7 +376,7 @@ public class UserController {
             @Override
             public void onResponse(Object response) {
 
-                userLikedPhotos = PhotoFactory.parseFromAsArray(response, offset, limit, LIKES);
+                userLikedPhotos = PhotoFactory.parseFromArray(response, offset, limit);
                 UserController.this.listener.onRequestReady(205, response.toString());
 
             }
@@ -398,9 +398,9 @@ public class UserController {
         blockedUsers = new ArrayList<>();
 
         String url = PicsArtConst.SHOW_USER + PicsArtConst.ME_PREFIX + PicsArtConst.BLOCKED_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
-        PARequest req = new PARequest(Request.Method.GET, url, null, null) ;
+        PaArrayRequest req = new PaArrayRequest( url, null, null) ;
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
-        req.setRequestListener(new PARequest.PARequestListener() {
+        req.setRequestListener(new PaArrayRequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 
@@ -411,7 +411,7 @@ public class UserController {
             @Override
             public void onResponse(Object response) {
 
-                blockedUsers = UserFactory.parseFromAsArray(response, offset, limit, BLOCKS);
+                blockedUsers = UserFactory.parseFromArray(response, offset, limit);
                 UserController.this.listener.onRequestReady(206, response.toString());
 
             }
@@ -452,9 +452,9 @@ public class UserController {
         userPlaces = new ArrayList<>();
 
         String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.PLACES_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
-        PARequest req = new PARequest(Request.Method.GET, url, null, null);
+        PaArrayRequest req = new PaArrayRequest( url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
-        req.setRequestListener(new PARequest.PARequestListener() {
+        req.setRequestListener(new PaArrayRequest.PARequestListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -467,24 +467,27 @@ public class UserController {
 
                 JSONArray jsonArray = null;
                 try {
-                    jsonArray = new JSONArray(((JSONObject) response).get(PLACES).toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    try {
+                    jsonArray = (JSONArray) response;
 
-                        JSONObject jsonObject1 = new JSONObject(jsonArray.get(i).toString());
-                        JSONArray jsonArray1 = new JSONArray(jsonObject1.get(PHOTOS).toString());
-                        JSONObject jsonObject2 = jsonArray1.getJSONObject(0);
-                        userPlaces.add(PhotoFactory.parseFrom(jsonObject2));
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        try {
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                            JSONObject jsonObject1 = new JSONObject(jsonArray.get(i).toString());
+                            JSONArray jsonArray1 = new JSONArray(jsonObject1.get(PHOTOS).toString());
+                            JSONObject jsonObject2 = jsonArray1.getJSONObject(0);
+                            userPlaces.add(PhotoFactory.parseFrom(jsonObject2));
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
+                    UserController.this.listener.onRequestReady(207, response.toString());
+
+                }catch (Exception e){
+                    UserController.this.listener.onRequestReady(307, e.toString());
                 }
 
-                UserController.this.listener.onRequestReady(207, response.toString());
+
             }
         });
     }
@@ -521,11 +524,10 @@ public class UserController {
             return;
         }
         userTags = new ArrayList<>();
-
         String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.TAGS_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
-        PARequest req = new PARequest(Request.Method.GET, url, null, null);
+        PaArrayRequest req = new PaArrayRequest( url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
-        req.setRequestListener(new PARequest.PARequestListener() {
+        req.setRequestListener(new PaArrayRequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 UserController.this.listener.onRequestReady(308, error.toString());
@@ -537,15 +539,12 @@ public class UserController {
 
                 JSONArray jsonArray = null;
                 try {
-                    jsonArray = new JSONArray(((JSONObject) response).get(TAGS).toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                    jsonArray = (JSONArray) response;
+
                 for (int i = 0; i < jsonArray.length(); i++) {
                     try {
 
                         JSONObject jsonObject1 = new JSONObject(jsonArray.get(i).toString());
-
                         userTags.add(jsonObject1.getString(TAG));
                     /*String key = jsonObject1.getString(TAG);
                     ArrayList<Photo> value = PhotoFactory.parseFromAsArray(jsonArray.get(i), 0, MAX_LIMIT, PHOTOS);
@@ -558,6 +557,9 @@ public class UserController {
                     }
                 }
                 UserController.this.listener.onRequestReady(208, response.toString());
+            }catch (Exception e){
+                    UserController.this.listener.onRequestReady(308, e.toString());
+                }
             }
         });
     }
@@ -596,23 +598,21 @@ public class UserController {
         userPhotos = new ArrayList<>();
 
         String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.PHOTOS_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
-        PARequest req = new PARequest(Request.Method.GET, url, null, null) ;
+        PaArrayRequest req = new PaArrayRequest( url, null, null) ;
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
-        req.setRequestListener(new PARequest.PARequestListener() {
-
+        req.setRequestListener(new PaArrayRequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 UserController.this.listener.onRequestReady(309, error.toString());
-
             }
 
             @Override
             public void onResponse(Object response) {
-
-                userPhotos = PhotoFactory.parseFromAsArray(response, offset, limit, PHOTOS);
+                userPhotos = PhotoFactory.parseFromArray(response, offset, limit);
                 UserController.this.listener.onRequestReady(209, response.toString());
             }
-        });
+
+    });
     }
 
 

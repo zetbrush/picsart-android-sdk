@@ -206,6 +206,10 @@ public class MainActivity extends Activity {
 
                         }
 
+
+
+                        Log.d("ERR",reqnumber+ "  "+ message);
+
                     }
                 });
 

@@ -7,6 +7,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,9 +16,6 @@ import java.io.UnsupportedEncodingException;
 /**
  * This class is main request provider for PicsArt api calls. It extends Volley
  * JsonObjectRequest, and encapsulates it's listeners.
- *
- * <p>Some Getters of this class  throw a <tt>NullPointerException</tt>
- * if the collections or class objects provided to them are null.
  *
  * <p>This class is a member of the
  * <a href="www.com.picsart.com">
@@ -29,7 +27,7 @@ import java.io.UnsupportedEncodingException;
 
 
 public class PARequest extends JsonObjectRequest  {
-
+    JSONArray  mResponseArr;
     JSONObject mResponse;
     PARequestListener requestListener;
 
@@ -48,9 +46,10 @@ public class PARequest extends JsonObjectRequest  {
         try {
             String jsonString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
 
-            this.mResponse = new JSONObject(jsonString);
+           JSONArray arr= this.mResponseArr = new JSONArray(jsonString);
+            this.mResponse= new JSONObject(jsonString);
 
-            return Response.success(new JSONObject(jsonString), HttpHeaderParser.parseCacheHeaders(response));
+            return Response.success( mResponse, HttpHeaderParser.parseCacheHeaders(response));
         } catch (UnsupportedEncodingException e) {
             return Response.error(new ParseError(e));
         } catch (JSONException je) {
@@ -66,6 +65,7 @@ public class PARequest extends JsonObjectRequest  {
 
     @Override
     public void deliverError(VolleyError e){
+
         this.requestListener.onErrorResponse(e);
     }
 

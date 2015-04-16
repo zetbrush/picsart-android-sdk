@@ -114,6 +114,8 @@ public class ImagePagerAdapter extends PagerAdapter {
         TextView titlText = (TextView) fl.findViewById(R.id.titletext);
         TextView tagst = (TextView) fl.findViewById(R.id.tags);
         ImageView addComm = (ImageView) fl.findViewById(R.id.addcomm);
+
+
         if (mImages.get(position).getIsLiked() ==null || !mImages.get(position).getIsLiked() ) {
             lkim.startAnimation(blinkImage());
 
