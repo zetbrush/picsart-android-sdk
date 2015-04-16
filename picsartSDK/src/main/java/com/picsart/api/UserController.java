@@ -258,9 +258,9 @@ public class UserController {
         userFollowers = new ArrayList<>();
 
         String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.FOLLOWERS_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
-        PARequest req = new PARequest(Request.Method.GET, url, null, null);
+        PaArrayRequest req = new PaArrayRequest( url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
-        req.setRequestListener(new PARequest.PARequestListener() {
+        req.setRequestListener(new PaArrayRequest.PARequestListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -270,7 +270,7 @@ public class UserController {
             @Override
             public void onResponse(Object response) {
 
-                userFollowers = UserFactory.parseFromAsArray(response, offset, limit, RESPONSE);
+                userFollowers = UserFactory.parseFromArray(response, offset, limit);
                 UserController.this.listener.onRequestReady(203, response.toString());
 
             }
