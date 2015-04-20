@@ -433,32 +433,21 @@ public class PhotoController {
      */
     public synchronized void like(String photoId) {
         String url = PicsArtConst.PHOTO_PRE_URL + photoId + PicsArtConst.PHOTO_LIKE_URL + PicsArtConst.TOKEN_PREFIX + token;
-        StringRequest req = new StringRequest(Request.Method.POST, url,
+        PARequest req = new PARequest(Request.Method.POST, url, null,null);
 
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d("like ", response);
-                        listener.onRequestReady(701, response);
-                        // st_listener.onRequestReady(999,response);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("like ", error.toString());
-                        listener.onRequestReady(703, error.toString());
-                        // st_listener.onRequestReady(999,"");
-                    }
-                }) {
+        req.setRequestListener(new PARequest.PARequestListener() {
             @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                //params.put("is_social", "1");
-                return params;
-
+            public void onErrorResponse(VolleyError error) {
+                listener.onRequestReady(703, error.toString());
             }
-        };
+
+            @Override
+            public void onResponse(Object response) {
+                listener.onRequestReady(701, response.toString());
+            }
+        });
+
+
 
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
 
@@ -474,36 +463,26 @@ public class PhotoController {
      *                onErrorResponse     803 code will be called in listener
      */
     public synchronized void unLike(String photoId) {
-        String url = PicsArtConst.PHOTO_PRE_URL + photoId + PicsArtConst.PHOTO_LIKE_URL + PicsArtConst.TOKEN_PREFIX + token + "&method=delete";
+        String url = PicsArtConst.PHOTO_PRE_URL + photoId + PicsArtConst.PHOTO_LIKE_URL + PicsArtConst.TOKEN_PREFIX+token;
 
-        StringRequest req = new StringRequest(Request.Method.POST, url,
+        PARequest req = new PARequest(Request.Method.DELETE, url, null,null);
 
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d("unLike ", response);
-                        listener.onRequestReady(801, response);
-                        //st_listener.onRequestReady(1111,"");
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("unLike ", error.toString());
-                        listener.onRequestReady(803, error.toString());
-                        //st_listener.onRequestReady(1111,"");
-                    }
-                }) {
+        req.setRequestListener(new PARequest.PARequestListener() {
             @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                //  params.put("is_social", "1");
-                return params;
-
+            public void onErrorResponse(VolleyError error) {
+                listener.onRequestReady(803, error.toString());
             }
-        };
+
+            @Override
+            public void onResponse(Object response) {
+                listener.onRequestReady(801, response.toString());
+            }
+        });
+
 
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
+
+
     }
 
 

@@ -10,8 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.picsart.api.AccessToken;
 import com.picsart.api.Comment;
+import com.picsart.api.LoginManager;
 import com.picsart.api.Photo;
 import com.picsart.api.PhotoController;
 import com.picsart.api.RequestListener;
@@ -25,7 +25,8 @@ public class ClickActionHelper {
 
     public static void onLikeUnlike(View v, int position, final Photo ph, Context ctx) {
         PhotoController pc = new PhotoController(ctx);
-        if(!accessGranted()){
+        if (!LoginManager.getInstance().hasValidSession()) {
+            Toast.makeText(ctx,"You hav't logged in",Toast.LENGTH_SHORT).show();
 
         }
         pc.setListener(new RequestListener(0) {
@@ -57,8 +58,9 @@ public class ClickActionHelper {
     public static void onCommentsClick(View v, int position, final Photo ph, final Context ctx) {
         final PhotoController pc = new PhotoController(ctx);
 
-        if(PhotoController.getAccessToken()==null){
-            PhotoController.setAccessToken("");
+        if (!LoginManager.getInstance().hasValidSession()) {
+            Toast.makeText(ctx,"You hav't logged in",Toast.LENGTH_SHORT).show();
+
         }
 
         pc.setListener(new RequestListener(0) {
@@ -89,7 +91,8 @@ public class ClickActionHelper {
 
 
     public static void onAddCommentClick(View v, int position, final Photo ph, final Context ctx) {
-        if(!accessGranted()){
+        if (!LoginManager.getInstance().hasValidSession()) {
+            Toast.makeText(ctx,"You hav't logged in",Toast.LENGTH_SHORT).show();
 
         }
         final PhotoController pc = new PhotoController(ctx);
@@ -133,9 +136,5 @@ public class ClickActionHelper {
     }
 
 
-    public static boolean accessGranted(){
-        if(AccessToken.getAccessToken()!=null && AccessToken.getAccessToken()!="")
-            return true;
-        return false;
-    }
+
 }

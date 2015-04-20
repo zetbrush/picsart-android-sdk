@@ -45,8 +45,6 @@ public class PARequest extends JsonObjectRequest  {
     protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
         try {
             String jsonString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-
-           JSONArray arr= this.mResponseArr = new JSONArray(jsonString);
             this.mResponse= new JSONObject(jsonString);
 
             return Response.success( mResponse, HttpHeaderParser.parseCacheHeaders(response));

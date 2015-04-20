@@ -67,7 +67,7 @@ public class ListCommentAdapter extends ArrayAdapter<Comment> {
             delv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    PhotoController pc = new PhotoController(ListCommentAdapter.this.getContext(),MainActivity.getAccessToken());
+                    PhotoController pc = new PhotoController(ListCommentAdapter.this.getContext());
                     pc.setListener(new RequestListener(0) {
                         @Override
                         public void onRequestReady(int reqnumber, String message) {

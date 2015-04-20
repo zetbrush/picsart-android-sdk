@@ -18,7 +18,7 @@ import java.io.UnsupportedEncodingException;
  * to response as arrays. It extends Volley's JsonArrayRequest
  * and encapsulates it's listeners.
  *
- * @Autor Arman Andreasyan on 4/16/15.
+ @author Arman Andreasyan on 4/16/15.
  *
  */
 public class PaArrayRequest extends JsonArrayRequest {

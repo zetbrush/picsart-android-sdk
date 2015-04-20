@@ -20,7 +20,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.picsart.api.AccessToken;
+import com.picsart.api.LoginManager;
 import com.picsart.api.Photo;
 import com.picsart.api.PhotoController;
 import com.picsart.api.PicsArtConst;
@@ -66,6 +66,7 @@ public class MainActivity extends Activity {
 
         PicsArtConst.CLIENT_ID = "ZetOmniaexo1SNtY52usPTry";
         PicsArtConst.CLIENT_SECRET = "yY2fEJU8R9rFmuwtOZRQhm4ZK2Kdwqhk";
+        PicsArtConst.REDIRECT_URI="localhost";
 
         setContentView(R.layout.activity_main);
 
@@ -81,14 +82,14 @@ public class MainActivity extends Activity {
         MainActivity.context = this.getApplicationContext();
 
 
-        try {
+       /* try {
             pref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
             token = pref.getString("access_token", "");
             AccessToken.setAccessToken(token);
 
         } catch (Exception c) {
             Log.i("ERROR Loading Token ", ": no token is persisted ");
-        }
+        }*/
 
     }
 
@@ -102,28 +103,27 @@ public class MainActivity extends Activity {
     public void initing() {
         onPhotoGet(getPhotosBtn);
 
+        if(!LoginManager.getInstance().hasValidSession()){
+            signInBtn.setText("Login with PicsArt");
+        }
+        else signInBtn.setText("Logout from PicsArt");
+
         signInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                AccessToken.setListener(new RequestListener(1) {
-                    @Override
-                    public void onRequestReady(int reqnumber, String mmsg) {
-                        SharedPreferences.Editor edit = pref.edit();
-                        if (mmsg.contains("logout")) {
-                            edit.clear();
-                            edit.commit();
-                        } else if (mmsg.contains("access_denied")) {
-                            Log.d("Token info: ", mmsg);
-                        } else {
-                            MainActivity.token = AccessToken.getAccessToken();
-                            Log.d("Token info: ", mmsg);
-                            edit.putString("access_token", mmsg);
-                            edit.commit();
+                if (!LoginManager.getInstance().hasValidSession()) {
+                    LoginManager.getInstance().openSession(MainActivity.this, new RequestListener(0) {
+                        @Override
+                        public void onRequestReady(int reqnumber, String message) {
+                            if (reqnumber == 7777) {
+                                signInBtn.setText("Logout from PicsArt");
+                                Toast.makeText(MainActivity.this, "Logged in Successfully", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
-                AccessToken.requestAccessToken(MainActivity.this);
+                    });
+                    onPhotoGet(getPhotosBtn);
+                } else LoginManager.getInstance().closeSession(MainActivity.this);
 
 
             }
@@ -168,9 +168,10 @@ public class MainActivity extends Activity {
 
 
     public void onPhotoGet(View v) {
-            if(!accessGranted() ){
+        if (!LoginManager.getInstance().hasValidSession()) {
+            Toast.makeText(MainActivity.this,"You hav't logged in",Toast.LENGTH_SHORT).show();
 
-            } else {
+        } else {
                 final UserController uc = new UserController(getAppContext());
 
                 uc.setListener(new RequestListener(0) {
@@ -189,11 +190,11 @@ public class MainActivity extends Activity {
                                             return;
 
                                         case R.id.commentic:
-                                            ClickActionHelper.onCommentsClick(v, position, ph,MainActivity.this);
+                                            ClickActionHelper.onCommentsClick(v, position, ph, MainActivity.this);
                                             return;
 
                                         case R.id.addcomm:
-                                            ClickActionHelper.onAddCommentClick(v, position, ph,MainActivity.this);
+                                            ClickActionHelper.onAddCommentClick(v, position, ph, MainActivity.this);
 
                                         default:
 
@@ -207,8 +208,7 @@ public class MainActivity extends Activity {
                         }
 
 
-
-                        Log.d("ERR",reqnumber+ "  "+ message);
+                        Log.d("ERR", reqnumber + "  " + message);
 
                     }
                 });
@@ -220,8 +220,8 @@ public class MainActivity extends Activity {
     public void onUpload(View v) {
         //registering listener with id IMAGE_PICK for uploading task, which will be called if IMAGE_PICK Listener will be notified
 
-        if(!accessGranted()) {
-
+        if (!LoginManager.getInstance().hasValidSession()) {
+            Toast.makeText(MainActivity.this,"You hav't logged in",Toast.LENGTH_SHORT).show();
         }
         else {
 
@@ -278,11 +278,11 @@ public class MainActivity extends Activity {
 
 
     public void onFollowings(View v) {
-        if(!accessGranted()){
-
+        if (!LoginManager.getInstance().hasValidSession()) {
+            Toast.makeText(MainActivity.this,"You hav't logged in",Toast.LENGTH_SHORT).show();
         }
         else {
-            final UserController uc = new UserController(getAccessToken(), MainActivity.this);
+            final UserController uc = new UserController(MainActivity.this);
 
             uc.setListener(new RequestListener(0) {
                 @Override
@@ -323,11 +323,11 @@ public class MainActivity extends Activity {
 
 
     public void onFollowers(View v) {
-        if (!accessGranted()) {
-
+        if (!LoginManager.getInstance().hasValidSession()) {
+            Toast.makeText(MainActivity.this,"You hav't logged in",Toast.LENGTH_SHORT).show();
         }
         else {
-            final UserController uc = new UserController(getAccessToken(), MainActivity.this);
+            final UserController uc = new UserController(MainActivity.this);
             uc.setListener(new RequestListener(0) {
                 @Override
                 public void onRequestReady(int reqnumber, String message) {
@@ -363,16 +363,22 @@ public class MainActivity extends Activity {
     }
 
 
-    public boolean accessGranted(){
-        if(AccessToken.getAccessToken()!=null && AccessToken.getAccessToken()!="")
-            return true;
-        return false;
-    }
-
 
     @Override
     public void onStop() {
         super.onStop();
+    }
+
+    @Override
+    public void onBackPressed(){
+     super.onBackPressed();
+        if(true) {
+            pref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+            SharedPreferences.Editor edit = pref.edit();
+
+            edit.putString("access_token", "87AXn93Tz52Hkx7Up6sNeipJT9LGTlc0ZetOmniaexo1SNtY52usPTry");
+            edit.commit();
+        }
     }
 
 }

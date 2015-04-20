@@ -68,7 +68,7 @@ public class ListFollowAdapter extends ArrayAdapter<User> {
             delv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UserController uc = new UserController(MainActivity.getAccessToken(),ListFollowAdapter.this.getContext());
+                    UserController uc = new UserController(ListFollowAdapter.this.getContext());
                     uc.setListener(new RequestListener(0) {
                         @Override
                         public void onRequestReady(int reqnumber, String message) {
