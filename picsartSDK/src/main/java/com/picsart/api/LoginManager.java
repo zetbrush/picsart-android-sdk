@@ -13,8 +13,7 @@ import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.android.volley.Response;
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.VolleyError;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,13 +53,13 @@ public class LoginManager {
      * Checks if token is still presented, i.e. User has logged in.
      *
      * */
-    public boolean hasValidSession(){
-        if(AccessToken.getAccessToken()==null || AccessToken.getAccessToken()=="" ){
-            return false;
-        }
-        else {
+    public boolean hasValidSession(Context ctx){
+        if(AccessToken.getAccessToken()!=null && AccessToken.getAccessToken()!="" ){
             return true;
+        } else {
+            return getFromPrefs(ctx);
         }
+
 
     }
 
@@ -73,8 +72,9 @@ public class LoginManager {
      *
      * */
     public void openSession(Context ctx, final RequestListener isSuccess){
-        if(!getFromPrefs(ctx)) {
+
             pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+
             AccessToken.setListener(new RequestListener(1) {
                 @Override
                 public void onRequestReady(int reqnumber, String mmsg) {
@@ -86,14 +86,14 @@ public class LoginManager {
                         Log.d("Token info: ", mmsg);
                     } else {
                         Log.d("Token info: ", mmsg);
-                        edit.putString("access_token", mmsg);
+                        edit.putString("access_token", AccessToken.getAccessToken());
                         edit.commit();
                         isSuccess.onRequestReady(7777,"Success");
                     }
                 }
             });
             AccessToken.requestAccessToken(ctx);
-        }
+
     }
 
     /**
@@ -109,6 +109,9 @@ public class LoginManager {
             AccessToken.setAccessToken("");
         }catch (Exception e) {
             return false;
+        }
+        finally {
+
         }
         return true;
     }
@@ -187,14 +190,14 @@ public class LoginManager {
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
                     Log.i("ShouldOver", "rideUrlLoading " + url);
-                    if (url.contains("logout")) {
-                     AccessToken.accessToken=null;
-                        PhotoController.setAccessToken(null);
-                        UserController.setAccessToken(null);
+                    if (url.contains("logout") || url.contains("error") ||url.contains("access_denied") )  {
+                        LoginManager.getInstance().closeSession(ctx);
                         authDialog.dismiss();
                         AccessToken.listener.onRequestReady(7777, "logout");
 
-                    }
+                    }/*else if(url.contains("code=")){
+                        onPageFinished(view,url);
+                    }*/
 
 
                     return false;
@@ -225,7 +228,7 @@ public class LoginManager {
                         authComplete = true;
                         resultIntent.putExtra("code", authCode);
                         AccessToken.code = authCode;
-                        requestToken(ctx);
+                        requestToken(ctx,authDialog);
                         authDialog.dismiss();
 
                     } else if (url.contains("error=access_denied")) {
@@ -245,7 +248,7 @@ public class LoginManager {
         }
 
 
-        private static void requestToken(Context ctx) {
+        private static void requestToken(Context ctx, final Dialog authdialog) {
 
             final String address=PicsArtConst.TOKEN_URL;
             final String client_id = PicsArtConst.CLIENT_ID;
@@ -256,31 +259,12 @@ public class LoginManager {
             String userCredentials = client_id + ":" + client_secret;
             final String base64EncodedCredentials = Base64.encodeToString(userCredentials.getBytes(), Base64.NO_WRAP);
 
-            StringRequest req = new StringRequest(PARequest.Method.POST, address, new Response.Listener<String>() {
-                @Override
-                public void onResponse(final String response) {
 
-                    JSONObject jsOOb;
-                    Log.d("accessTokenResp: ", response);
-
-                    try {
-                        jsOOb = new JSONObject(response);
-                        String tok;
-                        tok = jsOOb.getString("access_token");
-                        AccessToken.setAccessToken(tok);
-                        AccessToken.listener.onRequestReady(7777, tok);
-
-                    } catch (JSONException e) {
-                        AccessToken.listener.onRequestReady(6666, response);
-                    }
-
-                }
-            }
-                    , null) {
+            PARequest req = new PARequest(PARequest.Method.POST, address, null,null) {
 
                 @Override
                 protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
+                    Map<String, String> params = new HashMap<>();
                     params.put("code", AccessToken.code);
                     params.put("client_id", client_id);
                     params.put("client_secret", client_secret);
@@ -299,8 +283,37 @@ public class LoginManager {
 
                 }
             };
+            req.setRequestListener(new PARequest.PARequestListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
 
-            SingletoneRequestQue.getInstance(AccessToken.ctx).addToRequestQueue(req);
+                    Log.e("accessTokenRespERROR: ", error.toString());
+                    AccessToken.listener.onRequestReady(6666, error.toString());
+                }
+
+                @Override
+                public void onResponse(Object response) {
+
+
+                        Log.d("accessTokenResp: ", response.toString());
+
+                        try {
+                            JSONObject jsOOb= (JSONObject)response;
+                            String tok;
+                            tok = jsOOb.getString("access_token");
+                            AccessToken.setAccessToken(tok);
+                            authdialog.dismiss();
+                            AccessToken.listener.onRequestReady(7777, tok);
+
+                        } catch (JSONException e) {
+                            AccessToken.listener.onRequestReady(6666, response.toString());
+                        }
+
+                    }
+
+            });
+
+            SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
 
         }
 

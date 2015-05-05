@@ -19,6 +19,8 @@ import java.util.ArrayList;
  */
 public class UserFactory {
 
+    private UserFactory(){}
+
     /**
      * Tries to Parse Object to User
      *

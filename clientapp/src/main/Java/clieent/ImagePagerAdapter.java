@@ -71,31 +71,39 @@ public class ImagePagerAdapter extends PagerAdapter {
 
         final DisplayImageOptions optionsImg = new DisplayImageOptions.Builder()
                 .showImageForEmptyUri(R.drawable.preloader)
-                .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
+                .imageScaleType(ImageScaleType.EXACTLY)
                 .cacheInMemory(true)
                 .bitmapConfig(Bitmap.Config.ARGB_8888)
                 .considerExifParams(true)
                 .showImageOnLoading(R.drawable.preloader)
                 .displayer(new FadeInBitmapDisplayer(1555))
                 .build();
+        final ImageView.ScaleType[] sclType = new ImageView.ScaleType[1];
 
         imageLoader.displayImage((mImages.get(position)).getUrl() + "?r1024x1024", img, optionsImg, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String s, View view) {
+                sclType[0] =((ImageView) view).getScaleType();
+                ((ImageView)view).setScaleType(ImageView.ScaleType.CENTER);
                 view.startAnimation(rotateLoadingAnim());
             }
 
             @Override
             public void onLoadingFailed(String s, View view, FailReason failReason) {
                 if(view !=null) {
+
                     view.setAnimation(null);
+                    view.setBackground(null);
                     view.setBackgroundResource(R.drawable.noimageavailable);
                 }
             }
 
             @Override
             public void onLoadingComplete(String s, View view, Bitmap bitmap) {
+
+                ((ImageView)view).setScaleType(sclType[0]);
                 view.setAnimation(null);
+
 
             }
 
@@ -103,6 +111,8 @@ public class ImagePagerAdapter extends PagerAdapter {
             public void onLoadingCancelled(String s, View view) {
                 if(view !=null) {
                     view.setAnimation(null);
+                    view.setBackground(null);
+                    ((ImageView)view).setScaleType(sclType[0]);
                     view.setBackgroundResource(R.drawable.noimageavailable);
                 }
             }

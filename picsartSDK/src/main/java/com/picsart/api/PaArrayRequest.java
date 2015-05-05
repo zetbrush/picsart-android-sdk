@@ -53,7 +53,7 @@ public class PaArrayRequest extends JsonArrayRequest {
             String jsonString = new String(response.data,
                     HttpHeaderParser.parseCharset(response.headers, PROTOCOL_CHARSET));
             this.mResponseArr= new JSONArray(jsonString);
-            return Response.success(new JSONArray(jsonString),
+            return Response.success(mResponseArr,
                     HttpHeaderParser.parseCacheHeaders(response));
         } catch (UnsupportedEncodingException e) {
             return Response.error(new ParseError(e));

@@ -19,6 +19,8 @@ import java.util.ArrayList;
 
 public class PhotoFactory {
 
+    private PhotoFactory(){}
+
     /**
      * @param jobj  JSONObject
      * @return Photo

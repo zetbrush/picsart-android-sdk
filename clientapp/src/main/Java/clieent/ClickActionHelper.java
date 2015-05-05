@@ -25,7 +25,7 @@ public class ClickActionHelper {
 
     public static void onLikeUnlike(View v, int position, final Photo ph, Context ctx) {
         PhotoController pc = new PhotoController(ctx);
-        if (!LoginManager.getInstance().hasValidSession()) {
+        if (!LoginManager.getInstance().hasValidSession(ctx)) {
             Toast.makeText(ctx,"You hav't logged in",Toast.LENGTH_SHORT).show();
 
         }
@@ -58,7 +58,7 @@ public class ClickActionHelper {
     public static void onCommentsClick(View v, int position, final Photo ph, final Context ctx) {
         final PhotoController pc = new PhotoController(ctx);
 
-        if (!LoginManager.getInstance().hasValidSession()) {
+        if (!LoginManager.getInstance().hasValidSession(ctx)) {
             Toast.makeText(ctx,"You hav't logged in",Toast.LENGTH_SHORT).show();
 
         }
@@ -91,7 +91,7 @@ public class ClickActionHelper {
 
 
     public static void onAddCommentClick(View v, int position, final Photo ph, final Context ctx) {
-        if (!LoginManager.getInstance().hasValidSession()) {
+        if (!LoginManager.getInstance().hasValidSession(ctx)) {
             Toast.makeText(ctx,"You hav't logged in",Toast.LENGTH_SHORT).show();
 
         }

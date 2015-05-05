@@ -202,7 +202,7 @@ public class PhotoController {
      *                onResponse       301 code will be called in listener
      *                onErrorResponse  303 code will be called in listener
      */
-    public synchronized void requestComments(final String photoId, final int offset, final int limit) {
+    public void requestComments(final String photoId, final int offset, final int limit) {
         String url = PicsArtConst.PHOTO_PRE_URL + photoId + PicsArtConst.PHOTO_ADD_COMMENT_URL + PicsArtConst.TOKEN_PREFIX + token;
         PaArrayRequest req = new PaArrayRequest( url, null, null);
 

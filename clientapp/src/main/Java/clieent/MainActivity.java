@@ -12,7 +12,6 @@ import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +27,8 @@ import com.picsart.api.RequestListener;
 import com.picsart.api.UserController;
 
 import java.util.ArrayList;
+
+import clieent.helper.AbsolutePathResolver;
 
 
 public class MainActivity extends Activity {
@@ -67,6 +68,7 @@ public class MainActivity extends Activity {
         PicsArtConst.CLIENT_ID = "ZetOmniaexo1SNtY52usPTry";
         PicsArtConst.CLIENT_SECRET = "yY2fEJU8R9rFmuwtOZRQhm4ZK2Kdwqhk";
         PicsArtConst.REDIRECT_URI="localhost";
+        PicsArtConst.GRANT_TYPE="authorization_code";
 
         setContentView(R.layout.activity_main);
 
@@ -101,18 +103,22 @@ public class MainActivity extends Activity {
     }
 
     public void initing() {
-        onPhotoGet(getPhotosBtn);
 
-        if(!LoginManager.getInstance().hasValidSession()){
+
+        if(!LoginManager.getInstance().hasValidSession(MainActivity.this)){
             signInBtn.setText("Login with PicsArt");
         }
-        else signInBtn.setText("Logout from PicsArt");
+
+        else {
+            signInBtn.setText("Logout from PicsArt");
+            onPhotoGet(getPhotosBtn);
+        }
 
         signInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if (!LoginManager.getInstance().hasValidSession()) {
+                if (!LoginManager.getInstance().hasValidSession(MainActivity.this)) {
                     LoginManager.getInstance().openSession(MainActivity.this, new RequestListener(0) {
                         @Override
                         public void onRequestReady(int reqnumber, String message) {
@@ -123,7 +129,10 @@ public class MainActivity extends Activity {
                         }
                     });
                     onPhotoGet(getPhotosBtn);
-                } else LoginManager.getInstance().closeSession(MainActivity.this);
+                } else {
+                    LoginManager.getInstance().closeSession(MainActivity.this);
+                    signInBtn.setText("Login with PicsArt");
+                }
 
 
             }
@@ -136,15 +145,17 @@ public class MainActivity extends Activity {
             //Picking path of photo and notifying to upload when selection is made
         if (requestCode == IMAGE_PICK && resultCode == RESULT_OK) {
             Uri path = data.getData();
-
+            String pth = AbsolutePathResolver.getPath(MainActivity.this,path);
             Cursor cursor = null;
             try {
-                String[] proj = {MediaStore.Images.Media.DATA};
-                cursor = context.getContentResolver().query(path, proj, null, null, null);
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                cursor.moveToFirst();
+                //String[] proj = {MediaStore.Images.Media.DATA};
+               // cursor = context.getContentResolver().query(path, proj, null, null, null);
+                //int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+               // cursor.moveToFirst();
                 imagePaths = new ArrayList<>();
-                imagePaths.add(cursor.getString(column_index));
+                //imagePaths.add(cursor.getString(column_index));
+                imagePaths.add(pth);
+                Log.d("ImgPth",pth);
                 PhotoController.notifyListener(IMAGE_PICK, IMAGE_PICK, "");
             } finally {
                 if (cursor != null) {
@@ -168,7 +179,7 @@ public class MainActivity extends Activity {
 
 
     public void onPhotoGet(View v) {
-        if (!LoginManager.getInstance().hasValidSession()) {
+        if (!LoginManager.getInstance().hasValidSession(getAppContext())) {
             Toast.makeText(MainActivity.this,"You hav't logged in",Toast.LENGTH_SHORT).show();
 
         } else {
@@ -208,7 +219,7 @@ public class MainActivity extends Activity {
                         }
 
 
-                        Log.d("ERR", reqnumber + "  " + message);
+                       else Log.d("ERR", reqnumber + "  " + message);
 
                     }
                 });
@@ -220,7 +231,7 @@ public class MainActivity extends Activity {
     public void onUpload(View v) {
         //registering listener with id IMAGE_PICK for uploading task, which will be called if IMAGE_PICK Listener will be notified
 
-        if (!LoginManager.getInstance().hasValidSession()) {
+        if (!LoginManager.getInstance().hasValidSession(getAppContext())) {
             Toast.makeText(MainActivity.this,"You hav't logged in",Toast.LENGTH_SHORT).show();
         }
         else {
@@ -278,7 +289,7 @@ public class MainActivity extends Activity {
 
 
     public void onFollowings(View v) {
-        if (!LoginManager.getInstance().hasValidSession()) {
+        if (!LoginManager.getInstance().hasValidSession(getAppContext())) {
             Toast.makeText(MainActivity.this,"You hav't logged in",Toast.LENGTH_SHORT).show();
         }
         else {
@@ -323,7 +334,7 @@ public class MainActivity extends Activity {
 
 
     public void onFollowers(View v) {
-        if (!LoginManager.getInstance().hasValidSession()) {
+        if (!LoginManager.getInstance().hasValidSession(getAppContext())) {
             Toast.makeText(MainActivity.this,"You hav't logged in",Toast.LENGTH_SHORT).show();
         }
         else {
@@ -372,13 +383,12 @@ public class MainActivity extends Activity {
     @Override
     public void onBackPressed(){
      super.onBackPressed();
-        if(true) {
-            pref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-            SharedPreferences.Editor edit = pref.edit();
+        pref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        SharedPreferences.Editor edit = pref.edit();
 
-            edit.putString("access_token", "87AXn93Tz52Hkx7Up6sNeipJT9LGTlc0ZetOmniaexo1SNtY52usPTry");
-            edit.commit();
-        }
+        edit.putString("access_token", "87AXn93Tz52Hkx7Up6sNeipJT9LGTlc0ZetOmniaexo1SNtY52usPTry");
+        edit.commit();
+
     }
 
 }
