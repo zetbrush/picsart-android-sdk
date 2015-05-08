@@ -13,7 +13,8 @@ import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.android.volley.VolleyError;
+import com.android.volley.Response;
+import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -260,7 +261,27 @@ public class LoginManager {
             final String base64EncodedCredentials = Base64.encodeToString(userCredentials.getBytes(), Base64.NO_WRAP);
 
 
-            PARequest req = new PARequest(PARequest.Method.POST, address, null,null) {
+            StringRequest req = new StringRequest(PARequest.Method.POST, address, new Response.Listener<String>() {
+                @Override
+                public void onResponse(final String response) {
+
+                    JSONObject jsOOb;
+                    Log.d("accessTokenResp: ", response);
+
+                    try {
+                        jsOOb = new JSONObject(response);
+                        String tok;
+                        tok = jsOOb.getString("access_token");
+                        AccessToken.setAccessToken(tok);
+                        AccessToken.listener.onRequestReady(7777, tok);
+
+                    } catch (JSONException e) {
+                        AccessToken.listener.onRequestReady(6666, response.toString());
+                    }
+
+                }
+            }
+                    , null) {
 
                 @Override
                 protected Map<String, String> getParams() {
@@ -276,42 +297,13 @@ public class LoginManager {
 
                 @Override
                 public Map<String, String> getHeaders() {
-                    Map<String, String> params = new HashMap<String, String>();
+                    Map<String, String> params = new HashMap<>();
                     params.put("Authorization", "Basic " + base64EncodedCredentials);
                     params.put("Content-Type", "application/x-www-form-urlencoded");
                     return params;
 
                 }
             };
-            req.setRequestListener(new PARequest.PARequestListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
-                    Log.e("accessTokenRespERROR: ", error.toString());
-                    AccessToken.listener.onRequestReady(6666, error.toString());
-                }
-
-                @Override
-                public void onResponse(Object response) {
-
-
-                        Log.d("accessTokenResp: ", response.toString());
-
-                        try {
-                            JSONObject jsOOb= (JSONObject)response;
-                            String tok;
-                            tok = jsOOb.getString("access_token");
-                            AccessToken.setAccessToken(tok);
-                            authdialog.dismiss();
-                            AccessToken.listener.onRequestReady(7777, tok);
-
-                        } catch (JSONException e) {
-                            AccessToken.listener.onRequestReady(6666, response.toString());
-                        }
-
-                    }
-
-            });
 
             SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
 

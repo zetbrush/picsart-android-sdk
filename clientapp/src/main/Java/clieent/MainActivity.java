@@ -11,7 +11,6 @@ import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
@@ -84,14 +83,7 @@ public class MainActivity extends Activity {
         MainActivity.context = this.getApplicationContext();
 
 
-       /* try {
-            pref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-            token = pref.getString("access_token", "");
-            AccessToken.setAccessToken(token);
 
-        } catch (Exception c) {
-            Log.i("ERROR Loading Token ", ": no token is persisted ");
-        }*/
 
     }
 
@@ -243,6 +235,7 @@ public class MainActivity extends Activity {
                         final ProgressDialog pd = new ProgressDialog(MainActivity.this, AlertDialog.THEME_HOLO_DARK);
                         pd.setCanceledOnTouchOutside(true);
                         String path = imagePaths.get(0);
+
                         Photo ph = new Photo(Photo.IS.GENERAL);
                         ph.setPath(path);
                         PhotoController.ProgressListener progrs = new PhotoController.ProgressListener() {
@@ -383,11 +376,10 @@ public class MainActivity extends Activity {
     @Override
     public void onBackPressed(){
      super.onBackPressed();
-        pref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+      /*  pref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         SharedPreferences.Editor edit = pref.edit();
-
         edit.putString("access_token", "87AXn93Tz52Hkx7Up6sNeipJT9LGTlc0ZetOmniaexo1SNtY52usPTry");
-        edit.commit();
+        edit.commit();*/
 
     }
 

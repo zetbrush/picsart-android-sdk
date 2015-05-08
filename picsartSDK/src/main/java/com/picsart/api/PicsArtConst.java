@@ -14,7 +14,7 @@ public class PicsArtConst {
     public static String GRANT_TYPE = "authorization_code";
 
     public static final String OAUTH_URL = "https://picsart.com/oauth2/authorize";
-    public static final String TOKEN_URL = "https://picsart.com/oauth2/token";
+    public static final String TOKEN_URL = "https://api.picsart.com/oauth2/token";
 
 
     public static final String TOKEN_URL_PREFIX = ".json?token=";
