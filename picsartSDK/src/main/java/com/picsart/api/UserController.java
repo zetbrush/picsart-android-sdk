@@ -20,14 +20,12 @@ import java.util.Map;
 /**
  * This class consists exclusively of void methods, that operate on making
  * requests and initializing specific field.
- *
+ * <p/>
  * Some Getters of this class  throw a <tt>NullPointerException</tt>
  * if the collections or class objects provided to them are null.
- *
+ * <p/>
  * This class is a member of the
  * www.picsart.com
- *
- *
  */
 public class UserController {
 
@@ -57,7 +55,7 @@ public class UserController {
         return accessToken;
     }
 
-    private static  String accessToken;
+    private static String accessToken;
 
     private User user;
     private ArrayList<Photo> userPhotos;
@@ -76,6 +74,7 @@ public class UserController {
         this.ctx = ctx;
         this.accessToken = token;
     }
+
     public UserController(Context ctx) {
         this.ctx = ctx;
 
@@ -163,7 +162,7 @@ public class UserController {
 
     /**
      * Request User Profile
-     *
+     * <p/>
      * onResponse 201 code will be called in listener
      * onErrorResponse 301 code will be called in listener
      */
@@ -191,7 +190,7 @@ public class UserController {
      * Request User Profile with ID
      *
      * @param id ID of the User
-     *
+     *           <p/>
      *           onResponse 202 code will be called in listener
      *           onErrorResponse 302 code will be called in listener
      */
@@ -231,7 +230,7 @@ public class UserController {
      * @param user   user(to examine)
      * @param offset starting point
      * @param limit  limit of users
-     *
+     *               <p/>
      *               onResponse 203 code will be called in listener
      *               onErrorResponse 303 code will be called in listener
      */
@@ -245,7 +244,7 @@ public class UserController {
      * @param userId ID of the User
      * @param offset starting point
      * @param limit  limit of users
-     *
+     *               <p/>
      *               onResponse 203 code will be called in listener
      *               onErrorResponse 303 code will be called in listener
      */
@@ -258,7 +257,7 @@ public class UserController {
         userFollowers = new ArrayList<>();
 
         String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.FOLLOWERS_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
-        PaArrayRequest req = new PaArrayRequest( url, null, null);
+        PaArrayRequest req = new PaArrayRequest(url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PaArrayRequest.PARequestListener() {
 
@@ -284,7 +283,7 @@ public class UserController {
      * @param user   user(to examine)
      * @param offset starting point
      * @param limit  limit of users
-     *
+     *               <p/>
      *               onResponse 204 code will be called in listener
      *               onErrorResponse 304 code will be called in listener
      */
@@ -298,7 +297,7 @@ public class UserController {
      * @param userId ID of the User
      * @param offset starting point
      * @param limit  limit of users
-     *
+     *               <p/>
      *               onResponse 204 code will be called in listener
      *               onErrorResponse 304 code will be called in listener
      */
@@ -311,7 +310,7 @@ public class UserController {
         userFollowing = new ArrayList<>();
 
         String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.FOLLOWING_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
-        PaArrayRequest req = new PaArrayRequest( url, null, null);
+        PaArrayRequest req = new PaArrayRequest(url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PaArrayRequest.PARequestListener() {
 
@@ -336,7 +335,7 @@ public class UserController {
      * @param user   user(to examine)
      * @param offset starting point
      * @param limit  limit of users
-     *
+     *               <p/>
      *               onResponse  205 code will be called in listener
      *               onErrorResponse 305 code will be called in listener
      */
@@ -350,7 +349,7 @@ public class UserController {
      * @param userId ID of the User
      * @param offset starting point
      * @param limit  limit of users
-     *
+     *               <p/>
      *               onResponse 205 code will be called in listener
      *               onErrorResponse 305 code will be called in listener
      */
@@ -363,7 +362,7 @@ public class UserController {
         userLikedPhotos = new ArrayList<>();
 
         String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.LIKED_PHOTOS_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
-        PaArrayRequest req = new PaArrayRequest( url, null, null);
+        PaArrayRequest req = new PaArrayRequest(url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PaArrayRequest.PARequestListener() {
             @Override
@@ -389,7 +388,7 @@ public class UserController {
      *
      * @param offset starting point
      * @param limit  limit of users
-     *
+     *               <p/>
      *               onResponse  206 code will be called in listener
      *               onErrorResponse 306 code will be called in listener
      */
@@ -398,7 +397,7 @@ public class UserController {
         blockedUsers = new ArrayList<>();
 
         String url = PicsArtConst.SHOW_USER + PicsArtConst.ME_PREFIX + PicsArtConst.BLOCKED_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
-        PaArrayRequest req = new PaArrayRequest( url, null, null) ;
+        PaArrayRequest req = new PaArrayRequest(url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PaArrayRequest.PARequestListener() {
             @Override
@@ -425,7 +424,7 @@ public class UserController {
      * @param user   user(to examine)
      * @param offset starting point
      * @param limit  limit of users
-     *
+     *               <p/>
      *               onResponse  207 code will be called in listener
      *               onErrorResponse 307 code will be called in listener
      */
@@ -439,7 +438,7 @@ public class UserController {
      * @param userId ID of the User
      * @param offset starting point
      * @param limit  limit of users
-     *
+     *               <p/>
      *               onResponse 207 code will be called in listener
      *               onErrorResponse 307 code will be called in listener
      */
@@ -452,7 +451,7 @@ public class UserController {
         userPlaces = new ArrayList<>();
 
         String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.PLACES_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
-        PaArrayRequest req = new PaArrayRequest( url, null, null);
+        PaArrayRequest req = new PaArrayRequest(url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PaArrayRequest.PARequestListener() {
 
@@ -483,7 +482,7 @@ public class UserController {
                     }
                     UserController.this.listener.onRequestReady(207, response.toString());
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     UserController.this.listener.onRequestReady(307, e.toString());
                 }
 
@@ -499,7 +498,7 @@ public class UserController {
      * @param user   user(to examine)
      * @param offset starting point
      * @param limit  limit of users
-     *
+     *               <p/>
      *               onResponse 208 code will be called in listener
      *               onErrorResponse 308 code will be called in listener
      */
@@ -513,7 +512,7 @@ public class UserController {
      * @param userId ID of the User
      * @param offset starting point
      * @param limit  limit of users
-     *
+     *               <p/>
      *               onResponse 208 code will be called in listener
      *               onErrorResponse 308 code will be called in listener
      */
@@ -525,7 +524,7 @@ public class UserController {
         }
         userTags = new ArrayList<>();
         String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.TAGS_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
-        PaArrayRequest req = new PaArrayRequest( url, null, null);
+        PaArrayRequest req = new PaArrayRequest(url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PaArrayRequest.PARequestListener() {
             @Override
@@ -541,23 +540,23 @@ public class UserController {
                 try {
                     jsonArray = (JSONArray) response;
 
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    try {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        try {
 
-                        JSONObject jsonObject1 = new JSONObject(jsonArray.get(i).toString());
-                        userTags.add(jsonObject1.getString(TAG));
+                            JSONObject jsonObject1 = new JSONObject(jsonArray.get(i).toString());
+                            userTags.add(jsonObject1.getString(TAG));
                     /*String key = jsonObject1.getString(TAG);
                     ArrayList<Photo> value = PhotoFactory.parseFromAsArray(jsonArray.get(i), 0, MAX_LIMIT, PHOTOS);
                     Log.d(MY_LOGS, key);
                     Log.d(MY_LOGS, PhotoFactory.parseFromAsArray(jsonArray.get(i), 0, MAX_LIMIT, PHOTOS).size() + "");
                     userTags.put(key, value);*/
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
-                UserController.this.listener.onRequestReady(208, response.toString());
-            }catch (Exception e){
+                    UserController.this.listener.onRequestReady(208, response.toString());
+                } catch (Exception e) {
                     UserController.this.listener.onRequestReady(308, e.toString());
                 }
             }
@@ -571,7 +570,7 @@ public class UserController {
      * @param user   user(to examine)
      * @param offset starting point
      * @param limit  limit of users
-     *
+     *               <p/>
      *               onResponse 209 code will be called in listener
      *               onErrorResponse 309 code will be called in listener
      */
@@ -585,7 +584,7 @@ public class UserController {
      * @param userId ID of the User
      * @param offset starting point
      * @param limit  limit of users
-     *
+     *               <p/>
      *               onResponse 209 code will be called in listener
      *               onErrorResponse 309 code will be called in listener
      */
@@ -598,7 +597,7 @@ public class UserController {
         userPhotos = new ArrayList<>();
 
         String url = PicsArtConst.SHOW_USER + userId + PicsArtConst.PHOTOS_PREFIX + PicsArtConst.TOKEN_PREFIX + accessToken;
-        PaArrayRequest req = new PaArrayRequest( url, null, null) ;
+        PaArrayRequest req = new PaArrayRequest(url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PaArrayRequest.PARequestListener() {
             @Override
@@ -612,7 +611,7 @@ public class UserController {
                 UserController.this.listener.onRequestReady(209, response.toString());
             }
 
-    });
+        });
     }
 
 
@@ -620,7 +619,7 @@ public class UserController {
      * Requests for Blocking User with ID
      *
      * @param blockingId ID of Blocking User
-     *
+     *                   <p/>
      *                   onResponse 210 code will be called in listener
      *                   onErrorResponse 310 code will be called in listener
      */
@@ -664,14 +663,13 @@ public class UserController {
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
 
 
-
     }
 
     /**
      * Requests for Unblocking User with ID
      *
      * @param unblockingId ID of Unblocking User
-     *
+     *                     <p/>
      *                     onResponse 211 code will be called in listener
      *                     onErrorResponse 311 code will be called in listener
      */
@@ -683,7 +681,7 @@ public class UserController {
         }
         String url = PicsArtConst.SHOW_USER + PicsArtConst.ME_PREFIX + PicsArtConst.BLOCKED_PREFIX + "/" + unblockingId + PicsArtConst.TOKEN_PREFIX + accessToken;
 
-        PARequest req = new PARequest(Request.Method.DELETE, url, null, null) ;
+        PARequest req = new PARequest(Request.Method.DELETE, url, null, null);
         SingletoneRequestQue.getInstance(ctx).addToRequestQueue(req);
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
@@ -702,7 +700,7 @@ public class UserController {
      * Requests for Following User with ID
      *
      * @param followingId ID of Following User
-     *
+     *                    <p/>
      *                    onResponse 212 code will be called in listener
      *                    onErrorResponse 312 code will be called in listener
      */
@@ -751,9 +749,9 @@ public class UserController {
      * Requests for Unfollowing User with ID
      *
      * @param unfollowingId ID of Unfollowing User
-     *
-     *                    onResponse 212 code will be called in listener
-     *                    onErrorResponse 312 code will be called in listener
+     *                      <p/>
+     *                      onResponse 212 code will be called in listener
+     *                      onErrorResponse 312 code will be called in listener
      */
     public void unfollowUserWithID(final String unfollowingId) {
 
@@ -762,7 +760,7 @@ public class UserController {
             return;
         }
 
-        String url = PicsArtConst.SHOW_USER + PicsArtConst.ME_PREFIX + PicsArtConst.FOLLOWING_PREFIX +"/"+unfollowingId+ PicsArtConst.TOKEN_PREFIX + accessToken;
+        String url = PicsArtConst.SHOW_USER + PicsArtConst.ME_PREFIX + PicsArtConst.FOLLOWING_PREFIX + "/" + unfollowingId + PicsArtConst.TOKEN_PREFIX + accessToken;
         StringRequest req = new StringRequest(Request.Method.DELETE, url,
 
                 new Response.Listener<String>() {
@@ -794,10 +792,10 @@ public class UserController {
 
 
     /**
-     *     @param reqnumber    code to send
-     *     @param msg          message
-     *
-     *         Notifies all static listeners with given code and message
+     * @param reqnumber code to send
+     * @param msg       message
+     *                  <p/>
+     *                  Notifies all static listeners with given code and message
      */
     public static void notifyListeners(int reqnumber, String msg) {
         for (RequestListener listeners : getRegisteredListeners()) {
@@ -807,11 +805,11 @@ public class UserController {
     }
 
     /**
-     *     @param listenerNumb listener nuber(ID) to notify
-     *     @param reqNumb       code to send
-     *     @param msg          message
-     *
-     *         Notifies specified static listener with given code and message
+     * @param listenerNumb listener nuber(ID) to notify
+     * @param reqNumb      code to send
+     * @param msg          message
+     *                     <p/>
+     *                     Notifies specified static listener with given code and message
      */
     public static void notifyListener(int listenerNumb, int reqNumb, String msg) {
         try {

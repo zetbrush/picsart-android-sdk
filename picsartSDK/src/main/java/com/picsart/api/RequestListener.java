@@ -17,9 +17,11 @@ public abstract class RequestListener {
     public int getIndexOfListener() {
         return indexOfListener;
     }
+
     public void setIndexOfListener(int indexOfListener) {
         this.indexOfListener = indexOfListener;
     }
+
     public int getIndexInList() {
         return indexInList;
     }
