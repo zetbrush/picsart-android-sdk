@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/PiArAPIBeta.iml" filepath="$PROJECT_DIR$/PiArAPIBeta.iml" />
       <module fileurl="file://$PROJECT_DIR$/clientapp/clientapp.iml" filepath="$PROJECT_DIR$/clientapp/clientapp.iml" />
       <module fileurl="file://$PROJECT_DIR$/picsart-android-sdk.iml" filepath="$PROJECT_DIR$/picsart-android-sdk.iml" />
       <module fileurl="file://$PROJECT_DIR$/picsartSDK/picsartSDK.iml" filepath="$PROJECT_DIR$/picsartSDK/picsartSDK.iml" />

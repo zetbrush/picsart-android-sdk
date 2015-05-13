@@ -53,4 +53,46 @@ public class PicsArtConst {
     public static final String BLOCKED_PREFIX = "/blocks";
     public static final String PHOTOS_PREFIX = "/photos";
     public static final String DATE_FORMAT = "yyyy-MM-dd'T'hh:mm:ss.SSS'X'";
+
+    /////PhotoController codes//////
+    public static final int OK_CODE_LOGIN=7777;
+    public static final int BAD_CODE_LOGIN=6666;
+
+    public static final int UPLOAD_OK_CODE =101;
+    public static final int UPLOAD_BAD_CODE=103;
+
+    public static final int REQ_OK_PHOTO =201;
+    public static final int REQ_BAD_PHOTO =203;
+
+    public static final int REQ_OK_COMMS=301;
+    public static final int REQ_BAD_COMMS =303;
+
+    public static final int REQ_OK_ADDCOMM=401;
+    public static final int REQ_BAD_ADDCOMM =403;
+
+    public static final int REQ_OK_DELCOMM = 501;
+    public static final int REQ_BAD_DELCOMM = 503;
+
+    public static final int REQ_OK_UPDPH =601;
+    public static final int REQ_BAD_UPDPH=603;
+
+    public static final int REQ_OK_LIKE = 701;
+    public static final int REQ_BAD_LIKE =703;
+
+    public static final int REQ_OK_UNLKE=801;
+    public static final int REQ_BAD_UNLKE = 803;
+
+
+    public static final int REQ_OK_COMID = 901;
+    public static final int REQ_BAD_COMID = 903;
+
+    public static final int REQ_OK_LKUS = 1001;
+    public static final int REQ_BAD_LKUS = 1003;
+
+    ////UserControllerCodes////
+
+
+
+
+
 }

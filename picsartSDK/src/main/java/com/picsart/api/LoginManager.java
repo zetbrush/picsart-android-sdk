@@ -31,6 +31,9 @@ import java.util.Map;
  */
 public class LoginManager {
 
+    private static final int OK_CODE=PicsArtConst.OK_CODE_LOGIN;
+    private static final int BAD_CODE=PicsArtConst.OK_CODE_LOGIN;
+
     private static LoginManager loginManager;
     private SharedPreferences pref;
 
@@ -89,7 +92,7 @@ public class LoginManager {
                         Log.d("Token info: ", mmsg);
                         edit.putString("access_token", AccessToken.getAccessToken());
                         edit.commit();
-                        isSuccess.onRequestReady(7777,"Success");
+                        isSuccess.onRequestReady(OK_CODE,"Success");
                     }
                 }
             });
@@ -194,7 +197,7 @@ public class LoginManager {
                     if (url.contains("logout") || url.contains("error") ||url.contains("access_denied") )  {
                         LoginManager.getInstance().closeSession(ctx);
                         authDialog.dismiss();
-                        AccessToken.listener.onRequestReady(7777, "logout");
+                        AccessToken.listener.onRequestReady(OK_CODE, "logout");
 
                     }/*else if(url.contains("code=")){
                         onPageFinished(view,url);
@@ -233,7 +236,7 @@ public class LoginManager {
                         authDialog.dismiss();
 
                     } else if (url.contains("error=access_denied")) {
-                        AccessToken.listener.onRequestReady(7777,"access_denied");
+                        AccessToken.listener.onRequestReady(OK_CODE,"access_denied");
                         Log.i(" ", "ACCESS_DENIED_HERE");
                         authComplete = true;
 
@@ -273,10 +276,10 @@ public class LoginManager {
                         String tok;
                         tok = jsOOb.getString("access_token");
                         AccessToken.setAccessToken(tok);
-                        AccessToken.listener.onRequestReady(7777, tok);
+                        AccessToken.listener.onRequestReady(OK_CODE, tok);
 
                     } catch (JSONException e) {
-                        AccessToken.listener.onRequestReady(6666, response.toString());
+                        AccessToken.listener.onRequestReady(BAD_CODE, response.toString());
                     }
 
                 }

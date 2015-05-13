@@ -68,9 +68,7 @@ public class MainActivity extends Activity {
         PicsArtConst.CLIENT_SECRET = "yY2fEJU8R9rFmuwtOZRQhm4ZK2Kdwqhk";
         PicsArtConst.REDIRECT_URI="localhost";
         PicsArtConst.GRANT_TYPE="authorization_code";
-
         setContentView(R.layout.activity_main);
-
         getPhotosBtn = (Button) findViewById(R.id.photoinf);
         uploadBtn = (Button) findViewById(R.id.uploadph);
         myPageBtn = (Button) findViewById(R.id.mypagebtn);
@@ -81,8 +79,6 @@ public class MainActivity extends Activity {
         signInBtn = (Button) findViewById(R.id.auth);
 
         MainActivity.context = this.getApplicationContext();
-
-
 
 
     }
@@ -114,7 +110,7 @@ public class MainActivity extends Activity {
                     LoginManager.getInstance().openSession(MainActivity.this, new RequestListener(0) {
                         @Override
                         public void onRequestReady(int reqnumber, String message) {
-                            if (reqnumber == 7777) {
+                            if (reqnumber == PicsArtConst.OK_CODE_LOGIN) {
                                 signInBtn.setText("Logout from PicsArt");
                                 Toast.makeText(MainActivity.this, "Logged in Successfully", Toast.LENGTH_SHORT).show();
                             }
@@ -140,12 +136,7 @@ public class MainActivity extends Activity {
             String pth = AbsolutePathResolver.getPath(MainActivity.this,path);
             Cursor cursor = null;
             try {
-                //String[] proj = {MediaStore.Images.Media.DATA};
-               // cursor = context.getContentResolver().query(path, proj, null, null, null);
-                //int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-               // cursor.moveToFirst();
                 imagePaths = new ArrayList<>();
-                //imagePaths.add(cursor.getString(column_index));
                 imagePaths.add(pth);
                 Log.d("ImgPth",pth);
                 PhotoController.notifyListener(IMAGE_PICK, IMAGE_PICK, "");

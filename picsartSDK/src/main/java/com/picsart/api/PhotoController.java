@@ -176,7 +176,7 @@ public class PhotoController {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("requestPhoto", error.toString());
-                listener.onRequestReady(203, error.toString());
+                listener.onRequestReady(PicsArtConst.REQ_BAD_PHOTO, error.toString());
 
             }
 
@@ -184,8 +184,7 @@ public class PhotoController {
             public void onResponse(Object response) {
                 Log.d("requestPhoto", response.toString());
                 photo = PhotoFactory.parseFrom(response);
-
-                listener.onRequestReady(201, response.toString());
+                listener.onRequestReady(PicsArtConst.REQ_OK_PHOTO, response.toString());
             }
         });
 
@@ -210,7 +209,7 @@ public class PhotoController {
         req.setRequestListener(new PaArrayRequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                listener.onRequestReady(303, error.toString());
+                listener.onRequestReady(PicsArtConst.REQ_BAD_COMMS, error.toString());
             }
 
             @Override
@@ -236,7 +235,7 @@ public class PhotoController {
                     }
                     commentsLists = new ArrayList<>(comment);
 
-                    listener.onRequestReady(301, "Comments ready");
+                    listener.onRequestReady(PicsArtConst.REQ_OK_COMMS, "Comments ready");
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -263,13 +262,13 @@ public class PhotoController {
                     @Override
                     public void onResponse(String response) {
                         Log.d("response inner", response);
-                        listener.onRequestReady(401, response);
+                        listener.onRequestReady(PicsArtConst.REQ_OK_ADDCOMM, response);
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        listener.onRequestReady(403, error.toString());
+                        listener.onRequestReady(PicsArtConst.REQ_BAD_ADDCOMM, error.toString());
                     }
                 }) {
             @Override
@@ -303,14 +302,14 @@ public class PhotoController {
                     public void onResponse(String response) {
 
                         // Log.d("RemoveComment ", response);
-                        listener.onRequestReady(501, response);
+                        listener.onRequestReady(PicsArtConst.REQ_OK_DELCOMM, response);
 
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        listener.onRequestReady(503, error.toString());
+                        listener.onRequestReady(PicsArtConst.REQ_BAD_DELCOMM, error.toString());
                     }
 
                 }) {
@@ -341,7 +340,7 @@ public class PhotoController {
         final ArrayList<String> tgss = new ArrayList<>();
 
         if (photo.getId() == null) {
-            notifyListeners(603, "error : Photo specified has no ID");
+            notifyListeners(PicsArtConst.REQ_BAD_UPDPH, "error : Photo specified has no ID");
             return;
         }
 
@@ -398,7 +397,7 @@ public class PhotoController {
             @Override
             protected void deliverResponse(JSONObject jobj) {
                 Log.d("deliveryResponse ", "At updatePhotoData" + jobj.toString());
-                if (jobj.toString().contains("error")) notifyListeners(603, jobj.toString());
+                if (jobj.toString().contains("error")) notifyListeners(PicsArtConst.REQ_BAD_UPDPH, jobj.toString());
 
             }
         };
@@ -407,13 +406,13 @@ public class PhotoController {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                notifyListeners(603, error.toString());
+                notifyListeners(PicsArtConst.REQ_BAD_UPDPH, error.toString());
             }
 
             @Override
             public void onResponse(Object response) {
                 Log.d("UpdatedonLisData ", response.toString());
-                notifyListeners(601, response.toString());
+                notifyListeners(PicsArtConst.REQ_OK_UPDPH, response.toString());
             }
 
         });
@@ -438,12 +437,12 @@ public class PhotoController {
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                listener.onRequestReady(703, error.toString());
+                listener.onRequestReady(PicsArtConst.REQ_BAD_LIKE, error.toString());
             }
 
             @Override
             public void onResponse(Object response) {
-                listener.onRequestReady(701, response.toString());
+                listener.onRequestReady(PicsArtConst.REQ_OK_LIKE, response.toString());
             }
         });
 
@@ -470,12 +469,12 @@ public class PhotoController {
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                listener.onRequestReady(803, error.toString());
+                listener.onRequestReady(PicsArtConst.REQ_BAD_UNLKE, error.toString());
             }
 
             @Override
             public void onResponse(Object response) {
-                listener.onRequestReady(801, response.toString());
+                listener.onRequestReady(PicsArtConst.REQ_OK_UNLKE, response.toString());
             }
         });
 
@@ -527,7 +526,7 @@ public class PhotoController {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("requestCommentByid", error.toString());
-                listener.onRequestReady(903, error.toString());
+                listener.onRequestReady(PicsArtConst.REQ_BAD_COMID, error.toString());
 
             }
 
@@ -538,7 +537,7 @@ public class PhotoController {
                 Gson gson = new Gson();
                 _comment = gson.fromJson(response.toString(), Comment.class);
                 _comment.setPotoID(photoId);
-                listener.onRequestReady(901, response.toString());
+                listener.onRequestReady(PicsArtConst.REQ_OK_COMID, response.toString());
             }
         });
 
@@ -565,7 +564,7 @@ public class PhotoController {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("requestLikedUsers", error.toString());
-                listener.onRequestReady(1003, error.toString());
+                listener.onRequestReady(PicsArtConst.REQ_BAD_LKUS, error.toString());
 
             }
 
@@ -573,11 +572,11 @@ public class PhotoController {
             public void onResponse(Object response) {
                 Log.d("requestLikedUsers", response.toString());
                 if(response.toString().contains("error")) {
-                    listener.onRequestReady(1003, response.toString());
+                    listener.onRequestReady(PicsArtConst.REQ_BAD_LKUS, response.toString());
                     return;
                 }
                 else photoLikedUsers = UserFactory.parseFromArray(response, offset, limit);
-                listener.onRequestReady(1001, response.toString());
+                listener.onRequestReady(PicsArtConst.REQ_OK_LKUS, response.toString());
             }
         });
 
@@ -733,17 +732,17 @@ public class PhotoController {
 
 
                 } catch (UnsupportedEncodingException e) {
-                    notifyListeners(103, "error uploading photo");
+                    notifyListeners(PicsArtConst.UPLOAD_BAD_CODE, "error uploading photo");
                     // e.printStackTrace();
                 } catch (ClientProtocolException e) {
-                    notifyListeners(103, "error uploading photo");
+                    notifyListeners(PicsArtConst.UPLOAD_BAD_CODE, "error uploading photo");
                     // e.printStackTrace();
                 } catch (IOException e) {
-                    notifyListeners(103, "error IO");
+                    notifyListeners(PicsArtConst.UPLOAD_BAD_CODE, "error IO");
                     // e.printStackTrace();
                 } catch (Exception e) {
                     e.printStackTrace();
-                    notifyListeners(103, "error ");
+                    notifyListeners(PicsArtConst.UPLOAD_BAD_CODE, "error ");
                 }
 
 
@@ -805,7 +804,7 @@ public class PhotoController {
             if (sResponse != null) {
                 try {
                     Log.d("response Upload", sResponse.toString());
-                    notifyListeners(101, sResponse.toString());
+                    notifyListeners(PicsArtConst.UPLOAD_OK_CODE, sResponse.toString());
 
                 } catch (Exception e) {
                     Log.e(e.getClass().getName(), e.getMessage(), e);
