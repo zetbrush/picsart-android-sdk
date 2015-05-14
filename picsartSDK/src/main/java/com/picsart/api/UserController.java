@@ -174,14 +174,14 @@ public class UserController {
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                listener.onRequestReady(301, error.toString());
+                listener.onRequestReady(PicsArtConst.REQ_BAD_USER, error.toString());
             }
 
             @Override
             public void onResponse(Object response) {
                 //Log.d(MY_LOGS, response.toString());
                 user = UserFactory.parseFrom(response);
-                UserController.this.listener.onRequestReady(201, response.toString());
+                UserController.this.listener.onRequestReady(PicsArtConst.REQ_OK_USER, response.toString());
             }
         });
     }
@@ -208,7 +208,7 @@ public class UserController {
             @Override
             public void onErrorResponse(VolleyError error) {
 
-                listener.onRequestReady(302, error.toString());
+                listener.onRequestReady(PicsArtConst.REQ_BAD_USER_ID, error.toString());
 
             }
 
@@ -217,7 +217,7 @@ public class UserController {
 
                 //Log.d(MY_LOGS, response.toString());
                 user = UserFactory.parseFrom(response);
-                listener.onRequestReady(202, response.toString());
+                listener.onRequestReady(PicsArtConst.REQ_OK_USER_ID, response.toString());
 
             }
         });
@@ -263,14 +263,14 @@ public class UserController {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                UserController.this.listener.onRequestReady(303, error.toString());
+                UserController.this.listener.onRequestReady(PicsArtConst.REQ_BAD_FOLLOWER, error.toString());
             }
 
             @Override
             public void onResponse(Object response) {
 
                 userFollowers = UserFactory.parseFromArray(response, offset, limit);
-                UserController.this.listener.onRequestReady(203, response.toString());
+                UserController.this.listener.onRequestReady(PicsArtConst.REQ_OK_FOLLOWER, response.toString());
 
             }
         });
@@ -316,14 +316,14 @@ public class UserController {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                UserController.this.listener.onRequestReady(304, error.toString());
+                UserController.this.listener.onRequestReady(PicsArtConst.REQ_BAD_FOLLOWING, error.toString());
             }
 
             @Override
             public void onResponse(Object response) {
 
                 userFollowing = UserFactory.parseFromArray(response, offset, limit);
-                listener.onRequestReady(204, response.toString());
+                listener.onRequestReady(PicsArtConst.REQ_OK_FOLLOWING, response.toString());
             }
         });
     }
@@ -368,7 +368,7 @@ public class UserController {
             @Override
             public void onErrorResponse(VolleyError error) {
 
-                UserController.this.listener.onRequestReady(305, error.toString());
+                UserController.this.listener.onRequestReady(PicsArtConst.REQ_BAD_LIKED_PHOTO, error.toString());
 
             }
 
@@ -376,7 +376,7 @@ public class UserController {
             public void onResponse(Object response) {
 
                 userLikedPhotos = PhotoFactory.parseFromArray(response, offset, limit);
-                UserController.this.listener.onRequestReady(205, response.toString());
+                UserController.this.listener.onRequestReady(PicsArtConst.REQ_OK_LIKED_PHOTO, response.toString());
 
             }
         });
@@ -403,7 +403,7 @@ public class UserController {
             @Override
             public void onErrorResponse(VolleyError error) {
 
-                UserController.this.listener.onRequestReady(306, error.toString());
+                UserController.this.listener.onRequestReady(PicsArtConst.REQ_BAD_BLOCKED, error.toString());
 
             }
 
@@ -411,7 +411,7 @@ public class UserController {
             public void onResponse(Object response) {
 
                 blockedUsers = UserFactory.parseFromArray(response, offset, limit);
-                UserController.this.listener.onRequestReady(206, response.toString());
+                UserController.this.listener.onRequestReady(PicsArtConst.REQ_OK_BLOCKED, response.toString());
 
             }
         });
@@ -457,7 +457,7 @@ public class UserController {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                UserController.this.listener.onRequestReady(307, error.toString());
+                UserController.this.listener.onRequestReady(PicsArtConst.REQ_BAD_PLACES, error.toString());
 
             }
 
@@ -480,10 +480,10 @@ public class UserController {
                             e.printStackTrace();
                         }
                     }
-                    UserController.this.listener.onRequestReady(207, response.toString());
+                    UserController.this.listener.onRequestReady(PicsArtConst.REQ_OK_PLACES, response.toString());
 
                 } catch (Exception e) {
-                    UserController.this.listener.onRequestReady(307, e.toString());
+                    UserController.this.listener.onRequestReady(PicsArtConst.REQ_BAD_PLACES, e.toString());
                 }
 
 
@@ -529,7 +529,7 @@ public class UserController {
         req.setRequestListener(new PaArrayRequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                UserController.this.listener.onRequestReady(308, error.toString());
+                UserController.this.listener.onRequestReady(PicsArtConst.REQ_BAD_TAGS, error.toString());
 
             }
 
@@ -555,9 +555,9 @@ public class UserController {
                             e.printStackTrace();
                         }
                     }
-                    UserController.this.listener.onRequestReady(208, response.toString());
+                    UserController.this.listener.onRequestReady(PicsArtConst.REQ_OK_TAGS, response.toString());
                 } catch (Exception e) {
-                    UserController.this.listener.onRequestReady(308, e.toString());
+                    UserController.this.listener.onRequestReady(PicsArtConst.REQ_BAD_TAGS, e.toString());
                 }
             }
         });
@@ -602,13 +602,13 @@ public class UserController {
         req.setRequestListener(new PaArrayRequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                UserController.this.listener.onRequestReady(309, error.toString());
+                UserController.this.listener.onRequestReady(PicsArtConst.REQ_BAD_USER_PHOTO, error.toString());
             }
 
             @Override
             public void onResponse(Object response) {
                 userPhotos = PhotoFactory.parseFromArray(response, offset, limit);
-                UserController.this.listener.onRequestReady(209, response.toString());
+                UserController.this.listener.onRequestReady(PicsArtConst.REQ_OK_USER_PHOTO, response.toString());
             }
 
         });
@@ -636,13 +636,13 @@ public class UserController {
                     @Override
                     public void onResponse(String response) {
 
-                        listener.onRequestReady(210, response.toString());
+                        listener.onRequestReady(PicsArtConst.BLOCK_USER_OK_CODE, response.toString());
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        listener.onRequestReady(310, error.toString());
+                        listener.onRequestReady(PicsArtConst.BLOCK_USER_BAD_CODE, error.toString());
                     }
                 }) {
             @Override
@@ -656,7 +656,7 @@ public class UserController {
             @Override
             public void deliverError(VolleyError error) {
                 super.deliverError(error);
-                listener.onRequestReady(310, error.toString());
+                listener.onRequestReady(PicsArtConst.BLOCK_USER_BAD_CODE, error.toString());
             }
         };
 
@@ -686,12 +686,12 @@ public class UserController {
         req.setRequestListener(new PARequest.PARequestListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                UserController.this.listener.onRequestReady(311, error.toString());
+                UserController.this.listener.onRequestReady(PicsArtConst.UNBLOCK_USER_BAD_CODE, error.toString());
             }
 
             @Override
             public void onResponse(Object response) {
-                UserController.this.listener.onRequestReady(211, response.toString());
+                UserController.this.listener.onRequestReady(PicsArtConst.UNBLOCK_USER_OK_CODE, response.toString());
             }
         });
     }
@@ -717,13 +717,13 @@ public class UserController {
                     @Override
                     public void onResponse(String response) {
 
-                        listener.onRequestReady(212, response.toString());
+                        listener.onRequestReady(PicsArtConst.FOLLOW_USER_OK_CODE, response.toString());
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        listener.onRequestReady(312, error.toString());
+                        listener.onRequestReady(PicsArtConst.FOLLOW_USER_BAD_CODE, error.toString());
                     }
                 }) {
             @Override
@@ -737,7 +737,7 @@ public class UserController {
             @Override
             public void deliverError(VolleyError error) {
                 super.deliverError(error);
-                listener.onRequestReady(312, error.toString());
+                listener.onRequestReady(PicsArtConst.FOLLOW_USER_BAD_CODE, error.toString());
             }
         };
 
@@ -750,8 +750,8 @@ public class UserController {
      *
      * @param unfollowingId ID of Unfollowing User
      *                      <p/>
-     *                      onResponse 212 code will be called in listener
-     *                      onErrorResponse 312 code will be called in listener
+     *                      onResponse 213 code will be called in listener
+     *                      onErrorResponse 313 code will be called in listener
      */
     public void unfollowUserWithID(final String unfollowingId) {
 
@@ -767,21 +767,28 @@ public class UserController {
                     @Override
                     public void onResponse(String response) {
 
-                        listener.onRequestReady(213, response.toString());
+                        listener.onRequestReady(PicsArtConst.UNFOLLOW_USER_OK_CODE, response.toString());
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        listener.onRequestReady(313, error.toString());
+                        listener.onRequestReady(PicsArtConst.UNFOLLOW_USER_BAD_CODE, error.toString());
                     }
                 }) {
+
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("unfollowing_id", unfollowingId);
                 return params;
 
+            }
+
+            @Override
+            public void deliverError(VolleyError error) {
+                super.deliverError(error);
+                listener.onRequestReady(PicsArtConst.UNFOLLOW_USER_BAD_CODE, error.toString());
             }
 
         };

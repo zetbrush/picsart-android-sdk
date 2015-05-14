@@ -82,7 +82,6 @@ public class PicsArtConst {
     public static final int REQ_OK_UNLKE=801;
     public static final int REQ_BAD_UNLKE = 803;
 
-
     public static final int REQ_OK_COMID = 901;
     public static final int REQ_BAD_COMID = 903;
 
@@ -90,6 +89,50 @@ public class PicsArtConst {
     public static final int REQ_BAD_LKUS = 1003;
 
     ////UserControllerCodes////
+
+    public static final int REQ_OK_USER =201;
+    public static final int REQ_BAD_USER=301;
+
+    public static final int REQ_OK_USER_ID =202;
+    public static final int REQ_BAD_USER_ID=302;
+
+    public static final int REQ_OK_FOLLOWER =203;
+    public static final int REQ_BAD_FOLLOWER=303;
+
+    public static final int REQ_OK_FOLLOWING =204;
+    public static final int REQ_BAD_FOLLOWING=304;
+
+    public static final int REQ_OK_LIKED_PHOTO =205;
+    public static final int REQ_BAD_LIKED_PHOTO=305;
+
+    public static final int REQ_OK_BLOCKED =206;
+    public static final int REQ_BAD_BLOCKED=306;
+
+    public static final int REQ_OK_PLACES =207;
+    public static final int REQ_BAD_PLACES=307;
+
+
+    public static final int REQ_OK_TAGS =208;
+    public static final int REQ_BAD_TAGS=308;
+
+
+    public static final int REQ_OK_USER_PHOTO =209;
+    public static final int REQ_BAD_USER_PHOTO=309;
+
+
+    public static final int BLOCK_USER_OK_CODE =210;
+    public static final int BLOCK_USER_BAD_CODE=310;
+
+    public static final int UNBLOCK_USER_OK_CODE =211;
+    public static final int UNBLOCK_USER_BAD_CODE=311;
+
+    public static final int FOLLOW_USER_OK_CODE =212;
+    public static final int FOLLOW_USER_BAD_CODE=312;
+
+    public static final int UNFOLLOW_USER_OK_CODE =213;
+    public static final int UNFOLLOW_USER_BAD_CODE=313;
+
+
 
 
 
