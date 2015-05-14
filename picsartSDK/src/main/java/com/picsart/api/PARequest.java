@@ -70,7 +70,7 @@ public class PARequest extends JsonObjectRequest  {
 
 
 
-    protected static abstract class PARequestListener<T> implements Response.Listener, Response.ErrorListener {
+    public static abstract class PARequestListener<T> implements Response.Listener, Response.ErrorListener {
 
     }
 

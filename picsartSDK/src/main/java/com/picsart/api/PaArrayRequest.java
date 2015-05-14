@@ -74,7 +74,7 @@ public class PaArrayRequest extends JsonArrayRequest {
         this.requestListener.onErrorResponse(e);
     }
 
-    protected static abstract class PARequestListener<T> implements Response.Listener, Response.ErrorListener {
+    public static abstract class PARequestListener<T> implements Response.Listener, Response.ErrorListener {
 
     }
 

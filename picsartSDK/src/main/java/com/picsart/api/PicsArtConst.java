@@ -2,6 +2,7 @@ package com.picsart.api;
 
 /**
  * This class serves as placeholder for all URLs
+ * and response  codes
  * Created by Arman on 2/9/15.
  *
  */
@@ -88,7 +89,7 @@ public class PicsArtConst {
     public static final int REQ_OK_LKUS = 1001;
     public static final int REQ_BAD_LKUS = 1003;
 
-    ////UserControllerCodes////
+    ////UserController Codes////
 
     public static final int REQ_OK_USER =201;
     public static final int REQ_BAD_USER=301;

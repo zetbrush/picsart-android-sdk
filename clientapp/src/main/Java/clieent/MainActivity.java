@@ -68,6 +68,7 @@ public class MainActivity extends Activity {
         PicsArtConst.CLIENT_SECRET = "yY2fEJU8R9rFmuwtOZRQhm4ZK2Kdwqhk";
         PicsArtConst.REDIRECT_URI="localhost";
         PicsArtConst.GRANT_TYPE="authorization_code";
+
         setContentView(R.layout.activity_main);
         getPhotosBtn = (Button) findViewById(R.id.photoinf);
         uploadBtn = (Button) findViewById(R.id.uploadph);
@@ -171,7 +172,7 @@ public class MainActivity extends Activity {
                 uc.setListener(new RequestListener(0) {
                     @Override
                     public void onRequestReady(int reqnumber, String message) {
-                        if (reqnumber == 209) {
+                        if (reqnumber == PicsArtConst.REQ_OK_USER_PHOTO) {
 
 
                             final ImagePagerAdapter adapter = new ImagePagerAdapter(uc.getPhotos(), getAppContext(), new ImagePagerAdapter.onDoneClick() {
@@ -282,7 +283,7 @@ public class MainActivity extends Activity {
             uc.setListener(new RequestListener(0) {
                 @Override
                 public void onRequestReady(int reqnumber, String message) {
-                    if (reqnumber == 204) {
+                    if (reqnumber == PicsArtConst.REQ_OK_FOLLOWING) {
                         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
 
                         alertDialog.setTitle("Followings :: #" + uc.getUserFollowing().size() + "");
@@ -326,7 +327,7 @@ public class MainActivity extends Activity {
             uc.setListener(new RequestListener(0) {
                 @Override
                 public void onRequestReady(int reqnumber, String message) {
-                    if (reqnumber == 203) {
+                    if (reqnumber == PicsArtConst.REQ_OK_FOLLOWER) {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
                         alertDialog.setTitle("Followers :: #" + uc.getUserFollowers().size() + "");
                         ListFollowAdapter adapter = new ListFollowAdapter(MainActivity.this, R.layout.item_list_view, uc.getUserFollowers(), false);
